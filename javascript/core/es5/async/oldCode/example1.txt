@@ -1,0 +1,20 @@
+// following sequence is required
+// calls are asynchronous
+// force synchronicity by coding next step into callback of previous step
+
+// read file a.txt
+// pass contents (file_a_data) to xserver for processing and get server_x_response
+// read file b.txt
+// send server_x_response + file_b_data to yserver
+// saye server_y_response to c .txt
+
+readFile('a.txt', function (file_a_data) {
+                      requestToServer('http://xserver.com/', file_a_data, function (server_x_response) {
+                                                                              readFile('b.txt', function (file_b_data) {
+                                                                                                    var request_params = server_x_response + file_b_data;
+                                                                                                    requestToServer('http://yserver.com/', request_params, function (server_y_reponse) {
+                                                                                                                                                               writeFile('c.txt', server_y_response);
+                                                                                                                                                           });
+                                                                                                });
+                                                                          });
+                  });

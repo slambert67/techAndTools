@@ -1,0 +1,47 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Box Types</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+    <link rel="stylesheet" href="boxTypes.css" />  
+
+  </head>
+
+  <!--
+  box type is specified by display property
+  - block: boxes appear on separate lines
+  - inline: flows like text
+  - inline-block: no line breaks before and after
+  -->
+  
+  <body>
+
+<p>
+   Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+   <span class="inline">Mauris tempus turpis id ante mollis dignissim.</span>
+   Nam sed dolor non tortor lacinia lobortis id dapibus nunc.
+</p>
+
+<p>
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  <span class="block">Mauris tempus turpis id ante mollis dignissim.</span>
+  Nam sed dolor non tortor lacinia lobortis id dapibus nunc.
+</p>
+
+<p>
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  <span class="inline-block">Mauris tempus turpis id ante mollis dignissim.</span>
+  Nam sed dolor non tortor lacinia lobortis id dapibus nunc.
+</p>
+    
+  </body>
+</html>

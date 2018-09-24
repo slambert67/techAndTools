@@ -1,0 +1,38 @@
+Now that we have the layout component defined. Let's add the menu bar at the West side of the layout component.
+This would appear on the left side of the screen
+Edit the mainPage.zul with the below content which has the menubar on the west component.
+Also, lets give a title to the menu bar as Navigations
+{code}
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <borderlayout apply="emsapp.mainPageComposer">
+        <north height="10%" style="background-color:#0b8367;">
+            <hbox>
+                <image src="${z.resource(dir:'images', file:'grails_logo.png')}"/>
+            </hbox>
+        </north>
+        <south height="5%" style="background-color:#a0e4d4;"></south>
+        <west width="15%" title="Navigations">
+	    <menubar orient="vertical">
+		<menu label="Employees">
+		    <menupopup>
+			<menuitem id="employeelistmenu" label="Employee List"/>
+			<menuitem id="addnewemployeemenu" label="Add New Employee"/>
+		    </menupopup>
+		</menu>
+	    </menubar>
+        </west>
+        <center></center>
+    </borderlayout>
+</zk>
+{code}
+
+!image3.png!

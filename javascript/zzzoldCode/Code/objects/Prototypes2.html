@@ -1,0 +1,64 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Prototypes</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+        // create an object to act as a prototype
+		var person = {
+		
+		    getFullName: function() {
+			    return this.firstName + " " + this.lastName;  // properties as yet undefined
+				// this refers to object instance of objects created using person as a prototype
+			},
+			
+			increaseAge: function() {
+			    this.age++;
+			}
+		}
+		
+		// extends function to set an object as a prototype of another
+		function extend(obj) {
+		
+		    // constructor function. Starts with a capital letter
+			// constructor function implicitly returns a new object
+		    function E(){
+			    // could be parameterised
+				// 'this' variable is available
+				// !!! if invoked without 'new' then 'this' will refer to window object !!!
+			};
+			
+			// set the prototype for the constructor function
+			// anytime E constructor function is used to create a new object,
+			// the passed in object is set as the new object's prototype
+			E.prototype = obj;
+			
+			// constructor functions must be called with 'new' keyword
+			return new E();
+		}
+		
+		// create new object with person as it's prototype
+		var p1 = extend(person);
+		p1.firstName = "Steve";
+		p1.lastName = "Lambert"
+		p1.age = 48;
+		console.log("full name",p1.getFullName());
+		
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+/* Pseudo Elements */
+/*
+  Generate content that does not exist in the markup
+*/
+
+p::before {content: "Start: ";}
+p::after {content: " :End";}

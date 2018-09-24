@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" type="text/css" href="core.css">
+  <link rel="stylesheet" type="text/css" href="bootcloset.css">
+  <link rel="icon" type="image/gif" href="favicon.gif">
+  <script src="jquery-1.4.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  // load sets innerHTML
+  $("#bootChooserControl").load('fetchBootStyleOptions.php');
+  
+  // establish change handler
+  $("#bootChooserControl")
+  .change( function(event) {
+             $("#productDetailPane")
+             .load('fetchProductDetails.php',      // server side resource
+			       {style: $(event.target).val()}, // request parameters. name:value pair. val() gets value attribute
+				                                   // these parameters are sent as an object hash
+												   // In this case JQuery issues a POST!
+												   // This is wrong as we are only retrieving data - should use GET
+												   // GET would be issued if parameters passed as a String
+			       function() {
+				     $('[value=""]', event.target).remove();  // callback to remove 'choose a style' option
+				   }
+			      );		 
+           }
+         );
+});
+</script>
+
+</head>
+
+<body>
+
+  <div id="banner">
+    <img src="banner.boot.closet.png" alt="The Boot Closet" />
+  </div>
+
+  <div id="pageContent">
+    <h1>Choose your boots</h1>
+	<div>
+	  <div id="selectionsPane">
+	    <label for="bootChooserControl">Boot Style:</label>&nbsp;
+		<select id="bootChooserControl" name="bootStyle"></select>
+	  </div>
+	  <div id="productDetailPane"></div>
+	</div>
+  </div>
+  
+</body>
+</html>

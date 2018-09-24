@@ -1,0 +1,2 @@
+SELECT /*+ ORDERED */
+-- ensures execution plan uses tables in the order in which they are specified in the where clause

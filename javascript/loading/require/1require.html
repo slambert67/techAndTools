@@ -1,0 +1,28 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Require</title>
+	
+    <!-- This works as dependency is loaded first
+    <script src="sub.js"></script>
+    <script src="main.js"></script> -->
+    
+    <!-- This does not work as dependent is loaded first
+    <script src="main.js"></script>
+    <script src="sub.js"></script> -->
+    
+    <!-- require.js can be used to handle dependencies -->
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js" ></script>
+    
+  </head>
+  
+  <body>
+    <header>
+      <div>Require</div>
+    </header>    
+    <footer></footer>
+  </body>
+</html>

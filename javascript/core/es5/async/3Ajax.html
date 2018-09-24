@@ -1,0 +1,78 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+
+
+    <!-- AJAX - Asynchronous Javascript And XML
+    JSON has largely replaced XML
+    -----------------------------------------------------------------
+    Client -> JS call -> AJAX Engine -> XmlHttpRequest(XHR) -> Server
+    Server -> XML/JSON -> AJAX Engine -> HTML Response -> Client
+    -----------------------------------------------------------------
+    -->
+    
+  <body>
+  
+    <button id="button">Get Text File</button>
+    <br><br>
+    <div id="text"></div>
+    
+    <script LANGUAGE="Javascript">
+
+    (function() {
+      // invoke node server. E:\myStuff\technologies\node\code\firstJSONServer\load_albums
+      
+      // create event listener
+      document.getElementById('button').addEventListener('click', loadText);
+      
+      function loadText() {
+        console.log("button clicked");
+        
+        // create XHR object
+        var xhr = new XMLHttpRequest();
+        console.log(xhr);
+        
+        if ("withCredentials" in xhr) {
+          console.log("CORS is supported by browser");
+          console.log("withCredentials = " + xhr.withCredentials);
+        } else {
+          console.log("CORS is not supported by browser");
+        }
+        
+        // OPEN, type, url/file, async;
+        //xhr.open('GET', 'http://localhost:8080/pages/basic.html', true);
+        xhr.open('GET', 'http://localhost:8080', true);
+        
+        // onreadystatechange allows checking for intermediate states
+        xhr.onload = function() {
+          if (this.status == 200) {
+            console.log("success"); 
+            console.log(this.responseText); 
+            document.getElementById('text').innerHTML = this.responseText;            
+          } else {
+            console.log("status = " + this.status);
+          }
+        }
+        
+        xhr.onerror = function() {
+          console.log("Request error");
+        }
+        
+        // send request
+        xhr.send();
+        
+        // HTTP Statuses
+        // 200: "OK"
+        // 403: "Forbidden"
+        // 400: "Not Found"
+      }
+    })();
+
+     
+	</script>
+  </body>
+</html>

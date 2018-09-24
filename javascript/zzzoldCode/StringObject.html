@@ -1,0 +1,30 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>String Object</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	  
+	  var myString = new String("Hello world" + "<br>");
+	  document.write(myString);
+	  document.write("World starts at position " + myString.indexOf("world") + "<br>" );
+	  
+	  var myString2 = "123456789";
+	  document.write("Substring of myString2 = " + myString2.slice(2,5) + "<br>");  // note that string primitive temporarily converted to string object
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

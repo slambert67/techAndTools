@@ -1,0 +1,8 @@
+The Delete employee functionality will be in the Employee List page.
+There would be a Delete button at the bottom of the List box which should be enabled when the user selects a row.
+
+h4. Goals
+* Add Delete button to the Employee List page
+* Delete button event listener in Composer
+
+

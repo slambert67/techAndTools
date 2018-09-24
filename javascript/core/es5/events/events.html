@@ -1,0 +1,33 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Events</title>
+  </head>
+  
+  <body>
+
+    <div id="outerDiv">
+        <span>outer div</span>
+        <div id="innerDiv">
+            <span>inner div</span>
+        </div>
+    </div>
+    <script LANGUAGE="Javascript">
+    
+    (function() {
+
+        document.getElementById("outerDiv").addEventListener("click", function(evt) {
+            console.log("outer div clicked");
+        });
+        document.getElementById("innerDiv").addEventListener("click", function(evt) {
+            console.log("inner div clicked");
+        });
+
+    })();
+
+     
+	</script>
+  </body>
+</html>

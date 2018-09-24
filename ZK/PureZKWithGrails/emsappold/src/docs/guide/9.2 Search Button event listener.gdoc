@@ -1,0 +1,15 @@
+Add an onClick event listener to the search button. 
+Add the below method to EmployeeListComposer along with the variable search  (def search)
+{code}
+    void onClick_searchbtn(Event event) {
+        String text = "%" + search.value?.toLowerCase() + "%"
+        String hql = "from Employee where lower(firstName) like :search or lower(lastName) like :search"
+        def list = Employee.findAll(hql,[search:text])
+        employees.clear()
+        employees.addAll(list)
+    }
+{code}
+
+
+The Search functionality is completed. Try it out by typing some text in the search textbox and press Search button.
+The search would be a like search on First name or Last name.

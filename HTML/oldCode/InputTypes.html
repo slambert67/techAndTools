@@ -1,0 +1,59 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Input Types</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+    <!--[if lt IE 9]>
+      <script src="html5shiv.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="template.css" />  
+    <script src="jquery.js" ></script>
+    <script src="script.js"></script>
+	
+  </head>
+  
+  <body>
+
+    <div>Select your favorite color: <input type="color" name="favcolor"></div>
+	<div>Birthday: <input type="date" name="bday"></div>
+	<div>Birthday (date and time): <input type="datetime" name="bdaytime"></div>
+	<div>Birthday (month and year): <input type="month" name="bdaymonth"></div>
+	<div>E-mail: <input type="email" name="email"></div>  <!-- automatically validated when submitted -->
+	<div>Quantity (between 1 and 50): <input type="number" name="quantity" min="1" max="50" step="5"></div>
+    <div>Range: <input type="range" name="points" min="1" max="10"></div>
+	<div>Search Google: <input type="search" name="googlesearch"></div>
+	<div>Telephone: <input type="tel" name="usrtel"></div>
+	<div>Select a time: <input type="time" name="usr_time"></div>
+	<div>Add your homepage: <input type="url" name="homepage"></div>
+	<div>Select a week: <input type="week" name="week_year"></div>
+	
+	<div>
+	List of browsers:
+	<input list="browsers" name="browser">
+    <datalist id="browsers">
+      <option value="Internet Explorer">
+      <option value="Firefox">
+      <option value="Chrome">
+      <option value="Opera">
+      <option value="Safari">
+    </datalist>
+	</div>
+	
+	<form oninput="x.value=parseInt(a.value)+parseInt(b.value)">0
+      <input type="range" id="a" value="50">100 +
+      <input type="number" id="b" value="50">=
+      <output name="x" for="a b"></output>
+    </form>
+	
+  </body>
+</html>

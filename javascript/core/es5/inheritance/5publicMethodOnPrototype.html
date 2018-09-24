@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Constructor</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	
+      var MyConstructor1 = function() {              
+      }
+      // public prototypal method
+      MyConstructor1.prototype.echoMsg = function(msg) {
+        console.log(msg);
+      };
+      
+      var obj1 = new MyConstructor1();
+      var obj2 = new MyConstructor1();       
+
+      /**
+      Note: 
+      - public method is not directly connected to instance 
+      - available via prototypal inheritance
+      - method now not duplicated across all instances
+      */
+      obj1.echoMsg("hello world");  
+      obj2.echoMsg("goodbye cruel world"); 
+      
+      // breakpoint
+      console.log("stop");
+        
+	</script>
+  </body>
+</html>

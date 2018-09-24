@@ -1,0 +1,15 @@
+To add the search text box and button on the Panel header.
+We need to add it to the Caption component.
+Lets edit the employeeList.zul file and add the Caption component right above the panel children.
+{code}
+    <panel id="employeeListPanel" title="Employee List" apply="emsapp.employeeListComposer">
+        <caption>
+            <hlayout>
+                <textbox id="search"/>
+                <button id="searchbtn" label="Search"/>
+            </hlayout>
+        </caption>
+        <panelchildren>
+{code}
+
+!image13.png!

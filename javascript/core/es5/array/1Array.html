@@ -1,0 +1,112 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Array</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+         
+    console.log("Array initialisation");
+    (function() {
+        var foo1 = [1,2,3];
+        console.log("[1,2,3] length = " + foo1.length);
+
+        var foo2 = new Array(1,2,3);
+        var foo3 = new Array(3);  // length = 3 as initialised with only 1 parameter
+        console.log("new Array(1,2,3) length = " + foo2.length);
+        console.log("new Array(3) length = " + foo3.length);
+    })();
+
+
+    console.log("Array instance properties");
+    (function() {
+        var foo1 = [1,2,3];
+        console.log("length of [1,2,3] = " + foo1.length);
+    })();
+
+     
+    console.log("Array instance mutator methods - modify array contents");
+    (function() {
+        var e1;
+        console.log("POP");
+        var foo1 = [1,2,3]; console.log("foo1= " + foo1);
+        e1 = foo1.pop(); console.log("pop-> " + foo1);
+        console.log("PUSH");
+        var foo2 = [1,2,3]; console.log("foo2= " + foo2);
+        e1 = foo2.push(4); console.log("push-> " + foo2);
+        console.log("SHIFT");
+        var foo3 = [1,2,3]; console.log("foo3= " + foo3);
+        e1 = foo3.shift(); console.log("shift-> " + foo3);
+        console.log("UNSHIFT");
+        var foo4 = [1,2,3]; console.log("foo4= " + foo4);
+        e1 = foo4.unshift(4); console.log("unshift-> " + foo4);
+        console.log("REVERSE");
+        var foo5 = [1,2,3]; console.log("foo5= " + foo5);
+        foo5.reverse(); console.log("reverse-> " + foo5);
+        console.log("DEFAULT SORT");
+        var foo6 = [3,1,2]; console.log("foo6= " + foo6);
+        foo6.sort(); console.log("default sort-> " + foo6);
+        console.log("FUNCTION SORT");
+        var foo7 = [3,1,2]; console.log("foo7= " + foo7);
+        foo7.sort( function(a,b) {
+            if (a<b){return -1;}
+            if (a>b){return 1;}
+            return 0;
+        }); console.log("function sort-> " + foo7);
+        console.log("SPLICE - Remove last 2 elements");
+        var foo8 = [1,2,3]; console.log("foo8= " + foo8);
+        foo8.splice(1,2); console.log("foo8= " + foo8);
+        console.log("SPLICE - Add 2 elements after first");
+        var foo9 = [1,2,3]; console.log("foo9= " + foo9);
+        foo9.splice(1,0,[4,5]); console.log("foo9= " + foo9);
+        console.log("FILL - populate");
+        var foo10 = [1,2,3]; console.log("foo10= " + foo10);
+        foo10.fill('X',0,4); console.log("foo10= " + foo10);
+    })();
+    
+    console.log("Array instance accessor methods - do not modify original");
+    (function() {
+        var e1;
+        console.log("CONCAT");
+        var foo1 = [1,2,3];
+        var foo2 = [4,5,6];
+        var foo3 = [{'a':1},{'b':2},{'c':3}];
+        console.log("concat= " + foo1.concat(foo2));
+        console.log("INCLUDES");
+        console.log("foo1 includes 2? : " + foo1.includes(2));
+        console.log("INDEXOF");
+        console.log("foo1 index of 2 = " + foo1.indexOf(2));
+        console.log("JOIN - default param is comma");
+        console.log("foo1.join with ,-> " + foo1.join());
+        console.log("foo1.join with + -> " + foo1.join('+'));
+        console.log("TOSTRING");
+        console.log("foo1 as string = " + foo1.toString());
+        console.log("SLICE - Shallow copy");
+        console.log("slice = " + foo1.slice(1,3));
+    })();
+
+    console.log("Iteration methods - see MDN for more");
+    (function() {
+        var e1;
+        var e2;
+        console.log("ENTRIES");
+        var foo1 = [1,2,3];
+        e1 = foo1.entries();
+        console.log("foo1 entries -> " + e1.next() + ':' + e1.next());
+        console.log("FOREACH");
+        foo1.forEach( function(element) {
+            console.log(element);
+        });
+        console.log("MAP - create new array from original elements");
+        var foo2 = foo1.map( function(element) {
+            return element * 2;
+        });
+        console.log("f002 = " + foo2);
+
+    })();
+	</script>
+  </body>
+</html>

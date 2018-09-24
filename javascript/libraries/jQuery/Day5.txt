@@ -1,0 +1,87 @@
+css name: background-color
+dom name : backgroundColor
+document.getElementById('mydiv').style.color = 'green';  javascript
+
+Events
+------
+handle with event handler or callback
+submit is an event!
+
+window.onload
+
+html
+----
+<body onload="doStuff();">  // just waits for document ready/ Only DOM ready?
+
+js
+--
+window.onload = doStuff  // safest. more time consuming. waits for everything to be ready
+
+Binding an event
+----------------
+$().bind('click', function(){ $('body').addClass('large') };
+- deprecated. use on() ?
+- use off() instead of unbind
+
+$this in event handler -> jquery oby corresponding to element
+
+compound events
+.toggle
+.hover (internally uses toggle for mousein & mouseout)
+
+capturing events
+----------------
+bubbling not wanted? bubbling = upwards
+lowest level entity wants to handle event
+event.target == this
+
+.one - one shot trigger
+
+simulate user action
+--------------------
+.trigger
+
+event has properties
+
+event delegation
+----------------
+.live()
+.on()
+
+AJAX
+----
+XHR call is fundamental
+.load(url)  - ajax call is issued. wrapper around(.ajax)
+load grabs html off server and inserts content into page. static and dynamic html
+$.getJSON
+$.getXML
+$.ajax
+$.ajaxSetup. specify commonality for subsequent ajax calls
+$.getScript - load external scripts
+$.get - wrapper around .ajax
+$.post - wrapper around .ajax
+
+events
+local - handle as callbacks
+global
+
+beforeSend
+ajaxSend
+
+can have multiple ajax requests pending
+
+
+CDN
+
+
+
+
+
+
+
+
+
+
+
+
+

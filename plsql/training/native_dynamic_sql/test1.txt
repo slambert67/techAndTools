@@ -1,0 +1,16 @@
+declare
+
+  sql_stmt varchar2(1000);
+  i number;
+
+begin
+
+  sql_stmt := 'select 1 
+              from dual';
+
+  execute immediate sql_stmt
+  into i;  -- used only for single row result sets
+
+  dbms_output.put_line('i = ' || i);
+
+end;

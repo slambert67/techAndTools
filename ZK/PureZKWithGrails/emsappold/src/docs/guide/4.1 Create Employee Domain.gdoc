@@ -1,0 +1,20 @@
+Now its time to create the domain object. Lets use create-domain-class target to generate the domain object.
+Here is the command which will create Employee.groovy file under the domains directory.
+{code}
+grails create-domain-class Employee
+{code}
+
+Now lets edit the Employee.groovy file to add some attributes to the Employee.
+{code}
+package emsapp
+
+class Employee {
+    String firstName
+    String lastName
+    Date dob
+    String gender
+    Boolean active
+    Double salary
+}
+{code}
+ 

@@ -1,0 +1,8 @@
+The EMS application will have a main page which would be the entry point for launching the application.
+This main page would contain a header area, a navigation are on the left side, content area in the center and some footer area.
+h4. Goals
+* Create MainPage zul
+* Understand BorderLayout component 
+* Understand Menu bar and menuitems
+* Understand Main page composer
+

@@ -1,0 +1,37 @@
+The Employee List page would be called from the Main page using the Employee List Menu item.
+Lets add an onClick event to this menu item and load the employeeList.zul file.
+{code}
+package emsapp
+
+import org.zkoss.zkgrails.*
+import org.zkoss.zk.ui.event.Event
+
+class MainPageComposer extends GrailsComposer {
+
+    def content
+
+    def afterCompose = { window ->
+        // initialize components here
+    }
+
+    void onClick_addnewemployeemenu(Event event) {
+        loadPage("./employeeMaint.zul")
+    }
+
+    private void loadPage(page) {
+        content.children?.clear()
+        execution.createComponents(page,content,null)
+    }
+
+    void onClick_employeelistmenu(Event event) {
+        loadPage("./employeeList.zul")
+    }
+}
+{code}
+
+{note}
+Run the EMS application and open the Main page [http://localhost:8080/emsapp/mainPage.zul |http://localhost:8080/emsapp/mainPage.zul] 
+Now open the Employee List menu from the left Navigation.
+{note}
+
+!image10.png!

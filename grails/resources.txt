@@ -1,0 +1,11 @@
+Resources bundle up javascrips
+To view this js at runtime ...
+
+http://localhost:8080/oreillyAngular/chapter2/main?_debugResources=y
+or
+in config.groovy
+environments {
+    development {
+        grails.resources.debug = true
+    }
+}

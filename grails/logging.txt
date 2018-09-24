@@ -1,0 +1,9 @@
+Log4j log object injected into every controller, service and domain class
+
+Other classes will have to define their own:
+private static final Logger log = Logger.getLogger(getClass())
+
+eg use : log.debug("my debug")
+
+log file location specified in banner_configuration.groovy in XE
+eg: target/logs

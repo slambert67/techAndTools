@@ -1,0 +1,5 @@
+explain plan
+into sl_plan_table for
+select sysdate from dual;
+
+

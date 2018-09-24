@@ -1,0 +1,3 @@
+SQLDeveloper client makes a thin connection
+This means no TNS setup
+Just need ip address (VM IP) and sid

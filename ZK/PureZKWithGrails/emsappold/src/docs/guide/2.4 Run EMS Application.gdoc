@@ -1,0 +1,6 @@
+Let's run the application.  In your c:\working\emsapp directory run 
+{code}grails run-app{code}
+This will start your EMS application and will be accessible at [http://localhost:8080/emsapp |http://localhost:8080/emsapp].  
+Once run-app informs you that the application is available you can go to the web browser and try it out.
+
+!image0.png!

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Form</title>
+  </head>
+  
+  <body>
+
+    <form action="doNothing">
+	<fieldset> <legend>My Form</legend>
+	
+	  <!-- placeholder -->
+      <input type="text" placeholder="at least 3 characters"><br>
+
+	  <!-- autofocus -->
+      <input type="text" autofocus placeholder="autofocus navigated here"><br>
+
+	  <!-- required. Must be entered before submit -->
+      <input type="text" required placeholder="required field"><br>
+	  
+	  <!-- pattern. Specify regular expression-->
+	  <label>Product Number:
+	    <input pattern="[0-9][A-Z]{3}" type="text" title="single digit followed by 3 uppercase letters"><br>
+	  </label>
+	  
+	  <!-- list and datalist -->
+	  <label>Your favourite fruit:
+	    <datalist id="fruits">
+		  <select name="fruits">
+		    <option value="Blackberry">Blackberry</option>
+		    <option value="Blackcurrant">Blackcurrant</option>
+		    <option value="Blueberry">Blueberry</option>
+		  </select>
+		If other, please specify:
+		</datalist>
+		
+		<input type="text" name="fruit" list="fruits" multiple><br>  <!--list=fruits references datalist-->
+	  
+	  </label><br>
+	  
+	  <!-- search -->
+	  <input type="search" name="search" placeholder="search"><br>
+	  
+	  <!-- email -->
+	  <input type="email" name="email" placeholder="email" required><br> 
+	  
+	  <!-- url -->
+	  <input type="url" name="url" placeholder="url" required><br> 
+	  
+	  <!-- telephone -->
+	  <input type="tel" name="tel" placeholder="telephone" required><br>
+	  
+	  <!-- number -->
+	  <input type="number" min="5" max="18" step="0.5" value="9" name="shoe-size"><br>
+	  
+	  <!-- range -->
+	  <input id="skill" type="range" min="1" max="100" value="30"><br>
+	  
+	  <!-- date -->
+	  <label>Date:<input id="startdate" name="startdate" min="2012-01-01" max="2014-01-01" type="date"></label><br>
+
+	  <!-- month -->
+	  <label>Month:<input id="expiry" name="expiry" type="month"></label><br>
+
+	  <!-- week -->
+	  <label>Week:<input id="vacation" name="vacation" type="week"></label><br>
+	  
+	  <!-- time -->
+	  <label>Time:<input id="exit-time" name="exit-time" type="time"></label><br>
+	  
+	  <!-- datetime -->
+	  <label>Datetime:<input id="entry-day-time" name="entry-day-time" type="datetime"></label><br>  <!-- not working? -->
+
+	  <!-- local datetime -->
+	  <label>Local Datetime:<input id="arrival-time" name="arrival-time" type="datetime-local"></label><br>  
+	  
+	  <!-- color -->
+	  <label>Color:<input id="color" name="color" type="color"></label><br>
+
+	  <label>Remember me:<input type="checkbox" id="rememberme" checked></label><br>
+  
+	  <!-- submit the form -->
+	  <input type="submit">  <!-- validation done here -->
+	  	  
+	</fieldset>  
+	</form>
+	
+  </body>
+</html>

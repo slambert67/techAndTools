@@ -1,0 +1,5 @@
+sqlplus sys as sysdba
+
+password = change_on_install or manager
+
+sqlplus / as sysdba

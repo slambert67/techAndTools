@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="ElementContent.css">
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $('div#div2').html( $('div#div1').html() + ' again' );  /* getting and setting html */
+  
+  /* append/prepend */
+  $('p#p1').append('<b>more text in bold</b>');  /* append hard coded html */ /* Adds to paragraph contents */
+  $('p#p1').prepend('<b>some preceding text in bold</b>');
+  
+  /* Is p0 now within p2 - yes */
+  $('p#p2').append( $('p#p0') );  /* Adds to end of child list of paragraph p2 */
+
+  
+  $('p#p3').append( $('<b>xxx</b>') );  /* contents added to paragraph */
+  
+  $('p#p4').append( $('<p>xxx</p>') );  /* contents also seems to be added to paragraph - yes */
+  
+  /* after */
+  $('p#p6').after( $('p#p5') );  /* p5 moved after p6 */
+  
+  /* before */
+  $('p#p7').before( $('p#p8') );  /* p8 moved before p7 */
+  
+  /* wrapping */
+  $('a.aclass1').wrap("<div class='dclass1'></div>");  /* each instance of wrapped set placed inside a div */
+  $('a.aclass2').wrapAll("<div class='dclass2'></div>");  /* all instances of wrapped set placed inside one div */
+  
+});
+</script>
+
+</head>
+
+<body>
+
+  <div id="div1">Hello world</div>
+  <div id="div2"></div>
+  
+  <p id="p0">p0 I've been moved! (appended after p2)</p>
+  <p id="p1">Here is some more text in bold : </p>
+  <p id="p2">p2</p>
+  <p id="p3">p3</p>
+  <p id="p4">p4</p>
+  
+  <p id="p5 - moved after p6">p5</p>
+  <p id="p6">p6</p>
+
+  <p id="p7">p7</p>
+  <p id="p8">p8 - moved before p7</p>
+  
+  <a class="aclass1" href="http://www.google.com">Google</a>
+  <a class="aclass1" href="http://www.bbc.co.uk">BBC</a>
+  <br>
+  <a class="aclass2" href="http://www.google.com">Google</a>
+  <a class="aclass2" href="http://www.bbc.co.uk">BBC</a>  
+  
+</body>
+</html>

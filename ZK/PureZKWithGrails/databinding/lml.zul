@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window id="mywin" apply="databinding.LmlComposer">
+
+      <hbox>
+          <button id="add" label="Add new entry" />
+          <button id="add2" label="Add new completed entry" />
+          <button id="save" label="Save" />
+          <button id="delete" label="Delete Entry" />
+          <button id="update1" label="Update Model Directly" />
+          <button id="load" label="Load after page compose" />
+          <button id="show" label="Show Model" />
+      </hbox>
+
+      <listbox id="myListbox" model="@{mywin$composer.myListboxModel}" selectedItem="@{selected}">
+
+          <listhead> <listheader label="First"/> <listheader label="Last"/> </listhead>
+
+              <listitem self="@{each=name}" value="@{name}">
+                  <listcell>  <textbox id="t1" value="@{name.firstName}" /> </listcell>
+                  <listcell>  <textbox value="@{name.lastName}" /> </listcell>
+	          </listitem>
+
+      </listbox>
+
+    </window>
+
+</zk>

@@ -1,0 +1,22 @@
+you can bind your view's render function to the model's "change" event — 
+and now everywhere that model data is displayed in the UI, it is always immediately up to date.
+How???
+
+banner_ui_ss calls render on a view that doesn't have one defined? mixins may answer this?
+
+when do we use table and when do we use ul - depends on requirement.
+
+edit
+====
+backbone.grid. xe extension see backbone.grid.js
+
+why use params when name= works for controllers
+
+templates
+=========
+piece of html - has structure of view
+fill in model data at runtime
+
+allows for non searching for html elements at runtime
+
+icanhaz.js

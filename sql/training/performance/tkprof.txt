@@ -1,0 +1,16 @@
+enable SQL trace
+
+select distinct
+       sid
+from   v$mystat
+
+select p.spid
+from v$session s,
+     v$process p
+where s.sid= (sid from v$mystat)
+and s.paddr = p.addr
+
+trace filename = ora_<spid>_<oracle sid>.trc
+in ~oracle/admin/<oracle sid>/udump
+
+tkprof ora_12394_l01s.trc ~/wrc0002d explain=coreown/coreown_l01s@xhp15l01s table=coreown.sl_plan_table sort=fchela

@@ -1,0 +1,132 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+
+    /**
+    Callback problem 
+    - Inversion of Control (Trusting external source)
+    - Callback UNDER CONTROL OF EXTERNAL SOURCE!
+    - we're saying "here's what happens later after current step finishes"
+    
+    Promises
+    - easily repeatable mechanism for encapsulating and composing future values
+    - uninvert the inversion of control
+    - instead of handing continuation of our program to external source
+      we expect it to let us know when the task is finished
+      our own code can then decide what to do with the callback functionality
+    - most new async APIs built on promises
+    
+    */
+    
+    (function() {
+      /**
+      Promise analogy 1 : Future Value
+      ================================
+      - cf. receipt for cheeseburger order
+      - can reason 'about' future value (placeholder) without knowing it yet
+      - value can be thought of as time independent
+      - order / receipt number called : NB in real world may not be called - unresolved state
+        - cheeseburger ready: once future value ready, exchange value promise (receipt) for it: success
+        - out of cheeseburgers: failure
+      
+      x+y ASSUMES both x and y have resolved to a value
+      nonsense to expect + operator to handle waiting around for x and y to be resolved
+      code as if both operands are future values:
+      add() {
+        getx() {
+          if y != undefined return x+y else x
+        }
+        gety() {
+          if x != undefined return x+y else y
+        }
+      }
+      So:
+      - add is now temporally consistent - behaves same across now and later times
+      - to consistently handle now and later then make both of them later. All operations become async
+      
+      Promise Value
+      -------------
+      Because Promises encapsulate the time-dependent state -- waiting on the fulfillment or rejection of the underlying value -- from the outside, 
+      the Promise itself is time-independent, and thus Promises can be composed (combined) in predictable ways regardless of the timing or outcome underneath.
+
+      Moreover, once a Promise is resolved, it stays that way forever -- it becomes an immutable value at that point -- 
+      and can then be observed as many times as necessary.
+      */
+    })();
+
+  
+    (function() {
+      /**
+      Promise analogy 2 : Completion Event
+      ====================================
+      - flow control mechanism. Temporal this-then-that for 2 or more steps in asynchronous task
+      
+      suppose we need to know when foo() finishes so we can continue
+      can think in terms of events
+      can reframe our need for notification as a need to listen for a completion (or continuation) event emitted by foo
+      with callbacks, the notification would be our callback invoked by foo
+      Promises flip the relationship - listen for event from foo and when received process accordingly
+        
+      Pseudocode:
+      function foo(x) {
+	    // start doing something that could take a while
+
+	    // make a `listener` event notification
+	    // capability to return
+
+	    return listener; // restore control back to calling code
+      }
+
+      var evt = foo( 42 );
+
+      evt.on( "completion", function(){
+	    // now we can do the next step!
+      } );
+
+      evt.on( "failure", function(err){
+	    // oops, something went wrong in `foo(..)`
+      } );
+      
+      Essentially, evt object is a neutral third-party negotiation between the separate concerns
+      
+      Promise Events
+      --------------
+      function foo(x) {
+        // start doing something that could take a while
+        
+        // construct and return a Promise
+        // pattern known as revealing constructor
+        return new Promise( function(resolve,reject) {  -- executed synchronously and NOT asynchronously
+          // eventually call resolve or reject
+          // which are the resolution callbacks for the promise
+        });
+      }
+      var p = foo( 42 );
+      bar( p );
+      baz( p );
+
+      function bar(fooPromise) {
+	    // listen for `foo(..)` to complete
+	    fooPromise.then(
+		  function(){
+			// `foo(..)` has now finished, so
+			// do `bar(..)`'s task
+		  },
+		  function(){
+			// oops, something went wrong in `foo(..)`
+	 	  }
+        );
+      }
+      // ditto for `baz(..)`
+      */
+    })();  
+	</script>
+  </body>
+</html>

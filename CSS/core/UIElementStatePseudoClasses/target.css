@@ -1,0 +1,8 @@
+/* :target pseudo class */
+/*
+  designed to work when a selected element becomes the active target of a link
+  Used to highlight sections
+*/
+
+section:target {background: #F9FDA2;}
+div:target {background: red;}

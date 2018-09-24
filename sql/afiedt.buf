@@ -1,0 +1,10 @@
+select sid,
+       serial#,
+       username,
+       status,
+       schemaname,
+       process,
+       program,
+       event
+from v$session
+/

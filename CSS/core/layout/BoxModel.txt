@@ -1,0 +1,43 @@
+Everything is a box
+
+Padding: Space around sides of an elements content.
+         Transparent
+		 Reveals elements background colour
+		 
+Border: Appearance of border on each side of element.
+        Encloses content and padding.
+		Generally a coloured or translucent line
+		Possibly rounded corners
+		
+Margin: Affects space to side of an element
+
+Outline: Like border but doesn't change space a box takes
+         Added outside element's border
+         Generally leave alone
+
+Display ordering
+- margin & background colour at the back
+- background image
+- padding
+- border
+- content
+- outline
+
+Elements with display:block
+---------------------------
+Follow each other vertically down the page
+Default width is width of containing element
+Default height is height required to contain box content
+Width and height apply to content so padding adds to these dimensions
+Intrinsic dimensions can be changed by properties width and height	
+Can now choose if width and height refer to default content-box or more intuitive border-box
+If 2 vertical margins touch, only the largest margin is used
+
+Positioning schemes
+-------------------
+position: static;  default and known as normal flow. One box after another vertically
+position: relative;
+position: absolute;
+position: fixed;
+	 
+		 

@@ -1,0 +1,38 @@
+Lets remove the Save successfull message popup from the Add new Employee page and redirect to Employee list page
+after the Save. For this we need an event to be fired from Add Process and handled in the MainPageComposer.
+{code}
+package emsapp
+
+import org.zkoss.zkgrails.*
+import org.zkoss.zk.ui.event.Event
+import org.zkoss.zul.Messagebox
+import org.zkoss.zk.ui.event.Events
+
+class EmployeeMaintComposer extends GrailsComposer {
+
+    def employee
+
+    def afterCompose = { window ->
+        employee = new Employee()
+        employee.active = false
+    }
+
+    void onClick_save(Event event) {
+        employee.save(failOnError: true, flush:true)
+        //Messagebox.show("Save Successfull..")
+        Events.postEvent(new Event("onLoadPage",event.target.root, "./employeeList.zul"))
+    }
+}
+{code}
+
+Now we need an onLoadPage event listener in the MainPageComposer to open the page.
+Add this method to the MainPageComposer.groovy file
+{code}
+void onLoadPage(Event event) {
+	loadPage(event.data)
+}
+{code}
+
+{note}
+Now try the Add new employee and see the Employee List getting opened after successfull save.
+{note}

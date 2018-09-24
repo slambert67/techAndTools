@@ -1,0 +1,42 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Box Model</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+    <link rel="stylesheet" href="boxmodel.css" />  
+
+  </head>
+
+  <!--
+  
+  
+               margin
+               border
+               padding
+  --------------------------------- ---
+  |                               |  |
+  |        content                | height
+  |                               |  |
+  --------------------------------- ---
+  <        width                  >
+  -->
+  
+  <body>
+
+    <div id="wrapper">
+      <header>Header</header>
+      <main>Main content</main>
+      <footer>Footer</footer>
+    </div>
+    
+  </body>
+</html>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./employeemaintpanel"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <panel id="employeemaintpanel" title="Add New Employee" apply="emsapp.employeeMaintComposer">
+        <panelchildren>
+            <grid>
+                <columns>
+                    <column width="200px"/>
+                    <column />
+                </columns>
+                <rows>
+                    <row>
+                        <label value="First Name"/>
+                        <textbox value="@{employeemaintpanel$composer.employee.firstName, save-when=self.onChange, access=both}"/>
+                    </row>
+                    <row>
+                        <label value="Last Name"/>
+                        <textbox value="@{employeemaintpanel$composer.employee.lastName, save-when=self.onChange, access=both }"/>
+                    </row>
+                    <row>
+                        <label value="Date of Birth"/>
+                        <datebox format="MM-dd-yyyy" value="@{employeemaintpanel$composer.employee.dob, save-when=self.onChange, access=both}"/>
+                    </row>
+                    <row>
+                        <label value="Gender" />
+                        <combobox selectedItem="@{employeemaintpanel$composer.employee.gender, save-when=self.onChange, access=both}">
+                            <comboitem label="Female" value="Female"/>
+                            <comboitem label="Male" value="Male"/>
+                        </combobox>
+                    </row>
+                    <row>
+                        <label value="Active"/>
+                        <checkbox checked="@{employeemaintpanel$composer.employee.active, save-when=self.onCheck, access=both}"/>
+                    </row>
+                    <row>
+                        <label value="Salary"/>
+                        <doublebox value="@{employeemaintpanel$composer.employee.salary, save-when=self.onChange, access=both}"/>
+                    </row>
+                </rows>
+            </grid>
+            <toolbar>
+                <button label="Save" id="save"/>
+            </toolbar>
+        </panelchildren>
+    </panel>
+</zk>

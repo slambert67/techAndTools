@@ -1,0 +1,17 @@
+Specify length etc in constraints
+
+yes_no
+======
+a convenience for mapping legacy database schemas
+If you have a legacy database schema where boolean values are represented Y/N, you use yes_no.
+
+true_false
+==========
+a convenience for mapping legacy database schemas
+If you have a legacy database schema where boolean values are represented T/F, you use true_false.
+
+@temporal
+=========
+@Temporal(TemporalType.DATE)
+@Temporal(TemporalType.TIME)
+@Temporal(TemporalType.TIMESTAMP)

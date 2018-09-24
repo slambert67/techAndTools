@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>DOM Level 0 Events Example</title>
+  <meta charset="utf-8"/>
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  /* declare event handlers under script control */
+  
+  /* 
+    onmouseover PROPERTY set to an inline function
+	- DOM Level 0 limitation - onmouseover property can only be assigned 1 function
+	function expects single parameter
+  */
+  $("img#example")[0].onmouseover = function(event) {
+                                      $("p#p1").html("Wow");
+                                    }
+
+  $("img#example")[0].onmouseout = function(event) {
+                                      $("p#p1").html("");
+                                   }
+									
+});
+</script>
+
+</head>
+
+<body>
+
+  <!-- declare event handler as markup attribute -->
+  <img id="example"
+       src="mp.jpg"
+	   onclick="alert('Michelle Pfeiffer');"
+	   alt="oooh! ahh!" />
+	   
+  <p id="p1"></p>
+  
+</body>
+</html>

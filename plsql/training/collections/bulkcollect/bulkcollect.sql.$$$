@@ -1,0 +1,28 @@
+set serveroutput on
+
+DECLARE
+
+  TYPE contexts_table_type IS TABLE OF comevent_contexts.code%TYPE;
+
+  CURSOR get_contexts IS
+  SELECT code
+  FROM   comevent_contexts;
+
+  contexts contexts_table_type;
+  i PLS_INTEGER;
+
+BEGIN
+
+  OPEN  get_contexts;
+  FETCH get_contexts BULK COLLECT
+  INTO  contexts;
+
+  FOR i IN contexts.FIRST .. contexts.LAST
+  LOOP
+
+    dbms_output.put_line('hello');
+
+  END LOOP;
+
+END;
+/

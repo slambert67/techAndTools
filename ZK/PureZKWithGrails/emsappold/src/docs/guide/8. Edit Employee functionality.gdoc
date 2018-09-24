@@ -1,0 +1,10 @@
+The Edit employee functionality will be in the Employee List page.
+There would be an Edit button next to the Delete button at the bottom of the List box which should be enabled when the user selects a row.
+Clicking the Edit button should open the Employee Maintenance page in Edit mode.
+
+h4. Goals
+* Add Edit button to the Employee List page
+* Edit button event listener in Composer
+* Set and Get data from ZK Execution.
+
+

@@ -1,0 +1,140 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+
+    /**  
+    A Promise has 3 states
+    - pending: don't know if promise will be fulfilled or not
+    - resolved: promise is fulfilled
+    - rejected: promise is reneged upon
+    
+    */
+    
+    (function() {
+      console.log("Simple Promise");
+      
+      var isMumHappy = true;
+      
+      /**
+      The whole point of the promise constructor executor function is to disseminate resolve and reject functions to non-promise-using code, 
+      to wrap it and convert it to use a promise
+      Ideally, you would never need this because all natively asynchronous APIs return promises
+      
+      Promise is a constructor, while then is a method
+      Promise takes one callback, while then takes up to two
+      Promise invokes its callback synchronously, while then invokes its callbacks asynchronously
+      Promise always invokes its callback, then might not invoke its callbacks (if the promise is not fulfilled/rejected)
+      Promise passes the capabilities to resolve/reject a promise to the callback,
+      then passes the result value / rejection reason of the promise it was called on
+      Promise invokes its callback for the purpose of executing side effects (call reject/resolve),
+      then invokes its callbacks for their result values (for chaining)
+      */      
+      var willIGetNewPhone = new Promise( 
+      
+        /**
+        - executor function passed to Promise constructor
+        - executed immediately ie. BEFORE CONSTRUCTOR RETURNS PROMISE!
+        - sets (typically asynchronous) tasks in motion that will SET THE STATE of the new promise to FULFILLED or REJECTED
+          using the resolve/reject functions that are passed to you
+        - resolve and reject callbacks are functions SUPPLIED BY THE SYSTEM and are passed to the executor function
+          by the Promise constructor
+        - handlers passed to then() and catch() will REACT TO THE STATE of the promise
+        */
+        function(resolve, reject) {
+          // do something asynchronous which eventually calls either resolve or reject
+          if (isMumHappy) {
+            var phone = {brand: "Huawei", colour: "black"};
+            resolve(phone); // fulfilled
+          } else {
+            var reason = new Error('Mum is not happy');
+            reject(reason);  // rejected
+          } 
+        }
+      );
+      
+      // call our promise
+      var askMum = function() {
+      
+        willIGetNewPhone
+        // executed if resolve has been called
+        .then( function(fulfilled) {
+          console.log(fulfilled);
+        })
+        // executed if reject has been called
+        .catch( function(error) {
+          console.log(error.message);
+        });
+      }
+      
+      askMum();
+      
+    })();
+    
+    (function() {
+      console.log("Simple Promise with chaining");
+      
+      var isMumHappy = true;
+       
+      var willIGetNewPhone = new Promise( 
+      
+        function(resolve, reject) {
+          // do something asynchronous which eventually calls either resolve or reject
+          if (isMumHappy) {
+            var phone = {brand: "Huawei", colour: "black"};
+            resolve(phone); // fulfilled
+          } else {
+            var reason = new Error('Mum is not happy');
+            reject(reason);  // rejected
+          } 
+        }
+      );
+      
+      var showOff = function( phone ) {
+        var message = 'Hey friend, I have a new ' + phone.colour + ' ' + phone.brand + ' phone';
+        
+      }
+      
+      var showOff = function( phone ) {
+      
+        return new Promise(
+        
+          function(resolve, reject) {
+            var message = 'Hey friend, I have a new ' + phone.colour + ' ' + phone.brand + ' phone';    
+
+            resolve(message);
+
+            // reject not called as it's optional
+            
+          }
+        )
+      }
+      
+      // call our promise
+      var askMum = function() {
+      
+        willIGetNewPhone
+        // executed if resolve has been called
+        .then(showOff)  // chain it here
+        .then( function(fulfilled) {
+          console.log(fulfilled);
+        })
+        .catch( function(error) {
+          // oops. mum didn't buy me phone :(
+          console.log(error.message);
+        });
+      }
+      
+      askMum();
+      
+    })();
+
+	</script>
+  </body>
+</html>

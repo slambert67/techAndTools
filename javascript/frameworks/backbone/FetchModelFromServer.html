@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery.js"></script>
+  <script src="underscore.js"></script>
+  <script src="backbone.js"></script>
+
+<script>
+$(document).ready(function(){
+
+// Collections.fetch() retrieves a set of models from the server in the form of a JSON array 
+// by sending an HTTP GET request to the URL specified by the collection's url property (which may be a function). 
+// When this data is received, a set() will be executed to update the collection.
+  
+var Todo = Backbone.Model.extend({
+  defaults: {
+    title: '',
+    completed: false
+  }
+});
+
+var TodosCollection = Backbone.Collection.extend({
+  model: Todo,
+  url: '/todos'
+});
+
+var todos = new TodosCollection();
+todos.fetch(); // sends HTTP GET to /todos
+
+// Saving models to the server
+// While Backbone can retrieve an entire collection of models from the server at once, 
+// updates to models are performed individually using the model's save() method. 
+// When save() is called on a model that was fetched from the server, 
+// it constructs a URL by appending the model's id to the collection's URL and sends an HTTP PUT to the server. 
+// If the model is a new instance that was created in the browser (i.e., it doesn't have an id) 
+// then an HTTP POST is sent to the collection's URL. Collections.create() can be used to create a new model, 
+// add it to the collection, and send it to the server in a single method call.
+
+var Todo = Backbone.Model.extend({
+  defaults: {
+    title: '',
+    completed: false
+  }
+});
+
+var TodosCollection = Backbone.Collection.extend({
+  model: Todo,
+  url: '/todos'
+});
+
+var todos = new TodosCollection();
+todos.fetch();
+
+var todo2 = todos.get(2);
+todo2.set('title', 'go fishing');
+todo2.save(); // sends HTTP PUT to /todos/2
+
+todos.create({title: 'Try out code samples'}); // sends HTTP POST to /todos and adds to collection
+
+// As mentioned earlier, a model's validate() method is called automatically by save() and will trigger 
+// an invalid event on the model if validation fails.
+
+//Deleting models from the server
+
+// A model can be removed from the containing collection and the server by calling its destroy() method. 
+// Unlike Collection.remove() which only removes a model from a collection, Model.destroy() will also send an 
+// HTTP DELETE to the collection's URL.
+
+var Todo = Backbone.Model.extend({
+  defaults: {
+    title: '',
+    completed: false
+  }
+});
+
+var TodosCollection = Backbone.Collection.extend({
+  model: Todo,
+  url: '/todos'
+});
+
+var todos = new TodosCollection();
+todos.fetch();
+
+var todo2 = todos.get(2);
+todo2.destroy(); // sends HTTP DELETE to /todos/2 and removes from collection
+
+// Options
+
+// Each RESTful API method accepts a variety of options. 
+// Most importantly, all methods accept success and error callbacks which can be used to customize the handling of server responses. 
+// Specifying the {patch: true} option to Model.save() will cause it to use HTTP PATCH to send only the changed attributes to 
+// the server instead of the entire model. Similarly, passing the {reset: true} option to Collection.fetch() will result in the 
+// collection being updated using reset() rather than set().
+
+// See the Backbone.js documentation for full descriptions of the supported options.
+});
+</script>
+
+</head>
+
+<body>
+
+
+  
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="DVDManager.css">
+  <script src="h:/MyTechnologies/jQuery/jquery-1.4.js"></script>
+
+<script>
+
+var filterCount = 0;
+ 
+$(document).ready(function(){
+
+  // create click event handler for addFilterButton
+  $("#addFilterButton")
+  .click( function() {
+            
+			// create a div to hold the filter
+			var filterItem = $("<div>")
+			                 .addClass("filterItem")
+							 .appendTo("#filterPane")
+							 .data("suffix", "." + (filterCount++));  // store custom data on element
+							 
+			// replicate filter drop down template
+			$("div.template.filterChooser")
+			.children()              // get child elements of template. <button> and <select>
+			.clone()                 // clone them
+			.appendTo(filterItem)    // add to new div created to hold filter
+			.trigger("adjustName");  // trigger custom event declared on <select> element
+			                         // <button> is in wrapped set but has no such trigger???
+          }
+		);
+		
+  // establish change handlers
+  $('select.filterChooser') 
+  .live( 'change',
+         function() {
+		   var filterType = $(':selected', this).attr('data-filter-type');
+		   var filterItem = $(this).closest('.filterItem');  // parent filter container
+		   
+		   // remove any old controls
+		   $(".qualifier",filterItem).remove();  // selector only applied to filterItem
+
+           // replicate appropriate template
+           $("div.template." + filterType)
+           .children().clone().addClass("qualifier").appendTo(filterItem).trigger("adjustName");
+
+           // remove obsolete option - 'choose a filter'
+           $('option[value=""]', this).remove();		   
+		 }
+       );
+
+  // use live method to setup filter removal code
+  $("button.filterRemover")
+  .live( "click", function() {
+                    $(this).closest("div.filterItem").remove();
+                  }
+       );	   
+		
+  // use live() method to proactively establish event handlers for DOM elements that don't yet exist
+  $(".filterItem [name]")  // all elements with class filterItem and an attribute of name i.e. select element of template
+  .live("adjustName", function() {
+  
+                        // obtain suffix we recorded on filterItem container
+                        var suffix = $(this)
+						             .closest(".filterItem")  // single nearest ancestor that matches expression.
+									                          // ie parent container. filterItem container.
+									 .data("suffix");
+									 
+						// set names of <select> elements to filter.0, filter.1 etc
+						if (/(\w)+\.(\d)+$/.test($(this).attr('name'))) return;
+                        $(this).attr('name',$(this).attr('name')+suffix);
+                      }
+       );
+  
+  $('#addFilterButton').click();
+	   
+
+ 
+
+});
+</script>
+
+
+</head>
+
+<body>
+
+<div id="pageContent">
+
+  <h1>DVD Ambassador</h1>
+  <h2>Disc Locator</h2>
+  
+  <form id="filtersForm" action="/fetchFilteredResults" method="post">
+    <fieldset id="filtersPane">
+	  <legend>Filters</legend>
+	  
+	  <div id="filterPane"></div>  <!-- container for dynamically generated filters -->
+	  
+	  <div class="buttonBar">
+	    <button type="button" id="addFilterButton">Add Filter</button>
+		<button type="submit" id="applyFilterButton">Apply filters</button>
+	  </div>
+	</fieldset>
+	
+	<!-- Results INSIDE form so results can contain form controls (sorting,paging) -->
+	<div id="resultsPane">
+	  <span class="none">No results displayed</span>
+	</div>
+	
+  </form>
+</div>
+
+<!-- Hidden Templates -->
+<div id="templates">
+
+  <div class="template filterChooser">
+  
+    <button type="button" class="filterRemover" title="Remove this filter">X</button>
+	
+	<select name="filter" class="filterChooser" title="Select a property to filter">	
+	  <option value="" data-filter-type="" selected="selected">-- Choose a filter --</option>
+	  <option value="title" data-filter-type="stringMatch">DVD Title</option>
+	  <option value="category" data-filter-type="stringMatch">Category</option>
+	  <option value="binder" data-filter-type="numberRange">Binder</option>
+	  <option value="release" data-filter-type="dateRange">Release Date</option>
+	  <option value="viewed" data-filter-type="boolean">Viewed?</option>
+	</select>
+	
+  </div>
+  
+  <div class="template stringMatch">
+  
+    <select name="stringMatchType">
+	  <option value="*">Contains</option>
+	  <option value="^">Starts with</option>
+	  <option value="$">Ends with</option>
+      <option value="=">Is exactly</option>	
+	</select>
+	<input type="text" name="term" />
+	
+  </div>
+  
+  <div class="template numberRange">
+    <input type="text" name="numberRange1" class="numeric"> <span>through</span>
+	<input type="text" name="numberRange2" class="numeric">
+  </div>
+  
+  <div class="template dateRange">
+    <input type="date" name="dateRange1" class="dateValue"> <span>through</span>
+	<input type="date" name="dateRange2" class="dateValue">
+  </div>
+  
+  <div class="template boolean">
+    <input type="radio" name="booleanFilter" value="true" checked="checked"> <span>Yes</span>
+	<input type="radio" name="booleanFilter" value="false"> <span>No</span>
+  </div>
+  
+</div>
+
+  
+</body>
+</html>

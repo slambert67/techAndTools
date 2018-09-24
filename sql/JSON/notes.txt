@@ -1,0 +1,6 @@
+my_json_data VARCHAR2(32100) CHECK (my_json_data IS JSON));
+
+select json_dataguide(my_json_data) from demoTab;
+-> Summary
+-> Key information
+etc

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>DOM Level 0 Event Bubbling</title>
+  <meta charset="utf-8"/>
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $("div")
+  .each /* iterate over all div elements */
+  (
+    function() {
+	
+	  var current = this;
+	  /* establish onclick event handler for each element */
+	  /* function is a closure - maintains the value of 'current' for runtime */
+	  
+	  this.onclick = function(event) {
+	  
+	                   var target = (event.target) ? event.target : event.srcElement;
+					   
+					   alert('For ' + current.tagName + '#' + current.id +
+					         ' target is ' +
+							 target.tagName + '#' + target.id
+							 );
+	                 }
+	}
+  )  
+									
+});
+</script>
+
+</head>
+
+<body>
+
+  <!--
+    DOM level 0 events propagate upwards
+	Target gets chance to handle events first
+	Parents then get their chance
+	All elements in hierarchy process event if they have a handler defined
+	Can prevent bubbling with event.stopPropagation()
+  -->
+  
+  <div id="greatgrandpa">
+    <div id="grandpa">
+	  <div id="pa">
+	  
+        <img id="example"
+             src="mp.jpg"
+	         alt="oooh! ahh!" />  <!-- target for click events -->
+	  </div>
+	</div>
+  </div>
+</body>
+</html>

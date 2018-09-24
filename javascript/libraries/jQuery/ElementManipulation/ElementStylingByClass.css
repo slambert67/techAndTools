@@ -1,0 +1,25 @@
+      body,td {
+        font-size: 10pt;
+      }
+      table {
+        background-color: black;
+        border: 1px black solid;
+        border-collapse: collapse;
+        width: 480px;
+      }
+      th {
+        border: 2px ridge maroon;
+        background-color: maroon;
+        color: white;
+        padding: 3px 12px;
+      }
+      tr {
+        background-color: white;
+        margin: 1px;
+      }
+      tr.striped {
+        background-color: gold;
+      }
+      td {
+        padding: 1px 8px;
+      }

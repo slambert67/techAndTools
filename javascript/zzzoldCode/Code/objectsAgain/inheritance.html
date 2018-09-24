@@ -1,0 +1,43 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Inheritance</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+        function Shape( colour ) {
+            this.colour = colour;
+        };
+        
+        var shape1 = new Shape("blue");
+        //console.log(shape1);
+        
+        function Triangle( colour, a, b, c ) {
+            Shape.call(this, colour);
+            this.a = a;
+            this.b = b;
+            this.c = c;
+        };
+        // inheritance
+        Triangle.prototype = Object.create(Shape.prototype);
+        Triangle.prototype.constructor = Triangle;
+
+        var triangle1 = new Triangle("yellow",1,2,3);
+        console.log(triangle1);
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

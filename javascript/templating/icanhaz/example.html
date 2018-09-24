@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <title>ICanHaz Demo</title>
+  <script src="jquery-1.4.js"></script>
+  <script src="ICanHaz.js"></script>
+
+  <!-- client side templates -->
+  <script id="user_template" type="text/html">
+  
+    // define html structure with placeholders for data
+    <li>
+      <p>Hi I&apos;m {{forename}} {{surname}}</p>
+    </li>
+	
+  </script>
+
+<script>
+$(document).ready(function(){
+ 
+  $("button#add_user") 
+  .bind('click', function(event) {
+                   var newUser, user_data;
+				   
+				   user_data = {
+				     forename: 'Steve',   // parameter name 'forename' used in template
+					 surname: 'Lambert'
+				   };
+				   
+				   // populate template instance using ICanHaz
+				   newUser = ich.user_template(user_data);
+				   
+				   // append to unordered list defined in static html
+				   $('ul#user_list').append(newUser);
+                 }
+  );
+});
+</script>
+
+
+
+</head>
+
+<body>
+
+  <h1>ICanHaz Demo</h1>
+  <h3>User List</h3>
+  <button id="add_user">Add User</button>
+  <ul id="user_list"></ul>
+  
+</body>
+</html>

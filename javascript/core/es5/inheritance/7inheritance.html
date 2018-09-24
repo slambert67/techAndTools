@@ -1,0 +1,43 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	
+      function Hero(name, level) {
+        this.name = name;
+        this.level = level;
+      }
+      Hero.prototype.greet = function() {
+        console.log(this.name + " says hello");
+      }
+      
+      // subclass
+      function Warrior(name, level, weapon) {
+        Hero.call(this, name, level); // INHERITANCE SETUP 1: copy across superclass non prototypal properties and methods
+        this.weapon = weapon;
+      }
+      Warrior.prototype = Object.create(Hero.prototype); // INHERITANCE SETUP 2: duplicate superclass prototype 
+      Warrior.prototype.attack = function() {
+        console.log(this.name + " attacks with " + this.weapon);
+      }
+      
+      var hero1 = new Hero("hero1", 1);
+      hero1.greet();
+      
+      var warrior1 = new Warrior("warrior1", 2, "axe");
+      warrior1.attack();
+      warrior1.greet();
+      console.log(warrior1);
+
+      // breakpoint
+      console.log("stop");
+      
+	</script>
+  </body>
+</html>

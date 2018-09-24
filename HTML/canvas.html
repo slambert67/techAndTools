@@ -1,0 +1,41 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Canvas</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+    <!--[if lt IE 9]>
+      <script src="html5shiv.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" href="template.css" />  
+    <script src="jquery.js" ></script>
+    <script src="script.js"></script>
+	
+  </head>
+  
+  <body>
+
+    <canvas id="myCanvas" width="200" height="100" style="border:1px solid #c3c3c3;">
+    Your browser does not support the HTML5 canvas tag.
+    </canvas>
+
+    <script>
+
+      var c=document.getElementById("myCanvas");
+      var ctx=c.getContext("2d");
+      ctx.fillStyle="#FF0000";
+      ctx.fillRect(0,0,150,75);
+
+    </script>
+
+  </body>
+</html>

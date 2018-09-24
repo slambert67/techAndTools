@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>JQuery Event Model</title>
+  <meta charset="utf-8"/>
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $("img#example").bind( "click",
+                         function(event) {
+						   $("p#p1").append("Wow 1");
+						 }
+                       )
+				  .bind( "click",
+                         function(event) {
+						   $("p#p1").append("Wow 2");
+						 }
+                       );
+
+  /* can bind multiple event handlers by use of a map */
+  $("img#example2").bind( { mouseenter : function(event) {
+                                           $("p#p2").append("Michelle");
+                                         },
+							mouseleave : function(event) {
+							               $("p#p2").append("Pfeiffer");
+							             }
+                          } 
+						);
+
+  /* can bind event handlers using shortcut methods */
+  $("img#example3").mouseenter( function(event) {
+                                  $("p#p3").append("Michelle");
+                                } 
+							  )
+				   .mouseleave( function(event) {
+                                  $("p#p3").append("Pfeiffer");
+                                } 
+							  )
+});
+</script>
+
+</head>
+
+<body>
+
+  <!--
+    Provides unified method for establishing event handlers
+	Allows multiple handlers for each event type on each element
+	Uses standard event type names
+	Makes Event instance available as parameter to handlers
+	Normalises Event instance for most often used properties
+	Provides unified methods for event canceling and default action blocking
+	No DOM Level 2 capture phase
+  -->
+
+  <img id="example"
+       src="mp.jpg"
+	   alt="oooh! ahh!" />
+	   
+  <p id="p1"></p>
+ 
+  <img id="example2"
+       src="mp.jpg"
+	   alt="oooh! ahh!" />
+	   
+  <p id="p2"></p> 
+
+  <img id="example3"
+       src="mp.jpg"
+	   alt="oooh! ahh!" />
+	   
+  <p id="p3"></p>
+</body>
+</html>

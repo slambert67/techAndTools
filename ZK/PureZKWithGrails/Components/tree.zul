@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window apply="zk137.TreeComposer">
+
+	    <!-- 3 main parts : setof columns, set of footers, treebody -->
+        <tree id="maintree">
+		
+		    <!-- column section -->
+		    <treecols>
+			    <treecol label="Forename" />
+				<treecol label="Surname" />
+				<treecol label="Age" />
+			</treecols>
+			
+			<!-- 
+			    main body section 
+				treechildren defines main body of tree and main body of treeitem
+		    -->
+			<treechildren>
+			
+			    <treeitem id="mum">
+				    <treerow>
+					    <treecell label="Mum" />
+						<treecell label="Lambert" />
+						<treecell label="71" />
+					</treerow>
+				</treeitem>
+				
+			    <treeitem id="steve" open="false">
+				    <treerow>
+					    <treecell label="Steve" />
+						<treecell label="Lambert" />
+						<treecell label="46" />
+					</treerow>
+					
+					<!-- allows expansion of treeitem -->
+					<treechildren>
+					    <treeitem label="Oldest" />
+					</treechildren>
+					
+				</treeitem>
+			    <treeitem>
+				    <treerow>
+					    <treecell label="Julie" />
+						<treecell label="Lambert" />
+						<treecell label="43" />
+					</treerow>
+				</treeitem>
+			    <treeitem>
+				    <treerow>
+					    <treecell label="Andy" />
+						<treecell label="Lambert" />
+						<treecell label="41" />
+					</treerow>
+				</treeitem>
+			</treechildren>
+			
+			<!-- footer section -->
+			<treefoot>
+		        <treefooter label="treefooter" />
+		    </treefoot>
+			
+		</tree>
+		
+		<button id="btn" label="Set selection" />
+    </window>
+
+</zk>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>Unbind Events</title>
+  <meta charset="utf-8"/>
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  /* can bind multiple event handlers by use of a map */
+  $("button#b1").bind( "click",
+                       function(event) {
+					     $("img#example").bind( "click.mynamespace",
+						                        function(event) {
+												  alert("Michelle Pfeiffer");
+												}
+						                      );
+					   }
+                     );
+   
+  /* can use namespace to unbind handlers */
+  $("button#b2").bind( "click",
+                       function (event) {
+					     $("img#example").unbind(".mynamespace");
+					   }
+                 );
+
+});
+</script>
+
+</head>
+
+<body>
+
+  <!--
+    Establish handlers with a namespace suffix to allow unbinding
+  -->
+
+  <img id="example"
+       src="mp.jpg"
+	   alt="oooh! ahh!" />
+	   
+  <p id="p1"></p>
+ 
+  <button id="b1">Add handler</button>
+  <button id="b2">Remove handler</button>
+  
+</body>
+</html>

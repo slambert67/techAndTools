@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery-1.4.js"></script>
+  <script type="text/javascript" src="myjs.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $('p').map( function() {
+	alert(this.id)
+	return this.id
+  })  // wrapped set now contains ids and not HTML objects
+  
+});
+</script>
+
+</head>
+
+<body>
+
+  <p id="p0"></p>
+  <p id="p1"></p>
+  <p id="p2"></p>
+  <p id="p3"></p>
+  
+  
+</body>
+</html>

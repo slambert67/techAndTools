@@ -1,0 +1,13 @@
+body {background-color: blue;}
+
+div#left {background-color: yellow;
+        float: left;  /* floating left so takes no space in normal flow */
+		width: 10%;
+}
+
+div#middle {background-color: red;
+          float: left;
+		  width: 50%;
+}
+
+div#right {background-color: pink;}

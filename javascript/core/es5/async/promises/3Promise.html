@@ -1,0 +1,56 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+   
+    (function() {
+      // invoke node server. E:\myStuff\technologies\node\code\firstJSONServer\load_albums
+      
+      // promisifying XMLHttpRequest
+      function get(url) {
+      
+        return new Promise( function(resolve, reject) {
+        
+          // do the usual XHR stuff
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', url, true);
+          
+          xhr.onload = function() {
+            if (this.status == 200) {
+              // Resolve the promise with the response text
+              resolve(xhr.response);
+            } else {
+              // otherwise reject with status text
+              reject( Error(xhr.statusText) );
+            }
+          }
+          
+          // handle network errors
+          xhr.onerror = function() {
+            reject( Error("Network Error") );
+          }
+          
+          // make the request
+          xhr.send();
+        });
+      }
+      
+      get( 'http://localhost:8080' )
+      .then( function(fulfilled) {
+        console.log(fulfilled);  
+      })
+      .catch( function(error) {
+        console.log(error.message);
+      })
+      
+    })();
+
+	</script>
+  </body>
+</html>

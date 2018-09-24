@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>My Async</title>
+</head>
+<body>
+    <!--
+    Serve this from grails server to avoid Cross Origin Resource Sharing problems
+    See MyRestApp
+    -->
+    <h4>hello world</h4>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+        var steve;
+        var julie;
+        var andy;
+        var all = "";
+
+        /*
+        $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "http://localhost:8080/MyRESTApp/users/1",
+            cache: false,
+            success: function(data) {
+                all = all + data.forename;
+                console.log("success1 start, all = ", all);
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    url: "http://localhost:8080/MyRESTApp/users/2",
+                    cache: false,
+                    success: function(data) {
+                        all = all + data.forename;
+                        console.log("success2 start, all = ", all);
+                        $.ajax({
+                            type: "GET",
+                            dataType: "json",
+                            url: "http://localhost:8080/MyRESTApp/users/3",
+                            cache: false,
+                            success: function(data) {
+                                all = all + data.forename;
+                                console.log("success3, all = ", all);
+                            },
+                            error: function() {
+                                console.log("error");
+                            }
+                        });
+                        console.log("success2 end, all = ", all);
+                    },
+                    error: function() {
+                        console.log("error");
+                    }
+                });
+                console.log("success1 end, all = ", all);
+            },
+            error: function() {
+                console.log("error");
+            }
+        });
+
+        console.log("end of prog = ", all);
+        */
+
+        /**
+         * And now with promises
+         * $.ajax actually synchronously returns a promise
+         * Any asynchronous API can utilize promises
+         * A promise may be in 1 of 3 states:
+         * - unfulfilled
+         * - fulfilled - once set cannot be changed
+         * - failed    - once set cannot be changed
+         */
+
+        var myPromise = $.ajax({
+            type: "GET",
+            dataType: "json",
+            url: "http://localhost:8080/MyRESTApp/users/3",
+            cache: false,
+        });
+        /**
+         * Newly created promise is in unfulfilled state
+         * Once response is successfully retrieved, the promise is set to fulfilled and the 'done' callback is invoked
+         * If error occurred, promise is set to failed and the 'fail' callback is invoked
+         */
+        myPromise.done( function(data){
+            console.log("fulfilled promise data = ", data);
+        });
+        myPromise.fail( function() {
+            console.log("promise failed");
+        });
+
+        /**
+         * advantage 1 : multiple success/error callbacks can be defined
+         */
+        myPromise.done( function(data){
+            console.log("fulfilled promise callback 2");
+        });
+        myPromise.fail( function() {
+            console.log("promise failed callback 2");
+        });
+
+        /**
+         * advantage 2 : done and fail can be registered aven after AJAX call has completed
+         * - may happen if cached data retrieved synchronously
+         * ie. promise may be fulfilled before callbacks registered
+         */
+
+        /**
+         * advantage 3: possible to delay a callback until multiple promises have completed
+         * ie. check for done or fail
+         *
+         * $.when(promise1,promise2).done( function(){...})
+         */
+
+        /**
+         * Use $.ajax to POST data
+         */
+        var myPromise2 = $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "http://localhost:8080/MyRESTApp/users",
+            data: JSON.stringify({"forename":"kathleen", "surname":"lambert"})
+        });
+        myPromise2.done( function(data){
+            console.log("Successful Post");
+        });
+        myPromise2.fail( function() {
+            console.log("Post failed");
+        });
+    </script>
+</body>
+</html>

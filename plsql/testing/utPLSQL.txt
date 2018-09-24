@@ -1,0 +1,10 @@
+Install utPLSQL
+---------------
+download on unix
+curl -LOk $(curl --silent https://api.github.com/repos/utPLSQL/utPLSQL/releases/latest | awk '/browser_download_url/ { print $2 }' | grep ".zip" | sed 's/"//g') 
+gives utPLSQL.zip
+unzip -q utPLSQL.zip -> utPLSQL
+
+create utPLSQL schema: @create_utPLSQL_owner.sql ut3 ut3 users (schema,pwd(s instead of 5 in prefix),tablespace)
+install utPLSQL: @install.sql ut3
+@create_synonyms_and_grants_for_public.sql

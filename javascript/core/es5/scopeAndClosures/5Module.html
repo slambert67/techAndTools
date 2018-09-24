@@ -1,0 +1,44 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	  
+      /**
+      Pattern known as revealing module
+      CoolModule must be invoked to create instance
+      */
+      function CoolModule() {     
+        var something = "cool";
+        var another = [1,2,3];
+        
+        // has closure over scope of CoolModule instance
+        function doSomething() {
+          console.log("something");
+        }
+        
+        // has closure over scope of CoolModule instance
+        function doAnother() {
+          console.log(another.join(" ! "));
+        }
+        
+        // public API
+        return {
+          doSomething: doSomething,
+          doAnother: doAnother
+        }
+      }
+
+      var foo = CoolModule();
+
+      foo.doSomething();  // cool
+      foo.doAnother();    // 1 ! 2 ! 3      
+                  
+	</script>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+
+    (function() {
+      /**
+      rule 2 - implicit binding
+      does the call-site have a context object (owning or containing object)
+      foo2 declared and then added as a reference property onto obj
+      */ 
+      console.log("rule 2 - implicit binding");
+      function foo() {
+        console.log(this.a);
+      }
+      
+      var obj = {
+        a:2,
+        foo:foo
+      };
+      // obj context used to reference function. Therefore 'this' = obj at invokation
+      // only last in property chain is relevant: obja.objb.objc.foo(). 'this' = objc
+      a = "oops, global1";
+      obj.foo();  // 2
+    })();
+
+      
+    (function() {
+      /**
+      rule 2 - implicit binding lost - function reference
+      falls back on default binding - global or undefined(strict)
+      */
+      console.log("rule 2 - implicit binding lost - function reference");
+      function foo() {
+        console.log(this.a);
+      }
+      
+      var obj = {
+        a:2,
+        foo: foo
+      }
+      
+      // bar appears to be reference to obj.foo. Actually it's just a reference to foo
+      var bar = obj.foo;  
+      a = "oops, global2";
+      bar();  // oops global
+    })();  
+
+      
+    (function() {
+      /**
+      rule 2 - implicit binding lost - callback1
+      */
+      console.log("rule 2 - implicit binding lost - callback");      
+      function foo() {
+        console.log(this.a);
+      }
+      
+      function doFoo(fn) {
+        // fn is just another reference to foo
+        // parameter passing is just an implicit assignment
+        fn();  // <- call-site
+      }
+      
+      var obj = {
+        a:2,
+        foo: foo
+      }
+      
+      a = "oops, global3";
+      doFoo(obj.foo);  // oops global
+    })();
+
+      
+    (function() {
+      /**
+      rule 2 - implicit binding lost - callback2
+      */ 
+      console.log("rule 2 - implicit binding lost - callback2"); 
+      function foo() {
+	    console.log( this.a );
+      }
+
+      var obj = {
+	    a: 2,
+	    foo: foo
+      };
+
+      a = "oops, global4"; // `a` also property on global object
+      setTimeout( obj.foo, 100 ); // "oops, global"
+    })();
+     
+	</script>
+  </body>
+</html>

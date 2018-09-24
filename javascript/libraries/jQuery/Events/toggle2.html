@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>jQuery .toggle() Example</title>
+    <script src="h:/MyTechnologies/jQuery/jquery-1.4.js"></script>
+    <script>
+      $(function(){
+
+        $('button#b1').toggle(
+            function() {
+              alert("Hello from handler 1");
+            },
+            function() {
+              alert("Hello from handler 2");
+            },
+            function() {
+              alert("Hello from handler 3");
+            }
+        );
+
+      });
+    </script>
+    <style type="text/css">
+      img {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <button id="b1">Click to cycle through handlers</button>
+
+  </body>
+</html>

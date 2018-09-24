@@ -1,0 +1,9 @@
+:1,$s^v^m//g
+:1,$s/$/,/
+
+ip a -> ip info
+
+TNS Listener
+============
+lsnrctl status | start | stop
+

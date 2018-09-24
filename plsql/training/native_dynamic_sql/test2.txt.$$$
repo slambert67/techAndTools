@@ -1,0 +1,19 @@
+declare
+
+  sql_stmt varchar2(1000);
+  app_special_cond_type app_special_cond_types%rowtype;
+
+begin
+
+  sql_stmt := 'select *
+               from   app_special_cond_types asct
+               where  rownum = 1';
+
+  execute immediate sql_stmt
+  into app_special_cond_type;
+
+  dbms_output.put_line(app_special_cond_type.code || app_special_cond_type.category);
+  
+
+end;
+

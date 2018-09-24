@@ -1,0 +1,61 @@
+Lets add the data binding to employeeList Page.
+First add the domain collection variable to the EmployeeListComposer, then initialize this collection with the BindingListModelList inside afterCompose.
+{code}
+package emsapp
+
+import org.zkoss.zkgrails.*
+import org.zkoss.zkplus.databind.BindingListModelList
+
+class EmployeeListComposer extends GrailsComposer {
+
+    def employees
+    def afterCompose = { window ->
+        employees = new BindingListModelList(Employee.list(),true)
+    }
+}
+{code}
+
+Upgrade the employeeList.zul file to add the annotation bindings.
+{code}
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./employeeListPanel" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <panel id="employeeListPanel" title="Employee List" apply="emsapp.employeeListComposer">
+        <panelchildren>
+            <listbox id="employeeListbox" model="@{employeeListPanel$composer.employees}">
+                <listhead>
+                    <listheader label="ID"/>
+                    <listheader label="First Name"/>
+                    <listheader label="Last Name"/>
+                    <listheader label="DOB"/>
+                    <listheader label="Gender"/>
+                    <listheader label="Active"/>
+                    <listheader label="Salary"/>
+                </listhead>
+                
+                <listitem self="@{each=employee}" value="@{employee}">
+                    <listcell label="@{employee.id}"/>
+                    <listcell label="@{employee.firstName}"/>
+                    <listcell label="@{employee.LastName}"/>
+                    <listcell label="@{employee.dob}"/>
+                    <listcell label="@{employee.gender}"/>
+                    <listcell label="@{employee.active}"/>
+                    <listcell label="@{employee.salary}"/>
+                </listitem>
+            </listbox>
+        </panelchildren>
+    </panel>
+</zk>
+{code}
+
+Now open the Add Employee page [http://localhost:8080/emsapp/employeeMaint.zul |http://localhost:8080/emsapp/employeeMaint.zul] and add few employee's to the system.
+Then open the Employee List page [http://localhost:8080/emsapp/employeeList.zul |http://localhost:8080/emsapp/employeeList.zul] and see the newly added employees getting listed.
+
+!image9.png!
+
+

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF8">
+        <title>Copy Object</title>
+    </head>
+
+    <body>
+        <script>
+            var myConstructor = function() {
+                this.a = 1;
+                this.func = function() {
+                    return 666;
+                };
+                this.intobj = {x:25, y:26};
+            }
+
+            myConstructor.prototype.inheritfunc = function() {
+                return "Inherited";
+            }
+
+            var myObj = new myConstructor();
+            var myObj2 = Object.assign({}, myObj);
+            //console.log("myObj.a = " + myObj.a);
+            //console.log("myOb2.a = " + myObj2.a);
+            myObj2.a = 5;
+            //console.log("myObj.a = " + myObj.a);
+           // console.log("myOb2.a = " + myObj2.a);
+
+            console.log("myobj.func:myobj2.func = " + myObj.func() + ":" + myObj2.func());   
+            myObj.func = function(){return 999;};
+            myObj.intobj.x = -1;
+            console.log("myobj.func:myobj2.func = " + myObj.func() + ":" + myObj2.func());  
+
+            //console.log(myObj.inheritfunc() + ":" + myObj2.inheritfunc()); fails
+
+            var myObj3 = Object.create(myObj);
+            myObj3 = Object.assign(myObj3,myObj);
+            console.log(myObj.inheritfunc() + ":" + myObj3.inheritfunc());
+
+
+            console.log("break");
+
+        </script>
+    </body>
+</html>
+
+
+

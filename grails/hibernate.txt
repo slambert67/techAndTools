@@ -1,0 +1,2 @@
+define classes as domains in eg
+banner_student_catalog/grails-app/conf/hibernate/hibernate/hibernate-banner-general-utility.cfg.xml 

@@ -1,0 +1,69 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Inherit from instance</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+	  // Car constructor
+	  function Car() {
+	    this.speed = 0;
+		this.accelerate = Accelerate;
+		this.decelerate = Decelerate;
+		this.getSpeed = function() { return this.speed; };  // anonymous function
+		this.purchased = false;
+		return;
+		
+		// private functions
+		function Accelerate() {
+		  this.speed++;
+		}
+		function Decelerate() {
+		  this.speed--;
+		}
+	  }
+	  
+	  // Ford constructor
+	  function Ford() {
+	    this.make = "Ford";
+	  }
+	  Ford.prototype = new Car();  // set prototype to new INSTANCE of Car class
+	  
+	  // create instances
+	  var myFirstCar = new Car();
+	  var mySecondCar = new Car();
+	  var myFirstFord = new Ford();
+	  var mySecondFord = new Ford();
+	  
+
+	  myFirstCar.accelerate();
+	  mySecondCar.accelerate(); mySecondCar.accelerate();
+	  myFirstFord.accelerate(); myFirstFord.accelerate(); myFirstFord.accelerate();
+	  mySecondFord.accelerate(); mySecondFord.accelerate(); mySecondFord.accelerate(); mySecondFord.accelerate();
+	  
+	  document.write("myFirstCar:");
+	  document.write( myFirstCar.getSpeed() + "<BR>")  // 1
+	  document.write("mySecondCar:");
+	  document.write( mySecondCar.getSpeed() + "<BR>") // 2
+	  document.write("myFirstFord:");
+	  document.write( myFirstFord.getSpeed() + "<BR>") // 3	
+	  document.write("mySecondFord:");	  
+	  document.write( mySecondFord.getSpeed() + "<BR>")  // 4	  	  
+	  
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

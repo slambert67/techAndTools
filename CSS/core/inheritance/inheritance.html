@@ -1,0 +1,38 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Inheritance</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+    <link rel="stylesheet" href="inheritance.css" />  
+
+  </head>
+  
+  <body>
+
+      <!--
+      Some properties are inherited while some are not - usually common sense
+      3 universal property values:
+      - inherit : This value sets the property value applied to a selected element to be the same as that of its parent element.
+      - initial : This value sets the property value applied to a selected element to be the same as the value set for that element 
+        in the browser's default style sheet. If no value is set by the browser's default style sheet and the property is naturally 
+        inherited, then the property value is set to inherit instead.
+      - unset : This value resets the property to its natural value, which means that if the property is naturally inherited it acts 
+        like inherit, otherwise it acts like initial.
+      -->
+      <ul>
+        <li>Default <a href="#">link</a> color</li>
+        <li class="inherit">Inherit the <a href="#">link</a> color</li>
+        <li class="initial">Reset the <a href="#">link</a> color</li>
+        <li class="unset">Unset the <a href="#">link</a> color</li>
+      </ul>
+  </body>
+</html>

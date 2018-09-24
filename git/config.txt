@@ -1,0 +1,87 @@
+GitLab: SSH key in man-filesrv-4\users\.ssh
+                                  id_rsa:      private key
+                                  id_rsa.pub:  public key
+                                  known_hosts: ?
+
+Retrieve the locations (and name value pairs) of all git configuration files:
+git config --list --show-origin
+
+C:\\ProgramData/Git/config
+--------------------------
+[core]
+	symlinks = false
+	autocrlf = true
+	fscache = true
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = true
+[help]
+	format = html
+[rebase]
+	autosquash = true
+
+C:/Program Files/Git/mingw64/etc/gitconfig - SYSTEM config - specific to machine
+------------------------------------------
+[http]
+	sslCAInfo = C:/Program Files/Git/mingw64/ssl/certs/ca-bundle.crt
+	sslBackend = openssl
+[diff "astextplain"]
+	textconv = astextplain
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[credential]
+	helper = manager
+
+U://.gitconfig - GLOBAL config - specific to user
+[user]
+	name = Steve Lambert
+	email = steve.lambert@ultra-as.com
+
+.git/config - LOCAL config
+-----------
+File in local repo
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = git@man-cisrv-1.ultra-as.net:aims-projects/bsaos.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[gui]
+	wmstate = normal
+	geometry = 893x435+156+156 175 196
+
+other
+=====
+U://.config/git/gitk
+
+git config --list --system --show-origin
+Retrieve the location (and name value pairs) of the system git configuration file:
+contents of C:/Program Files/Git/mingw64/etc/gitconfig
+
+
+git config --list --local
+.git/config contents
+
+git config --list --system
+C:/Program Files/Git/mingw64/etc/gitconfig contents
+
+git config --list --global
+U://.gitconfig contents
+
+ssh config
+==========
+
+
+

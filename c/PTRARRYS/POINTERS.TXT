@@ -1,0 +1,266 @@
+Pointers and arrays - Storage and parameter passing
+===================================================
+
+When dealing with arrays, it may help to think about the task of the
+compiler.  Given:
+
+type array[ num ];
+
+'array' is a reference to the beginning of the block of memory allocated
+for the array.  The amount of memory needed to store the array is num * 
+sizeof( type ).  The compiler figures out how to index through the array by
+multiplying the subscript times the sizeof the type and adding the result 
+to a pointer to the base of the block.  Thus, for:
+
+float fAry[10];
+
+fAry can be thought of as a float* that points to the beginning of the 
+block allocated to the array.  We find the first element (subscript 0), by
+calculating (subscript * sizeof( type ) + base)  =  (0 * sizeof( float ) + 
+fAry).  Obvioulsy, the first element is at the base.  The second element is 
+four bytes in from the base at (fAry + 4 * sizeof(float)).  And so on.
+
+So, the key for the compiler to be able to generate proper indexing through 
+the array, is that the compiler know the size of the type contained in the 
+array.  If the type is float, then element 0 is at base, and element 1 is 
+at base+4.  If the type is a structure of 50 bytes, then element 1 would be 
+at base+50.
+
+For a two-dimensional array, the block of memory is contiguous and the 
+left-most index is the major increment.  The array ary[5][10] can be looked 
+at as an array containing 5 units of ary[10].  The elements ary[0][0] 
+through ary[0][9] are contiguous, and the next element is ary[1][0].  Here, 
+to increment through the ten elements of ary[0][0] thruough ary[0][9], the 
+compiler must again know the size of the type contained in the array.  But 
+to increment to the beginning of the second set of ten elements, the 
+compiler must know both the size of the type and the size of the minor 
+increment.  For int ary[i][j], the beginning of ary[i] is at ary + i * (max 
+j) * sizeof( type ), which would be ary + i * 10 * 2. So the second
+element would start at 20 bytes offset from the base of the block.
+
+At a simple level, there is no real difference between char* cPtr and 
+char[] cAry.  Both labels cPtr and cAry are references to the beginning of 
+a block of memory allocated to store elements of type char.  However, there
+are some distinct differences in the way memory is allocated for them.  Let 
+us consider the following declarations being made as local (automatic) 
+variables:
+
+char *ptr1;
+char *ptr2 = "method 1";
+char ptr3[9] = "method 2";
+char ptr4[] = "method 3";
+
+The size of a pointer, sizeof( void* ), is either 2 or 4 bytes depending on 
+the memory model.  We will assume the large memory model, where pointers 
+are 4 bytes.
+
+In the first case, 4 bytes are allocated on the stack for ptr1.  However, 
+no memory has been allocated to which ptr1 might refer, and the value of 
+ptr1 is undefined.  ptr1 is called an uninitialized pointer.
+
+In the second case, 4 bytes are allocated for ptr2 on the stack, and 9 
+bytes are allocated in the data segment.  The bytes in the data segment are
+initialized with the string literal "method 1" (allowing one for the null
+terminator), and ptr2 is initialized to point to the 9 bytes in the data 
+segment.
+
+In the third case, when the function is called, 9 bytes are allocated on 
+the stack, and those 9 bytes are initialized with the values of the 
+characters in the string literal "method 2".  Where do the bytes come from?  
+The string literal has been stored in the data segment.  When your function 
+is called, the space is allocated on the stack and the string literal is 
+copied into those bytes.  Using this method, process time is lost to copy 
+the bytes, and during the execution of your function, the string actually 
+exists in two places, the original copy in the data segment, and the local 
+copy on the stack.
+
+The fourth case works just like the third, except the compiler figures out 
+for you the length of the literal.
+
+When declared as global variables, there are some distinct differences.  
+ptr1 is still an uninitialized pointer, but the 4 bytes allocated to hold 
+the pointer are now in the data segment instead of on the stack.  The 4 
+bytes for ptr2 are also in the data segment; so now we have a 4-byte 
+pointer in the data segment that point to a 9-byte block, also in the data 
+segment, which holds the string literal "method 2".  For ptr3 and ptr4,
+space is never allocated on the stack, there is only one copy ever of the 
+literal, and using the variables ptr3 or ptr4 is the same as manipulating a 
+pointer to the string.
+
+When declared as local variables, the most efficient is the method used for 
+ptr1.  Declared as global variables, the most efficient are ptr3 and ptr4.
+
+Now let's look at passing these arrays to functions.  int* iptr points to 
+an integer.  If I pass iptr to a function, then that function can use iptr 
+to access and modify the value pointed to by iptr.  But, the function only 
+gets a copy of iptr, so if the function modifies its copy of the pointer, 
+the calling function will neither know nor be affected.  This is important 
+when passing an uninitialized pointer to a function that will allocate 
+memory and initialize the pointer to point to that block of memory.  Since 
+this requires the pointer itself to be modified, we must tell the function 
+where the pointer is, or pass a pointer to the pointer.
+
+There is a subtlety here with respect to arrays.  If I declare a function:
+
+void foo( int fooAry[10] );
+
+then it would seem that 2 * 10 = 20 bytes are going to be passed on the 
+stack.  However, in the case of arrays, what actually gets passed is a 
+pointer to the array - just sizeof( void* ) bytes.  Also, since the 
+function actually receives a pointer to the array, and not a local copy, if 
+function foo modifies the array, then the calling routine could end up with 
+corrupted data.  So, the following call to function foo could result in 
+mainAry being modified in foo!
+
+main() {
+   int mainAry[10];
+   foo( mainAry );
+}
+
+Although they are similar, the same rule does not hold for structs.  A 
+struct is passed by value, so passing a struct of 50 bytes will allocate 50 
+bytes on the stack.
+
+Is the following example correct and will the array iAry be modified?
+
+void foo( int* iptr ) {
+   iptr[2] = 5;
+}
+
+main() {
+   int iAry[10];
+   foo( iAry );
+}
+
+Yes.  Since the compiler knows the type, it knows how to index through the 
+array in function foo.  Howver, we must ensure that we don't try to make it 
+index beyond the tenth element because this is all the memory that has been 
+allocated.
+
+The following shows how to pass a two-dimensional array:
+
+void foo1( float ary[5][10] ) {}
+void foo2( float ary[][10] ) {}
+
+main() {
+   float fAry[10][10];
+   foo1( fAry );
+   foo2( fAry );
+}
+
+Notice that foo1 and foo2 both accomplish the same thing.  The compiler 
+does not need to know the value of the major (left-most) dimension.  
+However, could we declare this?
+
+void foo3( float **ary ) {}
+
+No.  How would the compiler know how to index into the array?  It's easy 
+enough to figure out where ary[0][0] through ary[0][9] are; but, how does 
+the compiler know where ary[1][0] is?  It must know the extent of the 
+second dimension.  However, the above function definition is correct.  
+Only, ary is a pointer to a pointer to type float, which is more commonly 
+viewed as an array of pointers to type float.  So, ary[0] is of type 
+float*, a pointer to one float, or an array of floats.  Allocating the 
+array of pointers, which are 4 bytes each, to each point to a single float, 
+also 4 bytes, would not be efficient.  If we used it as a reference to an 
+array of floats, then it might be useful; but, we would either have to make 
+arrays refered to by each of the pointers in the array the same 
+predetermined length, or have some means of finding the end of each of 
+those arrays.  The usefulness of such a data structure is not readily 
+apparent for floats, but for arrays of type char (or strings), it makes 
+more sense.
+
+I can implement two-dimensional arrays of type char in the same fashion and 
+treat them as an array of strings.  However, strings are often of different 
+lengths.  Consider an array of 10 strings where the longest string is 10 
+characters.  A two-dimensional array would be:
+
+#define maxLen 11
+#define maxItems 10
+char myString[maxItems][maxLen];
+
+The overall size of the array myStrings is 10 * 11 * sizeof( char ) = 110
+bytes.  If the strings are not all 10 characters long, there will be wasted 
+space.  Of course, this may not be significant.  But, there is another way 
+of accomplishing this.  Consider the following:
+
+char *myStrings1[maxItems];
+char *myStrings2[];
+char **myStrings3;
+
+The first is an a array of 10 pointers to type char.  Each of the 10 
+pointers in the array are uninitialized, and must be initialized using some 
+form of dynamic memory allocation such as calls to malloc.
+
+myStrings2 is a pointer to an array of pointers.  But, no memory has been 
+allocated to hold that array.  So to use it, we must first allocate space 
+to hold the array.  Then we can initailize the elements of the array, each 
+of them a pointer to type char, by a separate allocation and initialization 
+for each of them.  myStrings3, a pointer to a pointer to type char, works 
+the same as myStrings2.  Just as int *iptr can be looked at as an array of
+integers, so can char **myStrings3 be viewed as a pointer to a pointer to
+type char, or, an array of pointers to type char.  Thus to use it we must 
+first allocate space to hold the array:
+
+myStrings = ( char** ) malloc( nItems * sizeof( char * ) );
+
+Lets say that nItems = 10 and we are still using the large memory model.  
+The amount of allocated space is 10 * 4 = 40 bytes, which is just enough to 
+hold ten char pointers.  Now we must allocate space for each of the 
+strings, and initialize the corresponding pointer in the array to reference 
+that allocated block of memory.  In our example, we will do this in a loop:
+
+for( i=0; i<nItems; i++)
+    myStrings[i] = ( char* ) malloc( maxLen + 1 );
+
+Why is this possibly better than just declaring myStrings[nItems][maxLen]?  
+One reason is that it moves the structure into the far heap (in our memory 
+model) where there is more memory than in the data segment or on the stack.  
+Another is that using this technique, we can create a two-dimensional array 
+(an array of strings or a multiple dimensional array of any type) that is 
+effectively >64K.  As long as neither the block that holds my array of 
+pointers nor any of the blocks allocated for each of those pointers
+exceeds 64K, I can successfully access data that is in a structure format 
+which totals well over a segment, or even several segments.  Another is 
+that I don't have to allocate the same amount of space for each of the 
+strings.  By definition, a string is terminated with a null ('\0').  Since 
+we have a convenient method of finding the end of the array (unlike the 
+example for floats), this is easy to use for strings.
+
+So, now lets say we want to pass this array of strings to a function.  In 
+the first case, we only want to use the strings to display them.
+
+void Show( char **strings )
+{
+   puts( string[1] );
+}
+
+The above will display the second string in my array of strings.  This 
+method of passing the strings will also allow us to modify the contents of 
+each of the strings, or even initialize each of the pointers in the array, 
+since it is actually passed a pointer which refers to the base of the array 
+that holds the pointers to each of the strings.  Now suppose I want to 
+initialize the pointer to the actual array.  In my main function, I have 
+merely declared char **myStrings, and I want to allocate space for the 
+array of pointers and for each of the items to which those pointers will 
+point, all in a function.  We might do that like this.
+
+#include <stdio.h>
+#include <string.h>
+#include <alloc.h>
+
+void foo( char ***ary, int nItems, int maxLen ) {
+    int i;
+    *ary = ( char** ) malloc( nItems * sizeof( char* ) );
+    for( i=0; i<nItems; i++ )
+        (*ary)[i] = ( char* ) malloc( maxLen + 1 ); /* sizeof( char ) = 1 */
+    strcpy( (*ary)[0], "The wonderful world of pointers!" );
+}
+
+void main() {
+   char **myStrings;
+   foo( &myStrings, 5, 40 );
+   puts( myStrings[0] );
+}
+
+See also sample programs arrays1.c through arrays5.c for further information.

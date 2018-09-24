@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery.js"></script>
+  <script src="underscore.js"></script>
+  <script src="backbone.js"></script>
+
+<script>
+$(document).ready(function(){
+
+var TodoView = Backbone.View.extend({
+
+/*
+Users interact with Views, which usually means reading and editing Model data. 
+For example, in our Todo application, Todo Model viewing happens in the user interface in the list of all Todo items. 
+Within it, each Todo is rendered with its title and completed checkbox. 
+Model editing is done through an "edit" View where a user who has selected a specific Todo edits its title in a form.
+
+We define a render() utility within our View which is responsible for rendering the contents of the Model using a 
+JavaScript templating engine (provided by Underscore.js) and updating the contents of our View, referenced by this.el.
+
+We then add our render() callback as a Model subscriber, so the View can be triggered to update when the Model changes.
+
+You may wonder where user interaction comes into play here. 
+When users click on a Todo element within the View, it's not the View's responsibility to know what to do next. 
+A Controller makes this decision. In Backbone, this is achieved by adding an event listener to the Todo's element 
+which delegates handling of the click to an event handler.
+
+Views in Backbone don't contain the HTML markup for your application; 
+they contain the logic behind the presentation of the model's data to the user.
+ This is usually achieved using JavaScript templating (e.g., Underscore Microtemplates, Mustache, jQuery-tmpl, etc.). 
+ A view's render() method can be bound to a model's change() event, 
+ enabling the view to instantly reflect model changes without requiring a full page refresh.
+ 
+A view generally has an associated model and listens for changes in that model,  re-rendering the DOM objects when a change occurs. 
+The view subscribes to events on the model and calls the views render method to update the DOM objects based on the new data. 
+Generally this is done via a client side template mapping the Model’s attributes into HTML.
+*/
+
+  //tagName: 'li',  // new element for view created by the framework. Can also use id and className
+                  // reference will be available to it at the el property
+				  // if nothing specified then tagName defaults to div
+
+  // The "el" property represents the markup portion of the view that will be rendered; 
+  // to get the view to actually render to the page, you need to add it as a new element 
+  // or append it to an existing element.
+  
+  // optional function that defines the logic for rendering a template. What's a template???
+  render: function() {
+            var html = '<h1>' + 'hello' + '</h1>';
+			$(this.el).html(html);
+			return this;
+          }  
+});
+
+var todoView = new TodoView();
+
+// log reference to a DOM element that corresponds to the view instance
+console.log('before rendering:');
+console.log('before: ' + todoView.el.innerHTML); 
+
+// render view
+todoView.render();  // populates view el element
+console.log('after rendering:');
+console.log('after: ' + todoView.el.innerHTML); 
+$('div#d1').html( $(todoView.el) );
+
+});
+</script>
+
+</head>
+
+<body>
+
+  <div id="d1"></div>
+
+  
+</body>
+</html>

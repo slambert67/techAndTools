@@ -1,0 +1,61 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Object</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+      // simplest way to create new javascript object
+	  // object instantiation does not need a class definition
+	  // this object is therefore not of a particular type - it is just an object
+	  // objects are just associative arrays / hash maps
+	  var obj1 = {};
+	  console.log("obj1 is ", typeof obj1);
+	  
+	  // add properties
+	  obj1.firstName = "Steve";
+	  obj1.lastName = "Lambert"
+	  obj1.age = 48;
+	  
+	  // add function/method
+	  obj1.increaseAge = function() {
+	      this.age++;
+		  // 'this' refers to the object itself
+		  // can take on different meanings depending on context
+	  };
+	  console.log("obj1:",obj1);
+	  
+	  // access properties
+	  console.log("first name =", obj1.firstName);  // access using dot notation
+	                                                // will not work if:
+													// - property starts with a number
+													// - property contains special characters
+													// - property is a reserved word
+	  console.log("last name =", obj1['lastName']); // access using key into associative array
+	  
+	  // use methods
+	  obj1.increaseAge();
+	  console.log("One year older:", obj1.age);
+	  
+	  // not using classes has the drawback that creating new objects of same 'type' is problematic
+	  // not much of a problem with properties as they will likely need specifying for each object anyway
+	  // duplicating methods for each object is unrealistic
+	  // see prototypes
+	  
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+
+Messaging
+---------
+Same origin policy
+Origin : scheme(protocol) + host(www.mycompany.com) + port
+
+workaround using proxy. (slower). Proxy can communicate with different servers
+Messaging better
+- server sent events (unidirectional)
+  - push from server to browser in form of DOM events
+  - Javascript API called eventSource
+- web sockets (bi directional) - more complicated
+- cross document messaging
+  - Message event has 2 important properties
+    - data that contains message
+	- origin of message
+	
+XMLHttpRequest (XHR) Level 2
+- main Javascript API to do Ajax
+
+
+
+
+
+
+
+
+
+

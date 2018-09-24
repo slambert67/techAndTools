@@ -1,0 +1,18 @@
+declare
+
+  type my_first_collection_type is table of varchar2(10);
+
+  my_varchars my_first_collection_type := my_first_collection_type('a','b','c');
+
+  i binary_integer := 1;
+
+begin
+
+  while my_varchars.exists(i)
+  loop
+
+    dbms_output.put_line(my_varchars(i));
+
+  end loop;
+
+end;

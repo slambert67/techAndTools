@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?> 
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?> 
+<?page zscriptLanguage="GroovyGrails"?> 
+
+<zk xmlns="http://www.zkoss.org/2005/zul" 
+xmlns:h="http://www.w3.org/1999/xhtml" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsichemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd"> 
+
+<window id="mywin" title="Hello world" apply="zktraining.nameComposer" border="normal"> 
+
+  <button id="mybutton" label="A" /> 
+  
+  <listbox id="mylistbox" model="@{mywin$composer.listNames}" onSelect="delete.setDisabled(false)" mold="paging" pageSize="20"> 
+  
+    <listhead> <listheader label="First"/> <listheader label="Last"/> </listhead> 
+	
+    <listitem self="@{each=name}" value="@{name}"> 
+      <listcell > <textbox value="@{name.firstName}" /> </listcell> 
+      <listcell > <textbox value="@{name.lastName}" /> </listcell> 
+	</listitem> 
+	  
+  </listbox> 
+  
+  <button id="mybutton2" label="Add new entry" /> 
+  <button id="save" label="Save" /> 
+  <button id="delete" label="Delete" /> 
+</window>  
+</zk>
+

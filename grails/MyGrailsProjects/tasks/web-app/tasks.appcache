@@ -1,0 +1,13 @@
+CACHE MANIFEST
+tasks.html
+static/js/jquery.js
+static/js/jquery.validate.js
+static/js/jquery-serialization.js
+static/js/jquery-tmpl.js
+static/js/tasks-controller.js
+static/js/tasks-webstorage.js
+
+FALLBACK:
+
+NETWORK:
+*

@@ -1,0 +1,71 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	
+      for (var i=1; i<=5; i++) {
+        setTimeout( function timer() {
+          console.log(i);
+        }, i*1000);
+      }
+      /**
+      message log:
+      - 5 x 6
+      - each iteration of loop captures SAME copy of i
+      - each function closed over the SAME scope
+      */      
+      
+      
+      // need a new closured scope for each iteration of loop
+      for (var i=1; i<=5; i++) {
+        (function() {
+          setTimeout( function timer() {
+            console.log(i);
+          }, i*1000);
+        })();
+      }
+      /**
+      message log:
+      - 5 x 6 ?
+      - not enough to just have new empty scope
+      - new scope needs it's own variable
+      */    
+  
+
+      // need a new closured scope for each iteration of loop
+      // new scope needs it's own variables
+      for (var i=1; i<=5; i++) {
+        (function() {
+          var j=i;
+          setTimeout( function timer() {
+            console.log(j);
+          }, j*1000);
+        })();
+      } 
+      /**
+      message log:
+      - 1, 2, 3, 4, 5
+      */   
+
+
+      // leveraging new block scoping with 'let'      
+      for (let i=1; i<=5; i++) {
+        setTimeout( function timer() {
+          console.log(i);
+        }, i*1000);
+      }
+      /**
+      message log:
+      - 1, 2, 3, 4, 5
+      - 'let' redeclares i for each loop iteration!
+      - each function instance now closes over this block scope
+      */  
+      </script>
+  </body>
+</html>

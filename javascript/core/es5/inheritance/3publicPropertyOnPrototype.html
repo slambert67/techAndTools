@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Constructor</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	
+      var MyConstructor1 = function() {              
+      }
+      // public prototypal property
+      MyConstructor1.prototype.prop1 = "abc";
+      
+      var obj1 = new MyConstructor1(); 
+      var obj2 = new MyConstructor1();      
+
+      /**
+      Note: 
+      - public prototypal property is not directly connected to instance 
+      - available via prototypal inheritance
+      - property now not duplicated across all instances
+      - NB. Assignment leads to local override - not a new value on prototypal property
+      */
+      obj1.prop1="def";
+      obj2.prop1="ghi";
+      
+      console.log("obj1: prototype val=" + Object.getPrototypeOf(obj1).prop1 + " overridden val=" + obj1.prop1);
+      console.log("obj2: prototype val=" + Object.getPrototypeOf(obj2).prop1 + " overridden val=" + obj2.prop1);      
+      
+      // breakpoint
+      console.log("stop");
+        
+	</script>
+  </body>
+</html>

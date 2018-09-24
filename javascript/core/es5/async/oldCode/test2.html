@@ -1,0 +1,52 @@
+
+
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Async</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+(function(){
+   
+    var gForename="";
+    var gFullName=""
+    
+    // sequentially add to event queue
+    var getForename = function() {     
+        setTimeout(function(){
+          gForename = "Steve";
+        },0);
+    };
+    
+    var getFullName = function() {
+        getForename();
+        setTimeout(function(){
+          gFullName = gForename + " Lambert";
+          console.log("full name = " + gFullName);
+        },0);        
+    };
+    
+    getFullName();
+    console.log("invoked get full name");
+    
+}());
+
+        
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

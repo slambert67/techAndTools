@@ -1,0 +1,29 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>String</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">    
+    
+    console.log("String methods - see MDN for more");
+    (function() {
+        var foo = "abcde";
+        console.log("charAt(3) = " + foo.charAt(3));
+        console.log("concat gives: " + foo.concat("fgh"));
+        console.log("includes bcd -> " + foo.includes("bcd"));
+        console.log("indexof d = " + foo.indexOf("d"));
+        var foo2 = "the,quick,brown,fox";
+        console.log("foo2 split(,) ->");
+        console.log(foo2.split(','));
+        var foo3 = "abcdef";
+        console.log("foo3 split(\"\") ->");
+        console.log(foo3.split(""));
+    })();
+     
+	</script>
+  </body>
+</html>

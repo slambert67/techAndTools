@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery-1.4.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $('#d1').html( $('div > p').html() + ' selected' )
+  
+});
+</script>
+
+</head>
+
+<body>
+
+  <p>not child of div</p>
+  
+  <div>
+    <p>child of div</p>
+  </div>
+
+  <div id="d1"></div> 
+  
+</body>
+</html>

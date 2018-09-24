@@ -1,0 +1,61 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Cascade</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+    <link rel="stylesheet" href="cascade.css" />  
+	
+    <!--
+    Which selector wins out depends on 3 factors - listed in order of weight
+    - Importance
+    - Specificity
+    - Source order
+    -->
+  </head>
+  
+  <body>
+
+    <h2>Importance</h2>
+    <!--
+    Conflicting declarations will be applied in the following order, with later ones overriding earlier ones in importance:
+    - Declarations in user agent style sheets (e.g. the browser's default styles, used when no other styling is set).
+    - Normal declarations in user style sheets (custom styles set by a user).
+    - Normal declarations in author style sheets (these are the styles set by us, the web developers).
+    - Important declarations in author style sheets
+    - Important declarations in user style sheets
+    -->
+    <p class="better">This is a paragraph</p>
+    <p class="better" id="winning">One selector to rule them all</p>
+    
+    <h2>Specificity</h2>
+    <!--
+    The amount of specificity a selector has is measured using four different values (or components), 
+    which can be thought of as thousands, hundreds, tens and ones — four single digits in four columns:
+
+    - Thousands: Score one in this column if  the declaration is inside a style attribute (such declarations don't have selectors, so their specificity is always simply 1000.) Otherwise 0.
+    - Hundreds: Score one in this column for each ID selector contained inside the overall selector.
+    - Tens: Score one in this column for each class selector, attribute selector, or pseudo-class contained inside the overall selector.
+    - Ones: Score one in this column for each element selector or pseudo-element contained inside the overall selector.    
+    -->
+    <div id="outer" class="container">
+      <div id="inner" class="container">
+        <ul>
+          <li class="nav"><a href="#">One</a></li>
+          <li class="nav"><a href="#">Two</a></li>
+        </ul>
+      </div>   
+    </div>
+    
+    <h2>Source Order</h2>
+    <h3>heading 3</h3>
+  </body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+
+    /**
+    JS engine 
+    - runs inside a hosting environment eg browser
+    - is single threaded - 1 chunk of code at a time
+    
+    Hosting environment
+    - have method of executing chunks of JS over time ie event scheduling
+    - known as Event Loop. cf an array that acts as a queue - FIFO
+    - each event in Event Loop/queue is a callback function
+    - other events not associated with program can be interleaved
+    
+    
+    */
+    
+    (function() {
+    
+      function now() {
+        return 21;
+      }
+      
+      function later() {
+        answer = answer * 2;
+        console.log("Meaning of Life: ", answer);
+      }
+      
+      // now invoked and executed immediately
+      var answer = now();
+      
+      /**
+      setTimeout sets up an event (timeout) to happen later.
+      creating a later chunk of code and therefore introducing asynchrony
+      NB
+      setTimeout doesn't put callback on event queue
+      sets up a timer and on expiration the environment places callback on event queue
+      */
+      setTimeout(later, 1000);
+      
+      // executes before 'later' functionality
+      console.log("Not meaning of Life: ", answer);  // 21, 1 sec delay, 42      
+    })();
+     
+    (function() {
+      /** 
+      Run to completion
+      - foo cannot be interrupted by bar
+      - bar cannot be interrupted by foo
+      - cannot assume order of execution of foo and bar therefore nondeterminism! (Race conditions)
+      - But, nondeterminism at function level as opposed to statement level (like multi threading)
+      - 2 processes can be running concurrently (in parallel)
+        - events created by these processes can be interleaved on event queue
+        - so processes are concurrent but individual events execute sequentially
+        - Interaction of processes:
+          - NO: Nondeterminism is acceptable
+          - YES: 
+            - interaction possibly through scope or DOM
+            - interactions need coordinating to prevent race conditions
+      */
+      var a=1;
+      var b=2;
+
+      function foo() {
+        a++;
+        b = b*a;
+        a = b+3;        
+      }      
+      
+      function bar() {
+        b--;
+        a = 8+b;
+        b = a*2;
+      }
+      
+      function results() {
+        console.log("a:b = " + a + ":" + b);
+      }
+      
+      setTimeout(foo, 2000);
+      setTimeout(bar, 1000);
+      setTimeout(results, 3000);      
+
+    })();
+	</script>
+  </body>
+</html>

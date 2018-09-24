@@ -1,0 +1,39 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template Head</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	  
+	  function convertToCentigrade( pFahrenheit ) {
+	  
+	    var centigrade;
+		
+		centigrade = (5/9) * (pFahrenheit - 32);
+		
+		return centigrade;
+	  }
+	  
+	  var myFahrenheit = prompt("Enter Fahrenheit");
+	  var myCentigrade = convertToCentigrade( myFahrenheit );
+	  
+	  alert(myFahrenheit + " degrees fahrenheit = " + myCentigrade + " degrees centigrade");
+	  
+	</script>
+	
+  </head>
+  
+  <body>
+    <p>Template Body</p>
+  </body>
+</html>

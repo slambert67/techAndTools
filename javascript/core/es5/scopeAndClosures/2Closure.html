@@ -1,0 +1,31 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	
+      /**
+      Closure is when a function is able to remember and access its lexical scope even when that function is executing outside its lexical scope
+      */
+     
+      function foo() {
+        var a=2;
+        
+        // bar has a closure over the scope of foo - plus the rest of scope chain
+        function bar() {
+          console.log("a=" + a);
+        }
+        return bar;  // able to access 'a' as declared in foo
+      }
+      
+      var baz = foo();
+      baz(); // closure in action
+      
+	</script>
+  </body>
+</html>

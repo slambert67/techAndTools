@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>JQuery Event Model</title>
+  <meta charset="utf-8"/>
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $("img#example").bind( "click",
+                         function(event) {
+						   $("p#p1").append("Wow");
+						 }
+                       );
+
+  $("button#b1").bind( "click",
+                       function(event) {
+					     $("img").trigger("click");
+					   }
+                     );
+
+  $("button#b2").bind( "click",
+                       function(event) {
+					     $("img").triggerHandler("click");
+					   }
+                     );					 
+});
+</script>
+
+</head>
+
+<body>
+
+  <img id="example"
+       src="mp.jpg"
+	   alt="oooh! ahh!" />
+	   
+  <p id="p1"></p>
+  
+  <button id="b1">Trigger Image Click Event</button>
+  <button id="b2">Trigger Image Click Event Without Bubbling</button>
+ 
+
+</body>
+</html>

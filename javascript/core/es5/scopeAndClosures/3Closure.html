@@ -1,0 +1,34 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	
+      function wait(message) {
+    
+        setTimeout( function timer() {
+          console.log(message);
+        }, 1000);
+      }
+    
+      console.log("before invokation of wait");
+      wait("hello closure");
+      console.log("after invokation of wait");
+      
+      /**
+      message log:
+      - before invokation of wait
+      - after invokation of wait
+      - hello closure
+        - demonstrates that function timer has a closure over function wait
+          and therefore access to it's lexical scope
+      */
+      
+	</script>
+  </body>
+</html>

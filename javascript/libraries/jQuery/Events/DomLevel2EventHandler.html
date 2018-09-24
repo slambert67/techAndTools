@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>DOM Level 2 Events Example</title>
+  <meta charset="utf-8"/>
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  var DOMElement = $("img#example")[0];
+  
+  /* all DOM elements have addEventListener method */
+  /* add 2 DOM Level 2 event listeners */
+  /* Listeners may fire in a random order! */
+  DOMElement.addEventListener( "click",  /* DOM Level 2 event types don't have prefix 'on' */
+                            function(event) {
+							  $("p#p1").html("Wow 1");
+							},
+							false
+  );
+  DOMElement.addEventListener( "click",  /* DOM Level 2 event types don't have prefix 'on' */
+                            function(event) {
+							  $("p#p1").append("Wow 2");
+							},
+							false
+  );
+									
+});
+</script>
+
+</head>
+
+<body>
+
+  <!--
+    DOM level 2 not supported by IE so rarely used !?
+    DOM level 2 events first propagate from DOM root down to target - capture phase
+	DOM level 2 events also then propagate up from target to DOM root - bubble phase
+	All elements in hierarchy process event if they have a handler defined
+	Event handler is flagged to fire in 1 of the 2 phases by setting parameter 3 (useCapture) of addEventListener
+	- capture handler : useCapture = true
+	- bubble handler  : useCapture = false
+  -->
+  
+
+  <img id="example"
+       src="mp.jpg" />
+	   
+  <p id="p1"></p>
+  
+</body>
+</html>

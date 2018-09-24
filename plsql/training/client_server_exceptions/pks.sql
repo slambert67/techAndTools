@@ -1,0 +1,9 @@
+PROMPT Creating Package 'SL_PACKAGE'
+CREATE OR REPLACE PACKAGE SL_PACKAGE IS
+
+  -- Sub-Program Unit Declarations
+
+  PROCEDURE PROC1;
+
+END SL_PACKAGE;
+/

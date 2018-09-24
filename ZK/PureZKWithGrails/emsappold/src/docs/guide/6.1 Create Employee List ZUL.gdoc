@@ -1,0 +1,48 @@
+Create the EmployeeList zul using the create-zul target
+{code}
+grails create-zul EmployeeList
+{code}
+The above command would create employeeList.zul under web-app directory and EmployeeListComposer.groovy under composer directory.
+Edit the generate employeeList.zul with the below content to add the Listbox and Panel component
+{code}
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <panel title="Employee List" apply="emsapp.employeeListComposer">
+        <panelchildren>
+            <listbox>
+                <listhead>
+                    <listheader label="ID"/>
+                    <listheader label="First Name"/>
+                    <listheader label="Last Name"/>
+                    <listheader label="DOB"/>
+                    <listheader label="Gender"/>
+                    <listheader label="Active"/>
+                    <listheader label="Salary"/>
+                </listhead>
+                <listitem>
+                    <listcell label=""/>
+                    <listcell label=""/>
+                    <listcell label=""/>
+                    <listcell label=""/>
+                    <listcell label=""/>
+                    <listcell label=""/>
+                    <listcell label=""/>
+                </listitem>
+            </listbox>
+        </panelchildren>
+    </panel>
+</zk>
+{code}
+{note}
+Run the EMS application and open the Employee List page [http://localhost:8080/emsapp/employeeList.zul |http://localhost:8080/emsapp/employeeList.zul] 
+{note}
+
+!image8.png!
+
+

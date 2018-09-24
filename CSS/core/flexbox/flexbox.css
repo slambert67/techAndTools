@@ -1,0 +1,38 @@
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 200px;
+    background-color: dodgerblue;
+}
+
+.flex-container2 {
+    display: flex;
+    flex-direction: row;
+    height: 200px;
+    background-color: yellow;
+}
+
+.flex-container > div, .dead-center > div {
+    background-color: lightgrey;
+    font-size: 30px;
+    padding: 20px;
+    margin: 10px;
+}
+
+.flex-container2 > div {
+    background-color: lightgrey;
+    font-size: 30px;
+    padding: 20px;
+    margin: 10px;
+}
+
+.dead-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    background-color: darkcyan;
+}

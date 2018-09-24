@@ -1,0 +1,11 @@
+Let's install ZK grails plugin which contains all the ZK components and the zk framework. Run the following command inside the emsapp directory.
+{code}
+grails install-plugin zk 1.0.6
+{code}
+By installing this plugin, 5 more new grails commands gets installed.
+* grails create-comet
+* grails create-composer
+* grails create-facade
+* grails create-zul
+* grails install-zk-xml
+

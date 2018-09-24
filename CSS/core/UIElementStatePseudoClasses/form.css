@@ -1,0 +1,26 @@
+/* styling with pseudo classes */
+/*
+  UI element state pseudo classes are toggled (checked/unchecked) and applied when state is active
+*/
+
+/* :disabled pseudo class */
+input:disabled {background: yellow}
+
+/* :checked pseudo class */
+input[type="checkbox"]:checked + label {background: yellow}  /* + ??? */
+
+/* :enabled pseudo class */
+input[type="text"]:enabled, input[type="password"]:enabled {
+  border:1px solid #75aadb;}
+  
+/* :link pseudo class */
+a:link {background-color: green}
+
+/* :hover pseudo class */
+a:hover {background-color: red}
+
+/* :visited pseudo class */
+/*a:visited {background-color: pink}*/
+
+
+}

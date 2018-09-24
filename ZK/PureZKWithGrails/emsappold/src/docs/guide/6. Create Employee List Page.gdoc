@@ -1,0 +1,7 @@
+We need a page to display all the Employees. Lets create a ZUL page to display that.
+
+h4. Goals
+* Create employeelist zul page
+* Create EmployeeListComposer
+* Integrate Employee List with Main page
+

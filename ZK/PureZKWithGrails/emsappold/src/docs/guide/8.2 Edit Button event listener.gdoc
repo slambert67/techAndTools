@@ -1,0 +1,27 @@
+Add an onClick event listener to the edit button. 
+Add the below method to EmployeeListComposer
+{code}
+    void onClick_edit(Event event) {
+        def selEmployee = employeeListbox.selectedItem?.value
+        execution.setAttribute("empid",selEmployee.id)
+        Events.postEvent(new Event("onLoadPage",event.target.root, "./employeeMaint.zul"))
+    }
+{code}
+
+Now we need to upgrade the EmployeeMaintComposer to open the page in edit mode.
+For that we will use the Execution attribute set in the EmployeeList page to fetch the employee data.
+Lets upgrade the afterComposer method of EmployeeMaintComposer with this
+{code}
+def afterCompose = { window ->
+	if(execution.hasAttribute("empid")) {
+	    employee = Employee.get(execution.getAttribute("empid"))
+	}else {
+	    employee = new Employee()
+	    employee.active = false
+	}
+}
+{code}
+
+The Edit functionality is completed. Try it out by selecting an employee from the list and click edit.
+Then make some changes and press Save. That should update the List page with the updated data.
+

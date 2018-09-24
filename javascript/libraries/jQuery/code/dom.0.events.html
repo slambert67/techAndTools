@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DOM Level 0 Events Example</title>
+    <script type="text/javascript" src="jquery-1.4.js"></script>
+    <script type="text/javascript" src="jqia2.support.js"></script>
+    <script type="text/javascript">
+      $(function(){
+        $('#example')[0].onmouseover = function(event) {
+          say('Crackle!');
+        };
+      });
+    </script>
+  </head>
+
+  <body>
+    <img id="example" src="example.jpg" onclick="say('BOOM!');" alt="ooooh! ahhhh!"/>
+  </body>
+</html>

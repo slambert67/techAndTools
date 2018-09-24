@@ -1,0 +1,20 @@
+PROMPT Creating Package Body 'SL_PACKAGE'
+CREATE OR REPLACE PACKAGE BODY SL_PACKAGE IS
+
+  PROCEDURE wait_for_alert
+  IS
+
+    status INTEGER;
+    msg    VARCHAR2(1800);
+
+  BEGIN
+
+    dbms_output.put_line('Waiting for the alert');
+    dbms_alert.register('testalert');
+    dbms_alert.waitone('testalert', msg ,status);
+    dbms_output.put_line('message: ' || msg || '  status : ' || status);
+
+  END;
+
+END SL_PACKAGE;
+/

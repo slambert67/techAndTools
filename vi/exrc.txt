@@ -1,0 +1,4 @@
+# save .exrc in $HOME
+set showmode
+set nu
+set ic

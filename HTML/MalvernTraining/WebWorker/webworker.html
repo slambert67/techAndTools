@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+  <title>Web Workers</title>
+  <meta charset="utf-8"/>
+  
+  <script>
+
+  function stopWorker() {
+    worker.terminate();
+  }
+  
+  function messageHandler(e) {
+    console.log(e.data);
+  }
+  
+  function errorHandler(e) {
+    console.log(e.message,e);
+  }
+  
+  function loadDemo() {
+  
+    if (typeof(Worker) !== "undefined") {
+	  document.getElementById("support").innerHTML = "Your browser supports web workers";
+	  
+	  worker = new Worker("echoWorker.js");  // task to be performed in separate thread. Free up UI thread
+	                                         // no access to web page or DOM
+	  worker.addEventListener("message", messageHandler, true);  // listen for messages from worker
+	  worker.addEventListener("error", errorHandler, true);      // listen for errors from worker
+	  
+	  document.getElementById("helloButton").onclick = function() {
+	    console.log("button clicked");
+	    worker.postMessage("Here is a message for you");  // post message to worker
+		
+	  }
+	  
+	  document.getElementById("stopButton").onclick = stopWorker;
+	}
+  }
+  
+  window.addEventListener("load", loadDemo, true);
+	
+  </script>	
+ 
+<body>
+   <div id="container">
+    <header>
+    <h1>Web Worker</h1>
+ </header>
+ <p id="support">Browser does not support Web workers.</p>
+ </br>
+ <button id="stopButton">Stop Task</button>
+ <button id="helloButton">Post message to worker</button>
+   </div>
+</body>
+
+</html>

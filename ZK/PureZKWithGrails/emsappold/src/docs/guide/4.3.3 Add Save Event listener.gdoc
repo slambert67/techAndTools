@@ -1,0 +1,19 @@
+Now its time to add the Event listener for Save button which should persist the Employee data.
+Add the below method to the EmployeeMaintComposer.groovy
+{code}
+void onClick_save(Event event) {
+	employee.save(failOnError: true, flush:true)
+        Messagebox.show("Save Successfull..")
+}
+{code}
+Add these import statements to EmployeeMaintComposer.groovy
+{code}
+import org.zkoss.zul.Messagebox
+import org.zkoss.zk.ui.event.Events
+{code}
+{note}
+Run the EMS application and see the Employee Maint page [http://localhost:8080/emsapp/employeeMaint.zul |http://localhost:8080/emsapp/employeeMaint.zul] 
+Fill the employee information and press Save.
+{note}
+
+!image6.png!

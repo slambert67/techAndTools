@@ -1,0 +1,48 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Execution Context</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+	  var testString = "this string is defined in the global code";
+	  var string1 = "a global string";
+	  
+	  document.write("<P>Testing Global Execution Context<BR>");
+	  document.write("- The this value is ");
+	  if ( this != window ) {
+	    document.write("NOT ");
+	  }
+	  document.write("the window object in global code <\/P>");
+	  
+	  function testScope() {
+	  
+	    document.write("<P>Testing Function Execution Context<BR>");
+		
+		var string1 = "a private string";
+		
+		document.write("- The this value is ");
+	    if ( this != window ) {
+	      document.write("NOT ");
+	    }
+		document.write("the window object in function code <BR>");
+	  }
+	  testScope();
+	  
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

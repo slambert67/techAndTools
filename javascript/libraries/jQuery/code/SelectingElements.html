@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery-1.4.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $('#d1')
+    .html('There are ' + $('p').size() + ' paragraphs on this page');
+
+  $('#d2')
+    .html('Selecting by id, p2 text =  ' + $('#p2').html() );  /* $('#p2') returns Object */
+
+  $('#d3')
+    .html('Selecting by index, p2 text =  ' + $('p')[2].innerHTML ); /* $('p') returns Object
+	                                                       $('p')[0] returns HTMLParagraphElement - .html() does not work with this 
+														   so single element returned but not part of wrapped set ??? */	
+														   
+  $('#d4')
+    .html('Selecting by eq, p2 text =  ' + $('p').eq(2).html() ); /* returns single element but within wrapped set ??? */
+	
+  $('#d5')
+    .html('Selecting by first, p0 text =  ' + $('p').first().html() ); /* first element returned as part of wrapped set */
+
+  $('#d6')
+    .html('Selecting by last, p2 text =  ' + $('p').last().html() ); /* last element returned as part of wrapped set */	
+	
+  $('#d7')
+    .html('elements in incrementally created wrapped set = ' + $('#p0').add('#p1').size() );
+});
+</script>
+
+</head>
+
+<body>
+
+  <p id="p0">p0</p>
+  <p id="p1">p1</p>
+  <p id="p2">p2</p>
+  
+  <div id="d1"></div>
+  <div id="d2"></div>
+  <div id="d3"></div>
+  <div id="d4"></div>
+  <div id="d5"></div>
+  <div id="d6"></div>
+  <div id="d7"></div>
+
+
+  
+</body>
+</html>

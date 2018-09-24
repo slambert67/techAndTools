@@ -1,0 +1,5 @@
+/* children structural pseudo classes */
+
+div#introduction p:first-child {font-weight: bold;}
+
+div#introduction p:last-child {font-weight: bold;}

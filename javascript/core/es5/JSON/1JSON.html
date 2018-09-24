@@ -1,0 +1,44 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template Head</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+	    // JSON is plain text
+		// hierarchical - values within values
+		// can be fetched with HttpRequest
+		// can be parsed by standard Javascript function
+		// name:value pairs. value can be number, string, boolean, array, object, null
+		// separated by commas
+		// {} hold objects
+		// [] hold arrays
+		
+	    var text = '{"name":"John Johnson","street":"Oslo West 16","phone":"555 1234567"}';
+		var obj = JSON.parse(text); // convert text to JSON object
+		console.log(obj.name + ':' + obj.street + ':' + obj.phone);
+		
+		var employees = [
+            {"firstName":"John", "lastName":"Doe"}, 
+            {"firstName":"Anna", "lastName":"Smith"}, 
+            {"firstName":"Peter", "lastName": "Jones"}
+        ];
+		// arrays accessed by index
+		console.log("first employee = " + employees[0].firstName + " " + employees[0].lastName);
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

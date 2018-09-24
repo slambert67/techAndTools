@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- help for scren readers -->
+
+    <head>
+        <meta charset="UTF8">
+        
+        <meta name="description" content="flexbox">
+        <meta name="keywords" content="flexbox">
+        <meta name="author" content="Steve Lambert">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>flexbox</title>
+        <link rel="stylesheet" href="flexbox.css" />
+    </head>
+
+    <!--
+        Flex container
+        ==============
+        display
+            flex:           makes container flexible
+        flex-direction:     defines in which direction container stacks flex items
+            row:                items stacked as a row
+            column:             items stacked as a column    
+        flex-wrap:          specifies wether flex items should wrap or not
+            wrap:               items wrap
+            nowrap:             items do not wrap
+        flex-flow:          shorthand for flex-direction and flex-wrap
+        justify-content:    used to align flex items
+            flex-start:     items positioned at beginning of container
+            flex-end:       items positioned at end of container
+            center:         items positioned in center
+            space-between:  items positioned with space between lines
+            space-around:   items positioned with space before, between and after lines    
+        align-items:        used to align flex items vertically
+            center:         align centrally in a vertical direction
+            flex-start:     align at top of flex container
+            flex-end:       align at bottom of flex container
+        align-content:      used to align flex lines eg. multiple lines due to wrap
+             center:        align centrally in a vertical direction 
+             flex-start:    align at top of flex container 
+             flex-end:      align at bottom of flex container
+
+        Child items
+        ===========
+        order:          define order of flex items
+        flex-grow:      defines how an item grows relative to others      
+        flex-shrink:    defines how an item shrinks relative to others
+        flex-basis:     specifies initial length of flex item
+        flex:           shorthand for flex-grow, flex-shrink, flex-basis
+        align-self:     specifies alignment for item within container
+                        NB. overrides container's align-items property
+    -->
+    <body>
+
+        <div class="flex-container">
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+        </div>
+
+        <div class="dead-center">
+            <div>4</div>
+        </div>
+
+        <div class="flex-container2">
+            <div>5</div>
+            <div>6</div>
+            <div>7</div>
+            <div>8</div>
+        </div>
+    </body>
+</html>
+
+
+

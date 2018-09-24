@@ -1,0 +1,54 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Prototypes</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+        // all objects have a prototype
+		// end of chain is Object.prototype
+		
+		var obj1 = {};
+		console.log("tostring of empty object", obj1.toString());  // toString on Object.prototype
+		
+		// we can override toString on this object/instance
+		obj1.toString = function() {
+		    return "I am an object";
+		}
+	    console.log("overriden tostring of object", obj1.toString());  // toString on obj1
+		
+		// arrays have a different immediate prototype - Array.prototype
+		var a1 = [1,2,3,4,5];
+		console.log("array toString",a1.toString());   // toString on Array.prototype
+		console.log("array reversed",a1.reverse());  // reverse on Array.prototype
+		
+		// can modify prototype to make new methods available to all instances 
+		// eg. new 'contains' function
+		Array.prototype.contains = function(val) {
+		    for (var i=0; i<this.length; i++) {
+			    if (this[i] === val) {
+				    return true;
+				}
+			}
+			return false;
+		}
+		console.log("array contains value 3",a1.contains(3));
+		console.log("array does not contain value 6",a1.contains(6));
+		
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

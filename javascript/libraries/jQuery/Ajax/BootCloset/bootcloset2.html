@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" type="text/css" href="core.css">
+  <link rel="stylesheet" type="text/css" href="bootcloset.css">
+  <link rel="icon" type="image/gif" href="favicon.gif">
+  <script src="jquery-1.4.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  // load sets innerHTML
+  $("#bootChooserControl").load('fetchBootStyleOptions.php');
+  
+  // establish change handler
+  $("#bootChooserControl")
+  .change( function(event) {
+             // Initiates GET. Not implemented as JQuery method acting on wrapped set
+             $.get( 'fetchProductDetails.php',
+			        {style: $(event.target).val()},
+					function(response) {
+					  $("#productDetailPane").html(response);
+					  $('[value=""]', event.target).remove();				  
+					}
+			      );
+           }
+		 );
+});
+</script>
+
+</head>
+
+<body>
+
+  <div id="banner">
+    <img src="banner.boot.closet.png" alt="The Boot Closet" />
+  </div>
+
+  <div id="pageContent">
+    <h1>Choose your boots</h1>
+	<div>
+	  <div id="selectionsPane">
+	    <label for="bootChooserControl">Boot Style:</label>&nbsp;
+		<select id="bootChooserControl" name="bootStyle"></select>
+	  </div>
+	  <div id="productDetailPane"></div>
+	</div>
+  </div>
+  
+</body>
+</html>

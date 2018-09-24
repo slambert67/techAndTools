@@ -1,0 +1,23 @@
+Model
+=====
+- single instance
+- validation
+- allows persistence to database
+- multiple views may observe it for changes
+- view informed when model updated - screen view kept in sync with model
+- model doesn't care about view. Just announces it has changed through framework event system
+
+Collection
+==========
+- groups models together
+- individual model identified by idAttribute. Defaults to id but could be userId etc
+- collection announces change
+- therefore don't need to manually observe individual model instances
+
+View
+====
+- view generally has an associated model and listens for changes in that model and then re-rendering
+- can define ui events
+
+
+

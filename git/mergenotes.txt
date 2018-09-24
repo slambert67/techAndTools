@@ -1,0 +1,177 @@
+b4 ff merge
+===========
+master
+------
+* f16737a mf3
+* e9daa2e mf2
+* 5c079d3 mf1
+
+branch
+------
+  * 751ca9c bf3
+  * 68fda57 bf2
+  * e8182a5 bf1
+* f16737a mf3
+* e9daa2e mf2
+* 5c079d3 mf1
+
+after git merge mybranch
+========================
+master
+------
+* 751ca9c bf3
+* 68fda57 bf2
+* e8182a5 bf1
+* f16737a mf3
+* e9daa2e mf2
+* 5c079d3 mf1
+NB. No new merge commit created
+
+after git merge mybranch --no-ff
+================================
+master
+------
+* 9fbb4d1 Merge branch 'mybranch'
+* 751ca9c bf3
+* 68fda57 bf2
+* e8182a5 bf1
+* f16737a mf3
+* e9daa2e mf2
+* 5c079d3 mf1
+NB. New commit created for merge
+
+CONCLUSION : no new commit for fast forward merge unless --no-ff
+
+b4 2 way merge
+==============
+master
+------
+* 50d2abf mf4
+* 8cfb8f3 mf3
+* ebcc521 mf2
+* b75358c mf1
+
+branch
+------
+* 79236a4 bf3
+* 7ddcf7b bf2
+* 960c2a6 bf1
+* b75358c mf1
+
+after git merge mybranch
+========================
+master
+------
+cabd48d Merge branch 'mybranch'
+50d2abf mf4
+79236a4 bf3
+8cfb8f3 mf3
+7ddcf7b bf2
+ebcc521 mf2
+960c2a6 bf1
+b75358c mf1
+
+Interleaving may be a function of timestamping of commits?
+
+mybranch
+--------
+79236a4 bf3
+7ddcf7b bf2
+960c2a6 bf1
+b75358c mf1
+
+CONCLUSION : 2 way merge only creates 1 commit - the merging of the 2 endpoints
+
+merge master back to branch
+===========================
+after git merge master
+branch
+------
+cabd48d Merge branch 'mybranch'
+50d2abf mf4
+79236a4 bf3
+8cfb8f3 mf3
+7ddcf7b bf2
+ebcc521 mf2
+960c2a6 bf1
+b75358c mf1
+
+CONCLUSION : No new commit. Master and branch now at same commit point
+
+Another merge
+=============
+master
+------
+6b8f149 mf3
+c0b5740 mf2
+67a4396 mf1
+
+branch
+------
+2fd43cf bf3
+44aa9a4 bf2
+369a158 bf1
+67a4396 mf1
+
+merge master to branch
+master
+------
+6b8f149 mf3
+c0b5740 mf2
+67a4396 mf1
+
+branch
+------
+5db1c12 Merge branch 'master' into mybranch
+2fd43cf bf3
+6b8f149 mf3
+44aa9a4 bf2
+c0b5740 mf2
+369a158 bf1
+67a4396 mf1
+
+add to master
+master
+------
+68a0066 mf5
+3cd8311 mf4
+6b8f149 mf3
+c0b5740 mf2
+67a4396 mf1
+
+branch
+------
+5db1c12 Merge branch 'master' into mybranch
+2fd43cf bf3
+6b8f149 mf3
+44aa9a4 bf2
+c0b5740 mf2
+369a158 bf1
+67a4396 mf1
+
+merge branch back to master
+master
+------
+9022aca Merge branch 'mybranch' [contains mf[1-5] and bf[1-3]]
+68a0066 mf5
+3cd8311 mf4
+5db1c12 Merge branch 'master' into mybranch
+2fd43cf bf3
+6b8f149 mf3
+44aa9a4 bf2
+c0b5740 mf2
+369a158 bf1
+67a4396 mf1
+
+branch
+------
+5db1c12 Merge branch 'master' into mybranch
+2fd43cf bf3
+6b8f149 mf3
+44aa9a4 bf2
+c0b5740 mf2
+369a158 bf1
+67a4396 mf1
+
+
+

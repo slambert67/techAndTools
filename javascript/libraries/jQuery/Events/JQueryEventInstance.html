@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>JQuery Event Model</title>
+  <meta charset="utf-8"/>
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $("img#example").bind( "click",
+                         function(event) {
+						   alert('currentTarget id = ' + event.currentTarget.id);
+						   alert('x,y = ' + event.pageX + ',' + event.pageY);
+						   alert('shift key pressed? : ' + event.shiftKey);
+						   alert('event type = ' + event.type);
+						 }
+                       );
+});
+
+</script>
+
+</head>
+
+<body>
+
+  <img id="example"
+       src="mp.jpg"
+	   alt="oooh! ahh!" />
+ 
+</body>
+</html>

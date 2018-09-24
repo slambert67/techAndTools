@@ -1,0 +1,20 @@
+JSON : JavaScript Object Notation
+
+Parsers and libraries exist for many languages
+
+The JSON text format is syntactically identical to the code for creating JavaScript objects.
+Javascript program can therefore use eval()
+JSON evaluates to Javascript Objects
+
+Data is name/value pairs - "firstname" : "steve"
+Data is separated by commas
+{} hold objects - {"firstname":"steve", "lastname":"lambert"}
+[] hold arrays - { "employees" : [
+                                   {"firstname":"steve", "lastname":"lambert"},
+								   {"firstname":"julie", "lastname":"lambert"},
+								   {"firstname":"andy", "lastname":"lambert"}
+                                 ]
+                 }
+
+Use a JSON parser to convert a JSON text to a JavaScript object
+

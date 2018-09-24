@@ -1,0 +1,78 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Inherit from instance</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+	  // Car constructor
+	  function Car() {
+	    var privateCarSpeed = 0;
+		
+		this.accelerate = Accelerate;
+		this.decelerate = Decelerate;
+		this.getSpeed = function() { return privateCarSpeed; };  // anonymous function
+		this.purchased = false;
+		return;
+		
+		// private functions
+		function Accelerate() {
+		  privateCarSpeed++;
+		}
+		function Decelerate() {
+		  privateCarSpeed--;
+		}
+	  }
+	  
+	  // Ford constructor
+	  function Ford() {
+	    Car.call( this );  // call Car constructor
+	    this.make = "Ford";
+	  }
+	  Ford.prototype = new Car();  // set prototype to new INSTANCE of Car class
+	  
+	  // create instances
+	  var myFirstCar = new Car();
+	  var mySecondCar = new Car();
+	  
+	  // these 2 Fords share same INSTANCE of Car class object within their prototype chain
+	  // why is this the case as my understanding is that "Ford.prototype = new Car()" sets prototype to new INSTANCE of Car class?
+	  var myFirstFord = new Ford();
+	  var mySecondFord = new Ford();
+	  
+	  myFirstCar.accelerate();
+	  mySecondCar.accelerate(); mySecondCar.accelerate();
+	  myFirstFord.accelerate(); myFirstFord.accelerate(); myFirstFord.accelerate();
+	  mySecondFord.accelerate(); mySecondFord.accelerate(); mySecondFord.accelerate(); mySecondFord.accelerate();
+	  
+	  document.write("myFirstCar:");
+	  document.write( myFirstCar.getSpeed() + "<BR>")  // 1
+	  document.write("mySecondCar:");
+	  document.write( mySecondCar.getSpeed() + "<BR>") // 2
+	  document.write("myFirstFord:");
+	  document.write( myFirstFord.getSpeed() + "<BR>") // 7	
+	  document.write("mySecondFord:");	  
+	  document.write( mySecondFord.getSpeed() + "<BR>")  // 7	  
+	  
+	  
+	  
+	  
+	  
+	  
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

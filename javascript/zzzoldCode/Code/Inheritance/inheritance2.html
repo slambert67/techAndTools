@@ -1,0 +1,81 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Inheritance</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+        (function() {
+
+            // Shape - superclass
+            function Shape() {
+                this.x = 0;
+                this.y = 0;
+            };
+            /*
+            Shape has a prototype property
+            prototype.constructor = function Shape()
+            */
+            
+            // superclass method
+            Shape.prototype.move = function(x,y){
+                this.x += x;
+                this.y += y;
+                console.log("shape moved");
+            };
+             /*
+            Shape has an updated prototype property
+            prototype.constructor = function Shape()
+            prototype.move = function(x,y)
+            */
+            
+            // Rectangle - subclass
+            function Rectangle() {
+                Shape.call(this);  
+                // call super constructor for object instance
+                // instance gets x and y properties
+            };
+            
+            /*
+            Rectangle has a prototype property
+            prototype.constructor = function Rectangle()
+            */
+            
+            var rec1 = new Rectangle();
+            /*
+            rec1.x = 0
+            rec1.y = 0
+            rec1.move(1,2) -> undefined function
+            Because Rectangle currently has no knowledge of Shape.prototype
+            */
+            
+            // Rectangle needs access to prototype of Shape
+            Rectangle.prototype = Object.create(Shape.prototype);  // a copy of Shape.prototype but all pointers will be same so ok
+            
+            // But Rectangles prototype must still point to Rectangle constructor
+            Rectangle.prototype.constructor = Rectangle;
+            
+            var rec2 = new Rectangle();
+            // rec2.move() is now recognized
+            
+            console.log("stop");
+        })();
+
+        
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

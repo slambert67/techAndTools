@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Empty Object</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+
+      /**
+      a prototype object is created for every function (even when not used as a constructor)
+      constructorFunction.prototype -> prototype <- Object.getPrototypeOf(instanceObject)
+      obj1 and obj2 are identical objects
+      objx.__proto__ == Object.getPrototypeOf(objx)
+      -> prototype Object
+      {constructor: f Object(), ...}
+      */	
+      var obj1 = {};
+      var obj2 = new Object();
+
+      /**
+      Note:
+      - equivalence: objx.__proto__ == Object.getPrototypeOf(objx)
+      */
+      Object.prototype.myvar = "x";
+      console.log(Object.prototype.myvar, Object.getPrototypeOf(obj1).myvar, Object.getPrototypeOf(obj2).myvar);
+      
+      /**
+      Note:
+      - equivalence: objx.constructor == Object.getPrototypeOf(objx).constructor
+      */
+      console.log(obj1.constructor.name, Object.getPrototypeOf(obj1).constructor.name);
+      
+      // breakpoint
+      console.log("stop");
+       
+	</script>
+  </body>
+</html>

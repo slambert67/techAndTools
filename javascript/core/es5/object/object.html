@@ -1,0 +1,62 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Object</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">  
+    
+    (function() {
+
+        var propsOnly = {
+            a:1,
+            b:2
+        }
+
+        var withMethods = {
+            c:3,
+            d:4,
+            meth1: function() {
+                console.log("hello world");
+            }
+        }
+
+        var newPropsOnly = Object.assign(propsOnly);
+        var newWithMethods = Object.assign(withMethods);
+        var newWithMethods2 = Object.create(withMethods);  // creates new prototype based on parameter
+
+        console.log("breakpoint");
+    })();
+
+    (function() {
+
+        var myObj = {
+            a:1,
+            b:2,
+            meth1: function() {
+                console.log("hello world");
+            }
+        }
+
+        for (prop in myObj) {
+            console.log(prop + ":",myObj[prop]);
+        }
+
+        var myObj2 = {
+            c:3,
+            d:4,
+            meth1: function() {
+                console.log("hello world again");
+            }
+        }
+
+
+    })();
+
+     
+	</script>
+  </body>
+</html>

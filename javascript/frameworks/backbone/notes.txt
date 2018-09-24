@@ -1,0 +1,91 @@
+code schools
+============
+
+Get data/data structure out of the DOM
+Models to represent data
+Views to hook up models to DOM
+Synchronizes data to/from server
+
+// following html has no behaviour. This is where backbone comes in
+<h3 class='incomplete'>
+  <input type='checkbox' data-id='1' />
+</h3>
+
+JSON : { description : 'Pick up milk', status : 'incomplete', id : 1}
+
+Server     Client
+------     -----------------------------------------------------------
+Data   <->  Model(provide data)    <-> Views(builds HTML)      <-> DOM
+
+			
+To create a model class:
+var TodoItem = Backbone.Model.extend( {} );
+
+To create a model instance:
+var todoItem = new TodoItem(
+  { description : 'Pick up milk', status : 'incomplete', id : 1}
+);
+
+// to get an attribute
+todoItem.get('description');
+
+// to set an attribute. Used by backbone to broadcast to listeners that model has changed
+todoItem.set( {status: 'complete'} );
+
+// to sync to server
+todoItem.save();
+
+at moment - don't know endpoint on server
+
+To create a view class:
+var TodoView = Backbone.View.extend( {} );
+
+To create a view instance:
+var todoView = new TodoView( {model: todoItem} );
+
+Rendering the view:
+view needs to render out HTML - need render function in view class:
+
+var TodoView = Backbone.View.extend( 
+  {
+    render: function() {
+	          var html = '<h3>' + this.model.get('description') + '</h3>';
+			  $(this.el).html(html);  // every view has a top level el element
+	        }
+  } 
+);
+
+call the render function:
+var todoView = new TodoView( {model: todoItem} );
+todoView.render();
+
+console.log( todoView.el);
+or
+$('#app').html( $(todoView.el) );
+
+gives:
+<div>
+  <h3>Pick up milk</h3>
+</div>
+
+=========================================================
+https://github.com/addyosmani/backbone-fundamentals
+
+Models can notify observers when their state changes
+Views observe models but don't usually interact directly
+Backbone merges controller functionality into view
+
+Backbone provides:
+- Structuring (Models, Collections) primitives
+- User Interface (Views, URLs) primitives
+ 
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,2 @@
+/* child combinator */
+section > p {color: red}  /* all p below section should be styled */

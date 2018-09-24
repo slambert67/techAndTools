@@ -1,0 +1,43 @@
+Edit the employeeList.zul file to add the Edit button
+Also add onSelect listener for the listbox, to enabled the Edit button.
+{code}
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./employeeListPanel" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <panel id="employeeListPanel" title="Employee List" apply="emsapp.employeeListComposer">
+        <panelchildren>
+            <listbox id="employeeListbox" model="@{employeeListPanel$composer.employees}" onSelect="delete.setDisabled(false);edit.setDisabled(false);">
+                <listhead>
+                    <listheader label="ID"/>
+                    <listheader label="First Name"/>
+                    <listheader label="Last Name"/>
+                    <listheader label="DOB"/>
+                    <listheader label="Gender"/>
+                    <listheader label="Active"/>
+                    <listheader label="Salary"/>
+                </listhead>
+                <listitem self="@{each=employee}" value="@{employee}">
+                    <listcell label="@{employee.id}"/>
+                    <listcell label="@{employee.firstName}"/>
+                    <listcell label="@{employee.LastName}"/>
+                    <listcell label="@{employee.dob}"/>
+                    <listcell label="@{employee.gender}"/>
+                    <listcell label="@{employee.active}"/>
+                    <listcell label="@{employee.salary}"/>
+                </listitem>
+            </listbox>
+            <toolbar>
+                <button label="Delete" id="delete" disabled="true"/>
+                <button label="Edit" id="edit" disabled="true"/>
+            </toolbar>
+        </panelchildren>
+    </panel>
+</zk>
+{code}
+
+!image12.png!

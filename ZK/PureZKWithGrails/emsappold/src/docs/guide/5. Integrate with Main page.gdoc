@@ -1,0 +1,8 @@
+Employee Maintenance page should be loaded through the Main page using the Menu on the left navigation.
+Lets integrate that.
+
+h4. Goals
+* Add Content Div in the main page
+* Create Menu event listeners
+* Load Employee Maintenance page using current execution.
+

@@ -1,0 +1,1793 @@
+/export/home/dmps/UW70G/uw70g_ora_6963.trc
+Oracle Database 10g Enterprise Edition Release 10.2.0.3.0 - 64bit Production
+With the Partitioning, OLAP and Data Mining options
+ORACLE_HOME = /u02/app/oracle10/product/10.2.0/Db_4
+System name:	SunOS
+Node name:	maldevs11
+Release:	5.9
+Version:	Generic_117171-07
+Machine:	sun4u
+Instance name: UW70G
+Redo thread mounted by this instance: 1
+Oracle process number: 37
+Unix process pid: 6963, image: oracleUW70G@maldevs11
+
+*** 2009-03-27 11:19:10.108
+*** ACTION NAME:() 2009-03-27 11:19:10.085
+*** MODULE NAME:(SQL*Plus) 2009-03-27 11:19:10.085
+*** SERVICE NAME:(UW70G) 2009-03-27 11:19:10.085
+*** SESSION ID:(182.189) 2009-03-27 11:19:10.085
+=====================
+PARSING IN CURSOR #7 len=52 dep=0 uid=76 oct=47 lid=76 tim=13237845014731 hv=1029988163 ad='90ac1438'
+BEGIN DBMS_OUTPUT.GET_LINES(:LINES, :NUMLINES); END;
+END OF STMT
+PARSE #7:c=0,e=86,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13237845009281
+EXEC #7:c=0,e=779,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13237845039032
+*** 2009-03-27 11:19:31.382
+=====================
+PARSING IN CURSOR #1 len=772 dep=1 uid=77 oct=47 lid=77 tim=13237865814400 hv=2388904333 ad='8f6dc468'
+declare p varchar2(32767);                    begin  p := G$_OBJECT_SECURITY.PREDICATE_FNC(:sn, :on);                    :v1 := substr(p,1,4000); :v2 := substr(p,4001,4000);                    :v3 := substr(p,8001,4000); :v4 := substr(p,12001,4000);                    :v5 := substr(p,16001,4000); :v6 := substr(p,20001,4000);                    :v7 := substr(p,24001,4000); :v8 := substr(p,28001,4000);                    :v9 := substr(p,32001,767);                    :v10 := substr(p, 4001, 1); :v11 := substr(p,8001,1);                    :v12 := substr(p, 12001, 1); :v13 := substr(p,16001,1);                    :v14 := substr(p, 20001, 1); :v15 := substr(p,24001,1);                    :v16 := substr(p, 28001, 1); :v17 := substr(p,32001,1);                    end;
+END OF STMT
+PARSE #1:c=0,e=89,p=0,cr=0,cu=0,mis=0,r=0,dep=1,og=2,tim=13237865814387
+EXEC #1:c=0,e=385,p=0,cr=0,cu=0,mis=0,r=1,dep=1,og=2,tim=13237865815032
+=====================
+PARSING IN CURSOR #3 len=28 dep=0 uid=76 oct=3 lid=76 tim=13237865826209 hv=3954222298 ad='8e071740'
+select count(*) from gubobjs
+END OF STMT
+PARSE #3:c=0,e=13410,p=0,cr=0,cu=0,mis=1,r=0,dep=0,og=2,tim=13237865826199
+=====================
+PARSING IN CURSOR #7 len=772 dep=1 uid=77 oct=47 lid=77 tim=13237865826456 hv=2388904333 ad='8f6dc468'
+declare p varchar2(32767);                    begin  p := G$_OBJECT_SECURITY.PREDICATE_FNC(:sn, :on);                    :v1 := substr(p,1,4000); :v2 := substr(p,4001,4000);                    :v3 := substr(p,8001,4000); :v4 := substr(p,12001,4000);                    :v5 := substr(p,16001,4000); :v6 := substr(p,20001,4000);                    :v7 := substr(p,24001,4000); :v8 := substr(p,28001,4000);                    :v9 := substr(p,32001,767);                    :v10 := substr(p, 4001, 1); :v11 := substr(p,8001,1);                    :v12 := substr(p, 12001, 1); :v13 := substr(p,16001,1);                    :v14 := substr(p, 20001, 1); :v15 := substr(p,24001,1);                    :v16 := substr(p, 28001, 1); :v17 := substr(p,32001,1);                    end;
+END OF STMT
+PARSE #7:c=0,e=44,p=0,cr=0,cu=0,mis=0,r=0,dep=1,og=2,tim=13237865826449
+EXEC #7:c=0,e=174,p=0,cr=0,cu=0,mis=0,r=1,dep=1,og=2,tim=13237865826741
+EXEC #3:c=0,e=708,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13237865827019
+FETCH #3:c=0,e=2032,p=0,cr=24,cu=0,mis=0,r=1,dep=0,og=2,tim=13237865829196
+FETCH #3:c=0,e=2,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=0,tim=13237865830132
+=====================
+PARSING IN CURSOR #1 len=52 dep=0 uid=76 oct=47 lid=76 tim=13237866600532 hv=1029988163 ad='90ac1438'
+BEGIN DBMS_OUTPUT.GET_LINES(:LINES, :NUMLINES); END;
+END OF STMT
+PARSE #1:c=0,e=155,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13237866600517
+EXEC #1:c=10000,e=975,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13237866601898
+STAT #3 id=1 cnt=1 pid=0 pos=1 obj=0 op='SORT AGGREGATE (cr=24 pr=0 pw=0 time=2027 us)'
+STAT #3 id=2 cnt=4990 pid=1 pos=1 obj=6358 op='INDEX FAST FULL SCAN GUBOBJS_OBJT_INDEX (cr=24 pr=0 pw=0 time=199 us)'
+=====================
+PARSING IN CURSOR #1 len=198 dep=2 uid=0 oct=3 lid=0 tim=13239363308724 hv=4125641360 ad='92e9f728'
+select obj#,type#,ctime,mtime,stime,status,dataobj#,flags,oid$, spare1, spare2 from obj$ where owner#=:1 and name=:2 and namespace=:3 and remoteowner is null and linkname is null and subname is null
+END OF STMT
+PARSE #1:c=0,e=2011,p=0,cr=0,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363308711
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363313783 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+PARSE #8:c=0,e=1695,p=0,cr=0,cu=0,mis=1,r=0,dep=3,og=3,tim=13239363313775
+EXEC #8:c=0,e=2744,p=0,cr=0,cu=0,mis=1,r=0,dep=3,og=3,tim=13239363316889
+FETCH #8:c=0,e=396,p=1,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363317387
+STAT #8 id=1 cnt=1 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=3 pr=1 pw=0 time=378 us)'
+STAT #8 id=2 cnt=1 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=2 pr=0 pw=0 time=121 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363319006 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+PARSE #8:c=0,e=1254,p=0,cr=0,cu=0,mis=1,r=0,dep=3,og=3,tim=13239363318998
+EXEC #8:c=10000,e=1890,p=0,cr=0,cu=0,mis=1,r=0,dep=3,og=3,tim=13239363321133
+FETCH #8:c=0,e=560,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363321780
+STAT #8 id=1 cnt=20 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=3 pr=1 pw=0 time=554 us)'
+STAT #8 id=2 cnt=20 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=3 pr=1 pw=0 time=277 us)'
+STAT #8 id=3 cnt=1 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=2 pr=0 pw=0 time=42 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363322228 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=63,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363322220
+FETCH #8:c=0,e=302,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363322629
+STAT #8 id=1 cnt=40 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=6 pr=1 pw=0 time=846 us)'
+STAT #8 id=2 cnt=40 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=6 pr=1 pw=0 time=363 us)'
+STAT #8 id=3 cnt=2 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=4 pr=0 pw=0 time=59 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363323001 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363322993
+FETCH #8:c=0,e=302,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363323402
+STAT #8 id=1 cnt=60 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=9 pr=1 pw=0 time=1135 us)'
+STAT #8 id=2 cnt=60 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=9 pr=1 pw=0 time=478 us)'
+STAT #8 id=3 cnt=3 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=6 pr=0 pw=0 time=77 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363323764 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363323756
+FETCH #8:c=0,e=300,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363324161
+STAT #8 id=1 cnt=80 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=12 pr=1 pw=0 time=1424 us)'
+STAT #8 id=2 cnt=80 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=12 pr=1 pw=0 time=605 us)'
+STAT #8 id=3 cnt=4 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=8 pr=0 pw=0 time=94 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363324621 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363324613
+FETCH #8:c=0,e=305,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363325022
+STAT #8 id=1 cnt=100 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=15 pr=1 pw=0 time=1717 us)'
+STAT #8 id=2 cnt=100 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=15 pr=1 pw=0 time=744 us)'
+STAT #8 id=3 cnt=5 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=10 pr=0 pw=0 time=110 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363325385 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363325377
+FETCH #8:c=0,e=304,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363325785
+STAT #8 id=1 cnt=120 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=18 pr=1 pw=0 time=2010 us)'
+STAT #8 id=2 cnt=120 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=18 pr=1 pw=0 time=895 us)'
+STAT #8 id=3 cnt=6 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=12 pr=0 pw=0 time=127 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363326140 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363326132
+FETCH #8:c=0,e=301,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363326537
+STAT #8 id=1 cnt=140 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=21 pr=1 pw=0 time=2297 us)'
+STAT #8 id=2 cnt=140 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=21 pr=1 pw=0 time=1038 us)'
+STAT #8 id=3 cnt=7 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=14 pr=0 pw=0 time=143 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363326890 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363326883
+FETCH #8:c=0,e=299,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363327286
+STAT #8 id=1 cnt=160 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=24 pr=1 pw=0 time=2584 us)'
+STAT #8 id=2 cnt=160 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=24 pr=1 pw=0 time=1213 us)'
+STAT #8 id=3 cnt=8 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=16 pr=0 pw=0 time=159 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363327645 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363327637
+FETCH #8:c=0,e=299,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363328039
+STAT #8 id=1 cnt=180 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=27 pr=1 pw=0 time=2870 us)'
+STAT #8 id=2 cnt=180 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=27 pr=1 pw=0 time=1399 us)'
+STAT #8 id=3 cnt=9 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=18 pr=0 pw=0 time=175 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363328411 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363328403
+FETCH #8:c=0,e=301,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363328809
+STAT #8 id=1 cnt=200 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=30 pr=1 pw=0 time=3159 us)'
+STAT #8 id=2 cnt=200 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=30 pr=1 pw=0 time=1578 us)'
+STAT #8 id=3 cnt=10 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=20 pr=0 pw=0 time=192 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363329176 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363329168
+FETCH #8:c=0,e=302,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363329574
+STAT #8 id=1 cnt=220 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=33 pr=1 pw=0 time=3448 us)'
+STAT #8 id=2 cnt=220 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=33 pr=1 pw=0 time=1790 us)'
+STAT #8 id=3 cnt=11 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=22 pr=0 pw=0 time=207 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363329938 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363329930
+FETCH #8:c=10000,e=552,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363330585
+STAT #8 id=1 cnt=240 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=36 pr=1 pw=0 time=3988 us)'
+STAT #8 id=2 cnt=240 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=36 pr=1 pw=0 time=2241 us)'
+STAT #8 id=3 cnt=12 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=24 pr=0 pw=0 time=222 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363330965 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363330957
+FETCH #8:c=0,e=324,p=0,cr=3,cu=0,mis=0,r=15,dep=3,og=3,tim=13239363331386
+STAT #8 id=1 cnt=255 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=39 pr=1 pw=0 time=4265 us)'
+STAT #8 id=2 cnt=255 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=39 pr=1 pw=0 time=2449 us)'
+STAT #8 id=3 cnt=13 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=26 pr=0 pw=0 time=239 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363331888 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=62,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363331880
+FETCH #8:c=0,e=54,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363332040
+STAT #8 id=1 cnt=2 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=6 pr=1 pw=0 time=424 us)'
+STAT #8 id=2 cnt=2 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=4 pr=0 pw=0 time=150 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363332401 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363332392
+FETCH #8:c=0,e=438,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363332937
+STAT #8 id=1 cnt=275 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=42 pr=2 pw=0 time=4693 us)'
+STAT #8 id=2 cnt=275 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=42 pr=2 pw=0 time=2647 us)'
+STAT #8 id=3 cnt=14 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=28 pr=0 pw=0 time=257 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363333315 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363333307
+FETCH #8:c=0,e=306,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363333718
+STAT #8 id=1 cnt=295 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=45 pr=2 pw=0 time=4987 us)'
+STAT #8 id=2 cnt=295 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=45 pr=2 pw=0 time=2750 us)'
+STAT #8 id=3 cnt=15 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=30 pr=0 pw=0 time=274 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363334166 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363334159
+FETCH #8:c=0,e=302,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363334565
+STAT #8 id=1 cnt=315 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=48 pr=2 pw=0 time=5277 us)'
+STAT #8 id=2 cnt=315 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=48 pr=2 pw=0 time=2865 us)'
+STAT #8 id=3 cnt=16 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=32 pr=0 pw=0 time=291 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363334949 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363334941
+FETCH #8:c=0,e=302,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363335346
+STAT #8 id=1 cnt=335 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=51 pr=2 pw=0 time=5567 us)'
+STAT #8 id=2 cnt=335 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=51 pr=2 pw=0 time=2992 us)'
+STAT #8 id=3 cnt=17 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=34 pr=0 pw=0 time=309 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363335712 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363335703
+FETCH #8:c=0,e=301,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363336109
+STAT #8 id=1 cnt=355 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=54 pr=2 pw=0 time=5857 us)'
+STAT #8 id=2 cnt=355 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=54 pr=2 pw=0 time=3114 us)'
+STAT #8 id=3 cnt=18 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=36 pr=0 pw=0 time=325 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363336497 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363336489
+FETCH #8:c=0,e=308,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363336902
+STAT #8 id=1 cnt=375 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=57 pr=2 pw=0 time=6135 us)'
+STAT #8 id=2 cnt=375 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=57 pr=2 pw=0 time=3268 us)'
+STAT #8 id=3 cnt=19 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=38 pr=0 pw=0 time=342 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363337348 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363337261
+FETCH #8:c=0,e=635,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363338337
+STAT #8 id=1 cnt=395 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=60 pr=2 pw=0 time=6705 us)'
+STAT #8 id=2 cnt=395 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=60 pr=2 pw=0 time=3586 us)'
+STAT #8 id=3 cnt=20 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=40 pr=0 pw=0 time=414 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363339143 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=193,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363339134
+FETCH #8:c=0,e=314,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363339560
+STAT #8 id=1 cnt=415 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=63 pr=2 pw=0 time=7032 us)'
+STAT #8 id=2 cnt=415 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=63 pr=2 pw=0 time=3781 us)'
+STAT #8 id=3 cnt=21 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=42 pr=0 pw=0 time=444 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363340533 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=298,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363340515
+FETCH #8:c=0,e=548,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363341263
+STAT #8 id=1 cnt=435 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=66 pr=2 pw=0 time=7576 us)'
+STAT #8 id=2 cnt=435 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=66 pr=2 pw=0 time=4109 us)'
+STAT #8 id=3 cnt=22 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=44 pr=0 pw=0 time=522 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363341865 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=73,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363341857
+FETCH #8:c=0,e=323,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363342289
+STAT #8 id=1 cnt=455 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=69 pr=2 pw=0 time=7887 us)'
+STAT #8 id=2 cnt=455 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=69 pr=2 pw=0 time=4325 us)'
+STAT #8 id=3 cnt=23 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=46 pr=0 pw=0 time=547 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363342689 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=60,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363342680
+FETCH #8:c=0,e=311,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363343102
+STAT #8 id=1 cnt=475 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=72 pr=2 pw=0 time=8184 us)'
+STAT #8 id=2 cnt=475 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=72 pr=2 pw=0 time=4559 us)'
+STAT #8 id=3 cnt=24 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=48 pr=0 pw=0 time=564 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363343497 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=61,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363343489
+FETCH #8:c=0,e=311,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363343910
+STAT #8 id=1 cnt=495 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=75 pr=2 pw=0 time=8482 us)'
+STAT #8 id=2 cnt=495 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=75 pr=2 pw=0 time=4787 us)'
+STAT #8 id=3 cnt=25 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=50 pr=0 pw=0 time=583 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363344537 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=113,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363344528
+FETCH #8:c=0,e=91,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363344739
+STAT #8 id=1 cnt=3 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=9 pr=1 pw=0 time=519 us)'
+STAT #8 id=2 cnt=3 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=6 pr=0 pw=0 time=213 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363345127 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=61,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363345119
+FETCH #8:c=0,e=348,p=1,cr=3,cu=0,mis=0,r=4,dep=3,og=3,tim=13239363345680
+STAT #8 id=1 cnt=499 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=78 pr=3 pw=0 time=8788 us)'
+STAT #8 id=2 cnt=499 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=78 pr=3 pw=0 time=5040 us)'
+STAT #8 id=3 cnt=26 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=52 pr=0 pw=0 time=601 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363346198 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363346190
+FETCH #8:c=0,e=56,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363346355
+STAT #8 id=1 cnt=4 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=12 pr=1 pw=0 time=565 us)'
+STAT #8 id=2 cnt=4 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=8 pr=0 pw=0 time=242 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363346854 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=53,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363346846
+FETCH #8:c=0,e=52,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363347006
+STAT #8 id=1 cnt=5 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=15 pr=1 pw=0 time=607 us)'
+STAT #8 id=2 cnt=5 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=10 pr=0 pw=0 time=269 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363347470 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=51,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363347462
+FETCH #8:c=0,e=52,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363347621
+STAT #8 id=1 cnt=6 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=18 pr=1 pw=0 time=650 us)'
+STAT #8 id=2 cnt=6 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=12 pr=0 pw=0 time=296 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363347986 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=60,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363347977
+FETCH #8:c=0,e=218,p=1,cr=3,cu=0,mis=0,r=4,dep=3,og=3,tim=13239363348304
+STAT #8 id=1 cnt=503 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=81 pr=4 pw=0 time=8990 us)'
+STAT #8 id=2 cnt=503 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=81 pr=4 pw=0 time=5190 us)'
+STAT #8 id=3 cnt=27 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=54 pr=0 pw=0 time=620 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363348811 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363348803
+FETCH #8:c=0,e=51,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363348961
+STAT #8 id=1 cnt=7 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=21 pr=1 pw=0 time=693 us)'
+STAT #8 id=2 cnt=7 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=14 pr=0 pw=0 time=324 us)'
+EXEC #1:c=50000,e=42148,p=5,cr=102,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363351284
+FETCH #1:c=0,e=215,p=1,cr=4,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363351615
+STAT #1 id=1 cnt=1 pid=0 pos=1 obj=18 op='TABLE ACCESS BY INDEX ROWID OBJ$ (cr=4 pr=1 pw=0 time=201 us)'
+STAT #1 id=2 cnt=1 pid=1 pos=1 obj=37 op='INDEX RANGE SCAN I_OBJ2 (cr=3 pr=1 pw=0 time=170 us)'
+=====================
+PARSING IN CURSOR #8 len=493 dep=2 uid=0 oct=3 lid=0 tim=13239363355078 hv=2584065658 ad='927dada0'
+select t.ts#,t.file#,t.block#,nvl(t.bobj#,0),nvl(t.tab#,0),t.intcols,nvl(t.clucols,0),t.audit$,t.flags,t.pctfree$,t.pctused$,t.initrans,t.maxtrans,t.rowcnt,t.blkcnt,t.empcnt,t.avgspc,t.chncnt,t.avgrln,t.analyzetime,t.samplesize,t.cols,t.property,nvl(t.degree,1),nvl(t.instances,1),t.avgspc_flb,t.flbcnt,t.kernelcols,nvl(t.trigflag, 0),nvl(t.spare1,0),nvl(t.spare2,0),t.spare4,t.spare6,ts.cachedblk,ts.cachehit,ts.logicalread from tab$ t, tab_stats$ ts where t.obj#= :1 and t.obj# = ts.obj# (+)
+END OF STMT
+PARSE #8:c=0,e=3077,p=0,cr=0,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363355069
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363358232 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=63,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363358223
+FETCH #1:c=0,e=308,p=2,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363358644
+STAT #1 id=1 cnt=8 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=24 pr=3 pw=0 time=994 us)'
+STAT #1 id=2 cnt=8 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=16 pr=1 pw=0 time=517 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363359937 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363359928
+FETCH #1:c=0,e=154,p=1,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363360194
+STAT #1 id=1 cnt=9 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=27 pr=4 pw=0 time=1139 us)'
+STAT #1 id=2 cnt=9 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=18 pr=1 pw=0 time=546 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363360662 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363360654
+FETCH #1:c=0,e=50,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363360809
+STAT #1 id=1 cnt=10 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=30 pr=4 pw=0 time=1181 us)'
+STAT #1 id=2 cnt=10 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=20 pr=1 pw=0 time=572 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363361254 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363361246
+FETCH #1:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363361398
+STAT #1 id=1 cnt=11 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=33 pr=4 pw=0 time=1220 us)'
+STAT #1 id=2 cnt=11 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=22 pr=1 pw=0 time=596 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363361841 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363361833
+FETCH #1:c=0,e=54,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363362174
+STAT #1 id=1 cnt=12 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=36 pr=4 pw=0 time=1263 us)'
+STAT #1 id=2 cnt=12 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=24 pr=1 pw=0 time=623 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363362699 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363362691
+FETCH #1:c=0,e=52,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363362851
+STAT #1 id=1 cnt=13 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=39 pr=4 pw=0 time=1305 us)'
+STAT #1 id=2 cnt=13 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=26 pr=1 pw=0 time=650 us)'
+=====================
+PARSING IN CURSOR #1 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363363217 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #1:c=0,e=63,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363363209
+FETCH #1:c=0,e=373,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363363691
+STAT #1 id=1 cnt=523 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=84 pr=5 pw=0 time=9356 us)'
+STAT #1 id=2 cnt=523 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=84 pr=5 pw=0 time=5453 us)'
+STAT #1 id=3 cnt=28 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=56 pr=0 pw=0 time=641 us)'
+=====================
+PARSING IN CURSOR #1 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363364083 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #1:c=0,e=59,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363364075
+FETCH #1:c=0,e=190,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363364372
+STAT #1 id=1 cnt=543 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=87 pr=5 pw=0 time=9531 us)'
+STAT #1 id=2 cnt=543 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=87 pr=5 pw=0 time=5562 us)'
+STAT #1 id=3 cnt=29 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=58 pr=0 pw=0 time=659 us)'
+=====================
+PARSING IN CURSOR #1 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363364753 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #1:c=0,e=61,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363364745
+FETCH #1:c=0,e=167,p=0,cr=3,cu=0,mis=0,r=12,dep=3,og=3,tim=13239363365017
+STAT #1 id=1 cnt=555 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=90 pr=5 pw=0 time=9677 us)'
+STAT #1 id=2 cnt=555 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=90 pr=5 pw=0 time=5646 us)'
+STAT #1 id=3 cnt=30 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=60 pr=0 pw=0 time=676 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363365535 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=52,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363365528
+FETCH #1:c=0,e=50,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363365683
+STAT #1 id=1 cnt=14 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=42 pr=4 pw=0 time=1346 us)'
+STAT #1 id=2 cnt=14 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=28 pr=1 pw=0 time=676 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363366137 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363366129
+FETCH #1:c=0,e=49,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363366283
+STAT #1 id=1 cnt=15 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=45 pr=4 pw=0 time=1385 us)'
+STAT #1 id=2 cnt=15 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=30 pr=1 pw=0 time=702 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363366730 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=52,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363366722
+FETCH #1:c=0,e=48,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363366881
+STAT #1 id=1 cnt=16 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=48 pr=4 pw=0 time=1425 us)'
+STAT #1 id=2 cnt=16 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=32 pr=1 pw=0 time=728 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363367337 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363367329
+FETCH #1:c=0,e=48,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363367484
+STAT #1 id=1 cnt=17 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=51 pr=4 pw=0 time=1465 us)'
+STAT #1 id=2 cnt=17 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=34 pr=1 pw=0 time=753 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363367937 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363367929
+FETCH #1:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363368084
+STAT #1 id=1 cnt=18 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=54 pr=4 pw=0 time=1504 us)'
+STAT #1 id=2 cnt=18 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=36 pr=1 pw=0 time=779 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363368548 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=51,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363368540
+FETCH #1:c=0,e=48,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363368695
+STAT #1 id=1 cnt=19 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=57 pr=4 pw=0 time=1543 us)'
+STAT #1 id=2 cnt=19 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=38 pr=1 pw=0 time=805 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363369160 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=53,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363369151
+FETCH #1:c=0,e=54,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363369333
+STAT #1 id=1 cnt=20 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=60 pr=4 pw=0 time=1586 us)'
+STAT #1 id=2 cnt=20 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=40 pr=1 pw=0 time=832 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363369857 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363369850
+FETCH #1:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363370002
+STAT #1 id=1 cnt=21 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=63 pr=4 pw=0 time=1625 us)'
+STAT #1 id=2 cnt=21 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=42 pr=1 pw=0 time=857 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363370449 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=48,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363370441
+FETCH #1:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363370593
+STAT #1 id=1 cnt=22 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=66 pr=4 pw=0 time=1663 us)'
+STAT #1 id=2 cnt=22 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=44 pr=1 pw=0 time=882 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363371035 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363371028
+FETCH #1:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363371178
+STAT #1 id=1 cnt=23 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=69 pr=4 pw=0 time=1701 us)'
+STAT #1 id=2 cnt=23 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=46 pr=1 pw=0 time=906 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363371668 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363371660
+FETCH #1:c=0,e=46,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363371811
+STAT #1 id=1 cnt=24 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=72 pr=4 pw=0 time=1738 us)'
+STAT #1 id=2 cnt=24 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=48 pr=1 pw=0 time=931 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363372255 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363372247
+FETCH #1:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363372399
+STAT #1 id=1 cnt=25 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=75 pr=4 pw=0 time=1777 us)'
+STAT #1 id=2 cnt=25 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=50 pr=1 pw=0 time=955 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363372839 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363372832
+FETCH #1:c=0,e=46,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363372982
+STAT #1 id=1 cnt=26 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=78 pr=4 pw=0 time=1815 us)'
+STAT #1 id=2 cnt=26 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=52 pr=1 pw=0 time=978 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363373423 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363373415
+FETCH #1:c=0,e=45,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363373564
+STAT #1 id=1 cnt=27 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=81 pr=4 pw=0 time=1852 us)'
+STAT #1 id=2 cnt=27 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=54 pr=1 pw=0 time=1002 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363374006 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363373998
+FETCH #1:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363374149
+STAT #1 id=1 cnt=28 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=84 pr=4 pw=0 time=1891 us)'
+STAT #1 id=2 cnt=28 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=56 pr=1 pw=0 time=1026 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363374670 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363374662
+FETCH #1:c=0,e=46,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363374813
+STAT #1 id=1 cnt=29 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=87 pr=4 pw=0 time=1929 us)'
+STAT #1 id=2 cnt=29 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=58 pr=1 pw=0 time=1050 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363375260 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363375253
+FETCH #1:c=0,e=46,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363375402
+STAT #1 id=1 cnt=30 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=90 pr=4 pw=0 time=1967 us)'
+STAT #1 id=2 cnt=30 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=60 pr=1 pw=0 time=1074 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363375847 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363375839
+FETCH #1:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363375990
+STAT #1 id=1 cnt=31 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=93 pr=4 pw=0 time=2006 us)'
+STAT #1 id=2 cnt=31 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=62 pr=1 pw=0 time=1099 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363376608 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=52,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363376600
+FETCH #1:c=0,e=52,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363376836
+STAT #1 id=1 cnt=32 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=96 pr=4 pw=0 time=2050 us)'
+STAT #1 id=2 cnt=32 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=64 pr=1 pw=0 time=1130 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363377288 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=51,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363377281
+FETCH #1:c=0,e=50,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363377436
+STAT #1 id=1 cnt=33 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=99 pr=4 pw=0 time=2094 us)'
+STAT #1 id=2 cnt=33 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=66 pr=1 pw=0 time=1158 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363377885 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=51,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363377877
+FETCH #1:c=0,e=49,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363378030
+STAT #1 id=1 cnt=34 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=102 pr=4 pw=0 time=2136 us)'
+STAT #1 id=2 cnt=34 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=68 pr=1 pw=0 time=1185 us)'
+EXEC #8:c=30000,e=26152,p=4,cr=90,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363381785
+FETCH #8:c=0,e=9916,p=1,cr=4,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363391833
+STAT #8 id=1 cnt=1 pid=0 pos=1 obj=0 op='NESTED LOOPS OUTER (cr=4 pr=1 pw=0 time=9818 us)'
+STAT #8 id=2 cnt=1 pid=1 pos=1 obj=4 op='TABLE ACCESS CLUSTER TAB$ (cr=3 pr=1 pw=0 time=9754 us)'
+STAT #8 id=3 cnt=1 pid=2 pos=1 obj=3 op='INDEX UNIQUE SCAN I_OBJ# (cr=2 pr=0 pw=0 time=45 us)'
+STAT #8 id=4 cnt=0 pid=1 pos=2 obj=115743 op='TABLE ACCESS BY INDEX ROWID TAB_STATS$ (cr=1 pr=0 pw=0 time=41 us)'
+STAT #8 id=5 cnt=0 pid=4 pos=1 obj=115744 op='INDEX UNIQUE SCAN I_TAB_STATS$_OBJ# (cr=1 pr=0 pw=0 time=31 us)'
+=====================
+PARSING IN CURSOR #1 len=789 dep=2 uid=0 oct=3 lid=0 tim=13239363396799 hv=3159716790 ad='927cce18'
+select i.obj#,i.ts#,i.file#,i.block#,i.intcols,i.type#,i.flags,i.property,i.pctfree$,i.initrans,i.maxtrans,i.blevel,i.leafcnt,i.distkey,i.lblkkey,i.dblkkey,i.clufac,i.cols,i.analyzetime,i.samplesize,i.dataobj#,nvl(i.degree,1),nvl(i.instances,1),i.rowcnt,mod(i.pctthres$,256),i.indmethod#,i.trunccnt,nvl(c.unicols,0),nvl(c.deferrable#+c.valid#,0),nvl(i.spare1,i.intcols),i.spare4,i.spare2,i.spare6,decode(i.pctthres$,null,null,mod(trunc(i.pctthres$/256),256)),ist.cachedblk,ist.cachehit,ist.logicalread from ind$ i, ind_stats$ ist, (select enabled, min(cols) unicols,min(to_number(bitand(defer,1))) deferrable#,min(to_number(bitand(defer,4))) valid# from cdef$ where obj#=:1 and enabled > 1 group by enabled) c where i.obj#=c.enabled(+) and i.obj# = ist.obj#(+) and i.bo#=:1 order by i.obj#
+END OF STMT
+PARSE #1:c=0,e=4245,p=0,cr=0,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363396791
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363401379 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=87,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363401369
+FETCH #8:c=0,e=215,p=1,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363401713
+STAT #8 id=1 cnt=35 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=105 pr=5 pw=0 time=2340 us)'
+STAT #8 id=2 cnt=35 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=70 pr=1 pw=0 time=1229 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363402151 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=84,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363402142
+FETCH #8:c=0,e=350,p=1,cr=3,cu=0,mis=0,r=19,dep=3,og=3,tim=13239363402606
+STAT #8 id=1 cnt=574 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=93 pr=6 pw=0 time=10002 us)'
+STAT #8 id=2 cnt=574 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=93 pr=6 pw=0 time=5887 us)'
+STAT #8 id=3 cnt=31 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=62 pr=0 pw=0 time=697 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363403200 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=66,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363403190
+FETCH #8:c=0,e=55,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363403360
+STAT #8 id=1 cnt=36 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=108 pr=5 pw=0 time=2387 us)'
+STAT #8 id=2 cnt=36 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=72 pr=1 pw=0 time=1259 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363404112 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363404104
+FETCH #8:c=0,e=152,p=1,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363404367
+STAT #8 id=1 cnt=37 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=111 pr=6 pw=0 time=2529 us)'
+STAT #8 id=2 cnt=37 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=74 pr=1 pw=0 time=1287 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363404737 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=62,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363404729
+FETCH #8:c=0,e=270,p=1,cr=3,cu=0,mis=0,r=9,dep=3,og=3,tim=13239363405108
+STAT #8 id=1 cnt=583 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=96 pr=7 pw=0 time=10252 us)'
+STAT #8 id=2 cnt=583 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=96 pr=7 pw=0 time=6081 us)'
+STAT #8 id=3 cnt=32 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=64 pr=0 pw=0 time=716 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363405612 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363405604
+FETCH #8:c=0,e=51,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363405765
+STAT #8 id=1 cnt=38 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=114 pr=6 pw=0 time=2571 us)'
+STAT #8 id=2 cnt=38 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=76 pr=1 pw=0 time=1314 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363406122 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363406114
+FETCH #8:c=0,e=240,p=1,cr=3,cu=0,mis=0,r=4,dep=3,og=3,tim=13239363406464
+STAT #8 id=1 cnt=587 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=99 pr=8 pw=0 time=10476 us)'
+STAT #8 id=2 cnt=587 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=99 pr=8 pw=0 time=6253 us)'
+STAT #8 id=3 cnt=33 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=66 pr=0 pw=0 time=734 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363407715 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=59,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363407706
+FETCH #8:c=0,e=77,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363407893
+STAT #8 id=1 cnt=39 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=117 pr=6 pw=0 time=2640 us)'
+STAT #8 id=2 cnt=39 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=78 pr=1 pw=0 time=1364 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363409048 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=99,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363409037
+FETCH #8:c=0,e=74,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363409244
+STAT #8 id=1 cnt=40 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=120 pr=6 pw=0 time=2703 us)'
+STAT #8 id=2 cnt=40 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=80 pr=1 pw=0 time=1404 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363409673 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=88,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363409665
+FETCH #8:c=0,e=476,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363410247
+STAT #8 id=1 cnt=607 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=102 pr=9 pw=0 time=10929 us)'
+STAT #8 id=2 cnt=607 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=102 pr=9 pw=0 time=6476 us)'
+STAT #8 id=3 cnt=34 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=68 pr=0 pw=0 time=756 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363410630 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363410622
+FETCH #8:c=0,e=310,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363411037
+STAT #8 id=1 cnt=627 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=105 pr=9 pw=0 time=11209 us)'
+STAT #8 id=2 cnt=627 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=105 pr=9 pw=0 time=6579 us)'
+STAT #8 id=3 cnt=35 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=70 pr=0 pw=0 time=773 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363411398 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363411390
+FETCH #8:c=0,e=309,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363411803
+STAT #8 id=1 cnt=647 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=108 pr=9 pw=0 time=11508 us)'
+STAT #8 id=2 cnt=647 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=108 pr=9 pw=0 time=6674 us)'
+STAT #8 id=3 cnt=36 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=72 pr=0 pw=0 time=790 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363412167 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363412159
+FETCH #8:c=0,e=306,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363412568
+STAT #8 id=1 cnt=667 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=111 pr=9 pw=0 time=11802 us)'
+STAT #8 id=2 cnt=667 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=111 pr=9 pw=0 time=6800 us)'
+STAT #8 id=3 cnt=37 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=74 pr=0 pw=0 time=807 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363412931 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363412923
+FETCH #8:c=0,e=308,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363413335
+STAT #8 id=1 cnt=687 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=114 pr=9 pw=0 time=12098 us)'
+STAT #8 id=2 cnt=687 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=114 pr=9 pw=0 time=6919 us)'
+STAT #8 id=3 cnt=38 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=76 pr=0 pw=0 time=824 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363413697 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363413689
+FETCH #8:c=0,e=310,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363414104
+STAT #8 id=1 cnt=707 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=117 pr=9 pw=0 time=12396 us)'
+STAT #8 id=2 cnt=707 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=117 pr=9 pw=0 time=7072 us)'
+STAT #8 id=3 cnt=39 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=78 pr=0 pw=0 time=840 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363414466 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363414458
+FETCH #8:c=0,e=306,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363414868
+STAT #8 id=1 cnt=727 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=120 pr=9 pw=0 time=12672 us)'
+STAT #8 id=2 cnt=727 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=120 pr=9 pw=0 time=7234 us)'
+STAT #8 id=3 cnt=40 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=80 pr=0 pw=0 time=857 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363415227 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363415219
+FETCH #8:c=0,e=305,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363415627
+STAT #8 id=1 cnt=747 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=123 pr=9 pw=0 time=12967 us)'
+STAT #8 id=2 cnt=747 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=123 pr=9 pw=0 time=7409 us)'
+STAT #8 id=3 cnt=41 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=82 pr=0 pw=0 time=874 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363415991 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363415984
+FETCH #8:c=0,e=309,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363416397
+STAT #8 id=1 cnt=767 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=126 pr=9 pw=0 time=13264 us)'
+STAT #8 id=2 cnt=767 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=126 pr=9 pw=0 time=7579 us)'
+STAT #8 id=3 cnt=42 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=84 pr=0 pw=0 time=892 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363416759 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363416751
+FETCH #8:c=0,e=310,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363417314
+STAT #8 id=1 cnt=787 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=129 pr=9 pw=0 time=13561 us)'
+STAT #8 id=2 cnt=787 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=129 pr=9 pw=0 time=7780 us)'
+STAT #8 id=3 cnt=43 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=86 pr=0 pw=0 time=907 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363417675 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363417668
+FETCH #8:c=10000,e=458,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363418229
+STAT #8 id=1 cnt=807 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=132 pr=9 pw=0 time=13856 us)'
+STAT #8 id=2 cnt=807 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=132 pr=9 pw=0 time=7991 us)'
+STAT #8 id=3 cnt=44 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=88 pr=0 pw=0 time=923 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363419227 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=219,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363419216
+FETCH #8:c=0,e=495,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363419845
+STAT #8 id=1 cnt=827 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=135 pr=9 pw=0 time=14365 us)'
+STAT #8 id=2 cnt=827 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=135 pr=9 pw=0 time=8345 us)'
+STAT #8 id=3 cnt=45 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=90 pr=0 pw=0 time=989 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363420250 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=72,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363420243
+FETCH #8:c=0,e=331,p=0,cr=3,cu=0,mis=0,r=12,dep=3,og=3,tim=13239363420680
+STAT #8 id=1 cnt=839 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=138 pr=9 pw=0 time=14649 us)'
+STAT #8 id=2 cnt=839 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=138 pr=9 pw=0 time=8567 us)'
+STAT #8 id=3 cnt=46 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=92 pr=0 pw=0 time=1008 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363421729 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=104,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363421720
+FETCH #8:c=0,e=93,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363421933
+STAT #8 id=1 cnt=41 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=123 pr=6 pw=0 time=2793 us)'
+STAT #8 id=2 cnt=41 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=82 pr=1 pw=0 time=1463 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363422328 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=61,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363422320
+FETCH #8:c=0,e=369,p=1,cr=3,cu=0,mis=0,r=5,dep=3,og=3,tim=13239363422799
+STAT #8 id=1 cnt=844 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=141 pr=10 pw=0 time=14999 us)'
+STAT #8 id=2 cnt=844 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=141 pr=10 pw=0 time=8867 us)'
+STAT #8 id=3 cnt=47 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=94 pr=0 pw=0 time=1026 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363423328 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363423320
+FETCH #8:c=0,e=55,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363423488
+STAT #8 id=1 cnt=42 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=126 pr=6 pw=0 time=2839 us)'
+STAT #8 id=2 cnt=42 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=84 pr=1 pw=0 time=1492 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363423862 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=61,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363423854
+FETCH #8:c=0,e=291,p=1,cr=3,cu=0,mis=0,r=9,dep=3,og=3,tim=13239363424254
+STAT #8 id=1 cnt=853 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=144 pr=11 pw=0 time=15272 us)'
+STAT #8 id=2 cnt=853 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=144 pr=11 pw=0 time=9085 us)'
+STAT #8 id=3 cnt=48 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=96 pr=0 pw=0 time=1045 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363424754 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363424746
+FETCH #8:c=0,e=52,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363424904
+STAT #8 id=1 cnt=43 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=129 pr=6 pw=0 time=2882 us)'
+STAT #8 id=2 cnt=43 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=86 pr=1 pw=0 time=1519 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363425274 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363425266
+FETCH #8:c=0,e=38330,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363463703
+STAT #8 id=1 cnt=873 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=147 pr=12 pw=0 time=53577 us)'
+STAT #8 id=2 cnt=873 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=147 pr=12 pw=0 time=47126 us)'
+STAT #8 id=3 cnt=49 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=98 pr=0 pw=0 time=1065 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363464253 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=94,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363464244
+FETCH #8:c=0,e=332,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363464697
+STAT #8 id=1 cnt=893 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=150 pr=12 pw=0 time=53902 us)'
+STAT #8 id=2 cnt=893 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=150 pr=12 pw=0 time=47248 us)'
+STAT #8 id=3 cnt=50 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=100 pr=0 pw=0 time=1091 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363465089 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=68,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363465082
+FETCH #8:c=0,e=311,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363465500
+STAT #8 id=1 cnt=913 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=153 pr=12 pw=0 time=54202 us)'
+STAT #8 id=2 cnt=913 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=153 pr=12 pw=0 time=47371 us)'
+STAT #8 id=3 cnt=51 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=102 pr=0 pw=0 time=1110 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363465970 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363465963
+FETCH #8:c=0,e=323,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363466391
+STAT #8 id=1 cnt=933 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=156 pr=12 pw=0 time=54514 us)'
+STAT #8 id=2 cnt=933 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=156 pr=12 pw=0 time=47510 us)'
+STAT #8 id=3 cnt=52 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=104 pr=0 pw=0 time=1127 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363466758 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363466751
+FETCH #8:c=0,e=326,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363467385
+STAT #8 id=1 cnt=953 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=159 pr=12 pw=0 time=54825 us)'
+STAT #8 id=2 cnt=953 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=159 pr=12 pw=0 time=47665 us)'
+STAT #8 id=3 cnt=53 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=106 pr=0 pw=0 time=1149 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363467961 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363467953
+FETCH #8:c=0,e=405,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363468465
+STAT #8 id=1 cnt=973 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=162 pr=12 pw=0 time=55216 us)'
+STAT #8 id=2 cnt=973 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=162 pr=12 pw=0 time=47828 us)'
+STAT #8 id=3 cnt=54 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=108 pr=0 pw=0 time=1168 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363468839 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363468832
+FETCH #8:c=0,e=316,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363469252
+STAT #8 id=1 cnt=993 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=165 pr=12 pw=0 time=55521 us)'
+STAT #8 id=2 cnt=993 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=165 pr=12 pw=0 time=48004 us)'
+STAT #8 id=3 cnt=55 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=110 pr=0 pw=0 time=1186 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363469624 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363469617
+FETCH #8:c=0,e=318,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363470039
+STAT #8 id=1 cnt=1013 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=168 pr=12 pw=0 time=55827 us)'
+STAT #8 id=2 cnt=1013 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=168 pr=12 pw=0 time=48192 us)'
+STAT #8 id=3 cnt=56 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=112 pr=0 pw=0 time=1202 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363470409 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363470401
+FETCH #8:c=0,e=311,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363470816
+STAT #8 id=1 cnt=1033 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=171 pr=12 pw=0 time=56127 us)'
+STAT #8 id=2 cnt=1033 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=171 pr=12 pw=0 time=48370 us)'
+STAT #8 id=3 cnt=57 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=114 pr=0 pw=0 time=1220 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363471185 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363471178
+FETCH #8:c=0,e=317,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363471599
+STAT #8 id=1 cnt=1053 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=174 pr=12 pw=0 time=56435 us)'
+STAT #8 id=2 cnt=1053 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=174 pr=12 pw=0 time=48564 us)'
+STAT #8 id=3 cnt=58 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=116 pr=0 pw=0 time=1238 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363471968 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363471960
+FETCH #8:c=0,e=312,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363472377
+STAT #8 id=1 cnt=1073 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=177 pr=12 pw=0 time=56735 us)'
+STAT #8 id=2 cnt=1073 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=177 pr=12 pw=0 time=48786 us)'
+STAT #8 id=3 cnt=59 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=118 pr=0 pw=0 time=1254 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363472746 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363472739
+FETCH #8:c=0,e=316,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363473159
+STAT #8 id=1 cnt=1093 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=180 pr=12 pw=0 time=57039 us)'
+STAT #8 id=2 cnt=1093 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=180 pr=12 pw=0 time=49024 us)'
+STAT #8 id=3 cnt=60 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=120 pr=0 pw=0 time=1270 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363473528 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363473520
+FETCH #8:c=0,e=321,p=0,cr=3,cu=0,mis=0,r=13,dep=3,og=3,tim=13239363473945
+STAT #8 id=1 cnt=1106 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=183 pr=12 pw=0 time=57316 us)'
+STAT #8 id=2 cnt=1106 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=183 pr=12 pw=0 time=49249 us)'
+STAT #8 id=3 cnt=61 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=122 pr=0 pw=0 time=1286 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363474565 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=102,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363474557
+FETCH #8:c=0,e=85,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363474753
+STAT #8 id=1 cnt=44 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=132 pr=6 pw=0 time=2971 us)'
+STAT #8 id=2 cnt=44 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=88 pr=1 pw=0 time=1579 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363475142 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363475134
+FETCH #8:c=0,e=287,p=1,cr=3,cu=0,mis=0,r=8,dep=3,og=3,tim=13239363475602
+STAT #8 id=1 cnt=1114 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=186 pr=13 pw=0 time=57584 us)'
+STAT #8 id=2 cnt=1114 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=186 pr=13 pw=0 time=49463 us)'
+STAT #8 id=3 cnt=62 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=124 pr=0 pw=0 time=1303 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363476104 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=53,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363476096
+FETCH #8:c=0,e=52,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363476255
+STAT #8 id=1 cnt=45 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=135 pr=6 pw=0 time=3014 us)'
+STAT #8 id=2 cnt=45 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=90 pr=1 pw=0 time=1607 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363476751 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=61,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363476744
+FETCH #8:c=0,e=268,p=1,cr=3,cu=0,mis=0,r=14,dep=3,og=3,tim=13239363477117
+STAT #8 id=1 cnt=1128 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=189 pr=14 pw=0 time=57818 us)'
+STAT #8 id=2 cnt=1128 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=189 pr=14 pw=0 time=49651 us)'
+STAT #8 id=3 cnt=63 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=126 pr=0 pw=0 time=1322 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363477615 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=53,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363477607
+FETCH #8:c=0,e=51,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363477765
+STAT #8 id=1 cnt=46 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=138 pr=6 pw=0 time=3056 us)'
+STAT #8 id=2 cnt=46 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=92 pr=1 pw=0 time=1634 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363478227 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=51,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363478219
+FETCH #8:c=0,e=49,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363478374
+STAT #8 id=1 cnt=47 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=141 pr=6 pw=0 time=3098 us)'
+STAT #8 id=2 cnt=47 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=94 pr=1 pw=0 time=1660 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363478828 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363478821
+FETCH #8:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363478974
+STAT #8 id=1 cnt=48 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=144 pr=6 pw=0 time=3137 us)'
+STAT #8 id=2 cnt=48 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=96 pr=1 pw=0 time=1685 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363479431 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363479423
+FETCH #8:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363479575
+STAT #8 id=1 cnt=49 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=147 pr=6 pw=0 time=3176 us)'
+STAT #8 id=2 cnt=49 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=98 pr=1 pw=0 time=1710 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363479920 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363479913
+FETCH #8:c=0,e=232,p=1,cr=3,cu=0,mis=0,r=3,dep=3,og=3,tim=13239363480249
+STAT #8 id=1 cnt=1131 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=192 pr=15 pw=0 time=58033 us)'
+STAT #8 id=2 cnt=1131 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=192 pr=15 pw=0 time=49821 us)'
+STAT #8 id=3 cnt=64 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=128 pr=0 pw=0 time=1340 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363480748 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=52,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363480741
+FETCH #8:c=0,e=50,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363480897
+STAT #8 id=1 cnt=50 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=150 pr=6 pw=0 time=3217 us)'
+STAT #8 id=2 cnt=50 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=100 pr=1 pw=0 time=1736 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363481351 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363481344
+FETCH #8:c=0,e=48,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363481498
+STAT #8 id=1 cnt=51 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=153 pr=6 pw=0 time=3257 us)'
+STAT #8 id=2 cnt=51 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=102 pr=1 pw=0 time=1761 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363481949 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363481941
+FETCH #8:c=0,e=48,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363482094
+STAT #8 id=1 cnt=52 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=156 pr=6 pw=0 time=3296 us)'
+STAT #8 id=2 cnt=52 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=104 pr=1 pw=0 time=1787 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363482546 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363482539
+FETCH #8:c=0,e=48,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363482766
+STAT #8 id=1 cnt=53 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=159 pr=6 pw=0 time=3335 us)'
+STAT #8 id=2 cnt=53 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=106 pr=1 pw=0 time=1813 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363483216 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363483208
+FETCH #8:c=0,e=49,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363483362
+STAT #8 id=1 cnt=54 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=162 pr=6 pw=0 time=3376 us)'
+STAT #8 id=2 cnt=54 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=108 pr=1 pw=0 time=1839 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363483809 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363483802
+FETCH #8:c=0,e=48,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363483954
+STAT #8 id=1 cnt=55 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=165 pr=6 pw=0 time=3417 us)'
+STAT #8 id=2 cnt=55 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=110 pr=1 pw=0 time=1865 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363484408 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=48,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363484400
+FETCH #8:c=0,e=49,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363484553
+STAT #8 id=1 cnt=56 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=168 pr=6 pw=0 time=3455 us)'
+STAT #8 id=2 cnt=56 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=112 pr=1 pw=0 time=1890 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363485000 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363484992
+FETCH #8:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363485143
+STAT #8 id=1 cnt=57 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=171 pr=6 pw=0 time=3493 us)'
+STAT #8 id=2 cnt=57 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=114 pr=1 pw=0 time=1915 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363485590 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363485582
+FETCH #8:c=0,e=46,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363485734
+STAT #8 id=1 cnt=58 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=174 pr=6 pw=0 time=3531 us)'
+STAT #8 id=2 cnt=58 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=116 pr=1 pw=0 time=1940 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363486188 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363486181
+FETCH #8:c=10000,e=140,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363486427
+STAT #8 id=1 cnt=59 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=177 pr=6 pw=0 time=3569 us)'
+STAT #8 id=2 cnt=59 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=118 pr=1 pw=0 time=1965 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363486907 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=53,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363486899
+FETCH #8:c=0,e=49,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363487055
+STAT #8 id=1 cnt=60 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=180 pr=6 pw=0 time=3610 us)'
+STAT #8 id=2 cnt=60 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=120 pr=1 pw=0 time=1992 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363487501 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363487493
+FETCH #8:c=0,e=46,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363487643
+STAT #8 id=1 cnt=61 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=183 pr=6 pw=0 time=3648 us)'
+STAT #8 id=2 cnt=61 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=122 pr=1 pw=0 time=2017 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363488093 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363488085
+FETCH #8:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363488237
+STAT #8 id=1 cnt=62 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=186 pr=6 pw=0 time=3686 us)'
+STAT #8 id=2 cnt=62 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=124 pr=1 pw=0 time=2042 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363488583 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363488575
+FETCH #8:c=0,e=226,p=1,cr=3,cu=0,mis=0,r=2,dep=3,og=3,tim=13239363488907
+STAT #8 id=1 cnt=1133 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=195 pr=16 pw=0 time=58247 us)'
+STAT #8 id=2 cnt=1133 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=195 pr=16 pw=0 time=49986 us)'
+STAT #8 id=3 cnt=65 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=130 pr=0 pw=0 time=1357 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363489399 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=53,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363489391
+FETCH #8:c=0,e=50,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363489548
+STAT #8 id=1 cnt=63 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=189 pr=6 pw=0 time=3728 us)'
+STAT #8 id=2 cnt=63 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=126 pr=1 pw=0 time=2068 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363490159 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=51,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363490151
+FETCH #8:c=0,e=50,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363490307
+STAT #8 id=1 cnt=64 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=192 pr=6 pw=0 time=3770 us)'
+STAT #8 id=2 cnt=64 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=128 pr=1 pw=0 time=2096 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363490792 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363490784
+FETCH #8:c=0,e=57,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363490948
+STAT #8 id=1 cnt=65 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=195 pr=6 pw=0 time=3818 us)'
+STAT #8 id=2 cnt=65 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=130 pr=1 pw=0 time=2124 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363491315 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=74,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363491307
+FETCH #8:c=0,e=23947,p=1,cr=3,cu=0,mis=0,r=19,dep=3,og=3,tim=13239363515360
+STAT #8 id=1 cnt=1152 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=198 pr=17 pw=0 time=82170 us)'
+STAT #8 id=2 cnt=1152 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=198 pr=17 pw=0 time=73834 us)'
+STAT #8 id=3 cnt=66 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=132 pr=0 pw=0 time=1379 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363516153 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=111,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363516141
+FETCH #8:c=0,e=79,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363516362
+STAT #8 id=1 cnt=66 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=198 pr=6 pw=0 time=3888 us)'
+STAT #8 id=2 cnt=66 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=132 pr=1 pw=0 time=2171 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363516894 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=64,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363516886
+FETCH #8:c=0,e=50,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363517045
+STAT #8 id=1 cnt=67 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=201 pr=6 pw=0 time=3929 us)'
+STAT #8 id=2 cnt=67 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=134 pr=1 pw=0 time=2198 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363517516 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363517508
+FETCH #8:c=0,e=51,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363517669
+STAT #8 id=1 cnt=68 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=204 pr=6 pw=0 time=3971 us)'
+STAT #8 id=2 cnt=68 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=136 pr=1 pw=0 time=2225 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363518121 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363518113
+FETCH #8:c=0,e=49,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363518270
+STAT #8 id=1 cnt=69 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=207 pr=6 pw=0 time=4010 us)'
+STAT #8 id=2 cnt=69 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=138 pr=1 pw=0 time=2250 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363518792 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=51,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363518784
+FETCH #8:c=0,e=56,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363518948
+STAT #8 id=1 cnt=70 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=210 pr=6 pw=0 time=4058 us)'
+STAT #8 id=2 cnt=70 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=140 pr=1 pw=0 time=2285 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363519405 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363519398
+FETCH #8:c=0,e=49,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363519553
+STAT #8 id=1 cnt=71 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=213 pr=6 pw=0 time=4100 us)'
+STAT #8 id=2 cnt=71 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=142 pr=1 pw=0 time=2313 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363520008 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=50,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363520000
+FETCH #8:c=0,e=49,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363520155
+STAT #8 id=1 cnt=72 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=216 pr=6 pw=0 time=4141 us)'
+STAT #8 id=2 cnt=72 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=144 pr=1 pw=0 time=2340 us)'
+EXEC #1:c=80000,e=128952,p=14,cr=222,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363526347
+FETCH #1:c=0,e=15769,p=1,cr=8,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363542227
+=====================
+PARSING IN CURSOR #8 len=67 dep=2 uid=0 oct=3 lid=0 tim=13239363544586 hv=2280069326 ad='92e72c10'
+select pos#,intcol#,col#,spare1,bo#,spare2 from icol$ where obj#=:1
+END OF STMT
+PARSE #8:c=0,e=2121,p=0,cr=0,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363544578
+=====================
+PARSING IN CURSOR #9 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363546350 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #9:c=0,e=112,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363546339
+FETCH #9:c=0,e=207,p=1,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363546675
+STAT #9 id=1 cnt=73 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=219 pr=7 pw=0 time=4338 us)'
+STAT #9 id=2 cnt=73 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=146 pr=1 pw=0 time=2391 us)'
+=====================
+PARSING IN CURSOR #9 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363547403 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #9:c=0,e=62,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363547395
+FETCH #9:c=0,e=51,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363547555
+STAT #9 id=1 cnt=74 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=222 pr=7 pw=0 time=4380 us)'
+STAT #9 id=2 cnt=74 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=148 pr=1 pw=0 time=2418 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363547950 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=84,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363547942
+FETCH #9:c=0,e=332,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363548380
+STAT #9 id=1 cnt=1172 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=201 pr=18 pw=0 time=82498 us)'
+STAT #9 id=2 cnt=1172 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=201 pr=18 pw=0 time=74076 us)'
+STAT #9 id=3 cnt=67 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=134 pr=0 pw=0 time=1401 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363548759 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363548751
+FETCH #9:c=0,e=127,p=0,cr=3,cu=0,mis=0,r=5,dep=3,og=3,tim=13239363548984
+STAT #9 id=1 cnt=1177 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=204 pr=18 pw=0 time=82607 us)'
+STAT #9 id=2 cnt=1177 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=204 pr=18 pw=0 time=74134 us)'
+STAT #9 id=3 cnt=68 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=136 pr=0 pw=0 time=1418 us)'
+=====================
+PARSING IN CURSOR #9 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363549470 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #9:c=0,e=52,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363549462
+FETCH #9:c=0,e=50,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363549619
+STAT #9 id=1 cnt=75 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=225 pr=7 pw=0 time=4421 us)'
+STAT #9 id=2 cnt=75 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=150 pr=1 pw=0 time=2444 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363549976 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363549968
+FETCH #9:c=0,e=330,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363550403
+STAT #9 id=1 cnt=1197 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=207 pr=19 pw=0 time=82924 us)'
+STAT #9 id=2 cnt=1197 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=207 pr=19 pw=0 time=74344 us)'
+STAT #9 id=3 cnt=69 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=138 pr=0 pw=0 time=1436 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363550776 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363550768
+FETCH #9:c=0,e=204,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363551078
+STAT #9 id=1 cnt=1217 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=210 pr=19 pw=0 time=83118 us)'
+STAT #9 id=2 cnt=1217 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=210 pr=19 pw=0 time=74448 us)'
+STAT #9 id=3 cnt=70 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=140 pr=0 pw=0 time=1452 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363551445 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363551437
+FETCH #9:c=0,e=196,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363551738
+STAT #9 id=1 cnt=1237 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=213 pr=19 pw=0 time=83302 us)'
+STAT #9 id=2 cnt=1237 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=213 pr=19 pw=0 time=74561 us)'
+STAT #9 id=3 cnt=71 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=142 pr=0 pw=0 time=1468 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363552100 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363552093
+FETCH #9:c=0,e=199,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363552396
+STAT #9 id=1 cnt=1257 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=216 pr=19 pw=0 time=83490 us)'
+STAT #9 id=2 cnt=1257 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=216 pr=19 pw=0 time=74670 us)'
+STAT #9 id=3 cnt=72 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=144 pr=0 pw=0 time=1484 us)'
+=====================
+PARSING IN CURSOR #9 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363552874 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #9:c=0,e=52,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363552867
+FETCH #9:c=0,e=51,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363553025
+STAT #9 id=1 cnt=76 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=228 pr=7 pw=0 time=4462 us)'
+STAT #9 id=2 cnt=76 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=152 pr=1 pw=0 time=2471 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363553384 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363553377
+FETCH #9:c=0,e=8137,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363561619
+STAT #9 id=1 cnt=1277 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=219 pr=20 pw=0 time=91614 us)'
+STAT #9 id=2 cnt=1277 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=219 pr=20 pw=0 time=82691 us)'
+STAT #9 id=3 cnt=73 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=146 pr=0 pw=0 time=1501 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363562000 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363561992
+FETCH #9:c=0,e=197,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363562295
+STAT #9 id=1 cnt=1297 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=222 pr=20 pw=0 time=91800 us)'
+STAT #9 id=2 cnt=1297 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=222 pr=20 pw=0 time=82779 us)'
+STAT #9 id=3 cnt=74 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=148 pr=0 pw=0 time=1520 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363562665 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363562657
+FETCH #9:c=0,e=198,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363563039
+STAT #9 id=1 cnt=1317 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=225 pr=20 pw=0 time=91987 us)'
+STAT #9 id=2 cnt=1317 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=225 pr=20 pw=0 time=82879 us)'
+STAT #9 id=3 cnt=75 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=150 pr=0 pw=0 time=1537 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363563402 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363563394
+FETCH #9:c=0,e=195,p=0,cr=3,cu=0,mis=0,r=17,dep=3,og=3,tim=13239363563694
+STAT #9 id=1 cnt=1334 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=228 pr=20 pw=0 time=92144 us)'
+STAT #9 id=2 cnt=1334 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=228 pr=20 pw=0 time=82982 us)'
+STAT #9 id=3 cnt=76 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=152 pr=0 pw=0 time=1553 us)'
+=====================
+PARSING IN CURSOR #9 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363564183 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #9:c=0,e=52,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363564175
+FETCH #9:c=0,e=51,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363564332
+STAT #9 id=1 cnt=77 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=231 pr=7 pw=0 time=4504 us)'
+STAT #9 id=2 cnt=77 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=154 pr=1 pw=0 time=2498 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363564825 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=60,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363564817
+FETCH #9:c=0,e=15580,p=1,cr=3,cu=0,mis=0,r=2,dep=3,og=3,tim=13239363580505
+STAT #9 id=1 cnt=1336 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=231 pr=21 pw=0 time=107713 us)'
+STAT #9 id=2 cnt=1336 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=231 pr=21 pw=0 time=98498 us)'
+STAT #9 id=3 cnt=77 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=154 pr=0 pw=0 time=1572 us)'
+=====================
+PARSING IN CURSOR #9 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363581012 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #9:c=0,e=53,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363581004
+FETCH #9:c=0,e=52,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363581164
+STAT #9 id=1 cnt=78 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=234 pr=7 pw=0 time=4547 us)'
+STAT #9 id=2 cnt=78 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=156 pr=1 pw=0 time=2525 us)'
+=====================
+PARSING IN CURSOR #9 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363581625 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #9:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363581617
+FETCH #9:c=0,e=48,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363581772
+STAT #9 id=1 cnt=79 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=237 pr=7 pw=0 time=4585 us)'
+STAT #9 id=2 cnt=79 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=158 pr=1 pw=0 time=2551 us)'
+=====================
+PARSING IN CURSOR #9 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363582120 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #9:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363582111
+FETCH #9:c=0,e=213,p=1,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363582432
+STAT #9 id=1 cnt=1337 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=234 pr=22 pw=0 time=107931 us)'
+STAT #9 id=2 cnt=1337 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=234 pr=22 pw=0 time=98663 us)'
+STAT #9 id=3 cnt=78 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=156 pr=0 pw=0 time=1591 us)'
+EXEC #8:c=20000,e=38826,p=6,cr=57,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363583652
+FETCH #8:c=0,e=85,p=0,cr=3,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363583818
+FETCH #8:c=0,e=24,p=0,cr=1,cu=0,mis=0,r=0,dep=2,og=4,tim=13239363583908
+STAT #8 id=1 cnt=1 pid=0 pos=1 obj=20 op='TABLE ACCESS BY INDEX ROWID ICOL$ (cr=4 pr=0 pw=0 time=79 us)'
+STAT #8 id=2 cnt=1 pid=1 pos=1 obj=40 op='INDEX RANGE SCAN I_ICOL1 (cr=3 pr=0 pw=0 time=67 us)'
+FETCH #1:c=0,e=248,p=0,cr=0,cu=0,mis=0,r=0,dep=2,og=4,tim=13239363584378
+STAT #1 id=1 cnt=1 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=8 pr=1 pw=0 time=15739 us)'
+STAT #1 id=2 cnt=1 pid=1 pos=1 obj=0 op='HASH JOIN OUTER (cr=8 pr=1 pw=0 time=15570 us)'
+STAT #1 id=3 cnt=1 pid=2 pos=1 obj=0 op='NESTED LOOPS OUTER (cr=5 pr=0 pw=0 time=112 us)'
+STAT #1 id=4 cnt=1 pid=3 pos=1 obj=19 op='TABLE ACCESS CLUSTER IND$ (cr=4 pr=0 pw=0 time=82 us)'
+STAT #1 id=5 cnt=1 pid=4 pos=1 obj=3 op='INDEX UNIQUE SCAN I_OBJ# (cr=2 pr=0 pw=0 time=30 us)'
+STAT #1 id=6 cnt=0 pid=3 pos=2 obj=115745 op='TABLE ACCESS BY INDEX ROWID IND_STATS$ (cr=1 pr=0 pw=0 time=22 us)'
+STAT #1 id=7 cnt=0 pid=6 pos=1 obj=115746 op='INDEX UNIQUE SCAN I_IND_STATS$_OBJ# (cr=1 pr=0 pw=0 time=17 us)'
+STAT #1 id=8 cnt=0 pid=2 pos=2 obj=0 op='VIEW  (cr=3 pr=1 pw=0 time=14758 us)'
+STAT #1 id=9 cnt=0 pid=8 pos=1 obj=0 op='SORT GROUP BY (cr=3 pr=1 pw=0 time=14748 us)'
+STAT #1 id=10 cnt=0 pid=9 pos=1 obj=31 op='TABLE ACCESS BY INDEX ROWID CDEF$ (cr=3 pr=1 pw=0 time=14660 us)'
+STAT #1 id=11 cnt=6 pid=10 pos=1 obj=51 op='INDEX RANGE SCAN I_CDEF2 (cr=2 pr=0 pw=0 time=105 us)'
+=====================
+PARSING IN CURSOR #9 len=348 dep=2 uid=0 oct=3 lid=0 tim=13239363587720 hv=2512561537 ad='92e6fa20'
+select name,intcol#,segcol#,type#,length,nvl(precision#,0),decode(type#,2,nvl(scale,-127/*MAXSB1MINAL*/),178,scale,179,scale,180,scale,181,scale,182,scale,183,scale,231,scale,0),null$,fixedstorage,nvl(deflength,0),default$,rowid,col#,property, nvl(charsetid,0),nvl(charsetform,0),spare1,spare2,nvl(spare3,0) from col$ where obj#=:1 order by intcol#
+END OF STMT
+PARSE #9:c=0,e=2550,p=0,cr=0,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363587711
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363591474 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=91,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363591465
+FETCH #8:c=0,e=86,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363591676
+STAT #8 id=1 cnt=80 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=240 pr=7 pw=0 time=4664 us)'
+STAT #8 id=2 cnt=80 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=160 pr=1 pw=0 time=2606 us)'
+=====================
+PARSING IN CURSOR #1 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363592097 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #1:c=0,e=82,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363592089
+FETCH #1:c=0,e=421,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363592618
+STAT #1 id=1 cnt=1357 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=237 pr=23 pw=0 time=108348 us)'
+STAT #1 id=2 cnt=1357 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=237 pr=23 pw=0 time=98950 us)'
+STAT #1 id=3 cnt=79 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=158 pr=0 pw=0 time=1613 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363593102 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363593094
+FETCH #8:c=0,e=210,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363593408
+STAT #8 id=1 cnt=1377 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=240 pr=23 pw=0 time=108546 us)'
+STAT #8 id=2 cnt=1377 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=240 pr=23 pw=0 time=99039 us)'
+STAT #8 id=3 cnt=80 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=160 pr=0 pw=0 time=1631 us)'
+=====================
+PARSING IN CURSOR #1 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363593779 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #1:c=10000,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363593770
+FETCH #1:c=0,e=306,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363594341
+STAT #1 id=1 cnt=1397 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=243 pr=23 pw=0 time=108826 us)'
+STAT #1 id=2 cnt=1397 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=243 pr=23 pw=0 time=99207 us)'
+STAT #1 id=3 cnt=81 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=162 pr=0 pw=0 time=1671 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363594837 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=88,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363594828
+FETCH #8:c=0,e=215,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363595153
+STAT #8 id=1 cnt=1417 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=246 pr=23 pw=0 time=109028 us)'
+STAT #8 id=2 cnt=1417 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=246 pr=23 pw=0 time=99342 us)'
+STAT #8 id=3 cnt=82 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=164 pr=0 pw=0 time=1691 us)'
+=====================
+PARSING IN CURSOR #1 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363595558 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #1:c=0,e=65,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363595550
+FETCH #1:c=0,e=177,p=0,cr=3,cu=0,mis=0,r=7,dep=3,og=3,tim=13239363595835
+STAT #1 id=1 cnt=1424 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=249 pr=23 pw=0 time=109185 us)'
+STAT #1 id=2 cnt=1424 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=249 pr=23 pw=0 time=99445 us)'
+STAT #1 id=3 cnt=83 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=166 pr=0 pw=0 time=1707 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363596548 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=73,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363596539
+FETCH #8:c=0,e=59,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363596713
+STAT #8 id=1 cnt=81 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=243 pr=7 pw=0 time=4714 us)'
+STAT #8 id=2 cnt=81 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=162 pr=1 pw=0 time=2638 us)'
+=====================
+PARSING IN CURSOR #1 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363597088 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #1:c=0,e=59,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363597079
+FETCH #1:c=0,e=268,p=1,cr=3,cu=0,mis=0,r=3,dep=3,og=3,tim=13239363597455
+STAT #1 id=1 cnt=1427 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=252 pr=24 pw=0 time=109438 us)'
+STAT #1 id=2 cnt=1427 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=252 pr=24 pw=0 time=99644 us)'
+STAT #1 id=3 cnt=84 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=168 pr=0 pw=0 time=1725 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363597994 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363597986
+FETCH #8:c=0,e=54,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363598153
+STAT #8 id=1 cnt=82 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=246 pr=7 pw=0 time=4760 us)'
+STAT #8 id=2 cnt=82 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=164 pr=1 pw=0 time=2667 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363598621 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=48,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363598613
+FETCH #1:c=0,e=48,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363598768
+STAT #1 id=1 cnt=83 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=249 pr=7 pw=0 time=4799 us)'
+STAT #1 id=2 cnt=83 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=166 pr=1 pw=0 time=2693 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363599215 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363599207
+FETCH #8:c=0,e=29,p=0,cr=2,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363599342
+STAT #8 id=1 cnt=83 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=251 pr=7 pw=0 time=4832 us)'
+STAT #8 id=2 cnt=83 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=168 pr=1 pw=0 time=2721 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363599789 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363599782
+FETCH #1:c=0,e=29,p=0,cr=2,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363599915
+STAT #1 id=1 cnt=83 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=253 pr=7 pw=0 time=4865 us)'
+STAT #1 id=2 cnt=83 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=170 pr=1 pw=0 time=2748 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363600284 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363600276
+FETCH #8:c=0,e=356,p=1,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363600736
+STAT #8 id=1 cnt=1447 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=255 pr=25 pw=0 time=109798 us)'
+STAT #8 id=2 cnt=1447 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=255 pr=25 pw=0 time=99872 us)'
+STAT #8 id=3 cnt=85 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=170 pr=0 pw=0 time=1742 us)'
+=====================
+PARSING IN CURSOR #1 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363601109 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #1:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363601101
+FETCH #1:c=0,e=214,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363601599
+STAT #1 id=1 cnt=1467 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=258 pr=25 pw=0 time=109997 us)'
+STAT #1 id=2 cnt=1467 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=258 pr=25 pw=0 time=99958 us)'
+STAT #1 id=3 cnt=86 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=172 pr=0 pw=0 time=1759 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363601966 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363601958
+FETCH #8:c=0,e=216,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363602292
+STAT #8 id=1 cnt=1487 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=261 pr=25 pw=0 time=110198 us)'
+STAT #8 id=2 cnt=1487 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=261 pr=25 pw=0 time=100076 us)'
+STAT #8 id=3 cnt=87 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=174 pr=0 pw=0 time=1777 us)'
+=====================
+PARSING IN CURSOR #1 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363602685 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #1:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363602677
+FETCH #1:c=0,e=209,p=0,cr=3,cu=0,mis=0,r=20,dep=3,og=3,tim=13239363603007
+STAT #1 id=1 cnt=1507 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=264 pr=25 pw=0 time=110374 us)'
+STAT #1 id=2 cnt=1507 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=264 pr=25 pw=0 time=100185 us)'
+STAT #1 id=3 cnt=88 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=176 pr=0 pw=0 time=1793 us)'
+=====================
+PARSING IN CURSOR #8 len=121 dep=3 uid=0 oct=3 lid=0 tim=13239363603378 hv=3150898423 ad='91a9cd88'
+select /*+ rule */ bucket, endpoint, col#, epvalue from histgrm$ where obj#=:1 and intcol#=:2 and row#=:3 order by bucket
+END OF STMT
+EXEC #8:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363603370
+FETCH #8:c=10000,e=285,p=0,cr=3,cu=0,mis=0,r=6,dep=3,og=3,tim=13239363603768
+STAT #8 id=1 cnt=1513 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=267 pr=25 pw=0 time=110635 us)'
+STAT #8 id=2 cnt=1513 pid=1 pos=1 obj=217 op='TABLE ACCESS CLUSTER HISTGRM$ (cr=267 pr=25 pw=0 time=100393 us)'
+STAT #8 id=3 cnt=89 pid=2 pos=1 obj=216 op='INDEX UNIQUE SCAN I_OBJ#_INTCOL# (cr=178 pr=0 pw=0 time=1809 us)'
+=====================
+PARSING IN CURSOR #1 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363604357 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #1:c=0,e=53,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363604349
+FETCH #1:c=0,e=52,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363604506
+STAT #1 id=1 cnt=84 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=256 pr=7 pw=0 time=4909 us)'
+STAT #1 id=2 cnt=84 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=172 pr=1 pw=0 time=2775 us)'
+=====================
+PARSING IN CURSOR #8 len=210 dep=3 uid=0 oct=3 lid=0 tim=13239363604969 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=49,p=0,cr=0,cu=0,mis=0,r=0,dep=3,og=3,tim=13239363604961
+FETCH #8:c=0,e=47,p=0,cr=3,cu=0,mis=0,r=1,dep=3,og=3,tim=13239363605113
+STAT #8 id=1 cnt=85 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=259 pr=7 pw=0 time=4949 us)'
+STAT #8 id=2 cnt=85 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=174 pr=1 pw=0 time=2802 us)'
+EXEC #9:c=20000,e=19365,p=3,cr=55,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363607467
+FETCH #9:c=0,e=208,p=0,cr=3,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363607809
+FETCH #9:c=0,e=24,p=0,cr=0,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363607906
+FETCH #9:c=0,e=23,p=0,cr=0,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363607986
+FETCH #9:c=0,e=22,p=0,cr=0,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363608062
+FETCH #9:c=0,e=21,p=0,cr=0,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363608136
+FETCH #9:c=0,e=21,p=0,cr=0,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363608210
+FETCH #9:c=0,e=21,p=0,cr=0,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363608284
+FETCH #9:c=0,e=19,p=0,cr=0,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363608356
+FETCH #9:c=0,e=22,p=0,cr=0,cu=0,mis=0,r=0,dep=2,og=4,tim=13239363608430
+STAT #9 id=1 cnt=8 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=3 pr=0 pw=0 time=198 us)'
+STAT #9 id=2 cnt=8 pid=1 pos=1 obj=21 op='TABLE ACCESS CLUSTER COL$ (cr=3 pr=0 pw=0 time=92 us)'
+STAT #9 id=3 cnt=1 pid=2 pos=1 obj=3 op='INDEX UNIQUE SCAN I_OBJ# (cr=2 pr=0 pw=0 time=24 us)'
+=====================
+PARSING IN CURSOR #1 len=116 dep=2 uid=0 oct=3 lid=0 tim=13239363610572 hv=854877822 ad='92e646a8'
+select o.owner#,o.name,o.namespace,o.remoteowner,o.linkname,o.subname,o.dataobj#,o.flags from obj$ o where o.obj#=:1
+END OF STMT
+PARSE #1:c=0,e=1671,p=0,cr=0,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363610563
+EXEC #1:c=10000,e=3021,p=0,cr=0,cu=0,mis=1,r=0,dep=2,og=4,tim=13239363613854
+FETCH #1:c=0,e=74,p=0,cr=3,cu=0,mis=0,r=1,dep=2,og=4,tim=13239363614016
+STAT #1 id=1 cnt=1 pid=0 pos=1 obj=18 op='TABLE ACCESS BY INDEX ROWID OBJ$ (cr=3 pr=0 pw=0 time=69 us)'
+STAT #1 id=2 cnt=1 pid=1 pos=1 obj=36 op='INDEX UNIQUE SCAN I_OBJ1 (cr=2 pr=0 pw=0 time=40 us)'
+=====================
+PARSING IN CURSOR #3 len=37 dep=1 uid=0 oct=3 lid=0 tim=13239363614864 hv=1398610540 ad='927ae798'
+select text from view$ where rowid=:1
+END OF STMT
+PARSE #3:c=220000,e=309120,p=35,cr=552,cu=0,mis=1,r=0,dep=1,og=4,tim=13239363614853
+=====================
+PARSING IN CURSOR #8 len=210 dep=2 uid=0 oct=3 lid=0 tim=13239363616453 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #8:c=0,e=78,p=0,cr=0,cu=0,mis=0,r=0,dep=2,og=3,tim=13239363616445
+FETCH #8:c=0,e=47,p=0,cr=2,cu=0,mis=0,r=0,dep=2,og=3,tim=13239363616605
+STAT #8 id=1 cnt=85 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=261 pr=7 pw=0 time=5002 us)'
+STAT #8 id=2 cnt=85 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=176 pr=1 pw=0 time=2848 us)'
+=====================
+PARSING IN CURSOR #9 len=210 dep=2 uid=0 oct=3 lid=0 tim=13239363617163 hv=864012087 ad='91a419d0'
+select /*+ rule */ bucket_cnt, row_cnt, cache_cnt, null_cnt, timestamp#, sample_size, minimum, maximum, distcnt, lowval, hival, density, col#, spare1, spare2, avgcln from hist_head$ where obj#=:1 and intcol#=:2
+END OF STMT
+EXEC #9:c=0,e=62,p=0,cr=0,cu=0,mis=0,r=0,dep=2,og=3,tim=13239363617154
+FETCH #9:c=0,e=29,p=0,cr=2,cu=0,mis=0,r=0,dep=2,og=3,tim=13239363617292
+STAT #9 id=1 cnt=85 pid=0 pos=1 obj=219 op='TABLE ACCESS BY INDEX ROWID HIST_HEAD$ (cr=263 pr=7 pw=0 time=5036 us)'
+STAT #9 id=2 cnt=85 pid=1 pos=1 obj=221 op='INDEX RANGE SCAN I_HH_OBJ#_INTCOL# (cr=178 pr=1 pw=0 time=2877 us)'
+EXEC #3:c=0,e=3008,p=0,cr=4,cu=0,mis=1,r=0,dep=1,og=4,tim=13239363618073
+FETCH #3:c=0,e=61,p=0,cr=2,cu=0,mis=0,r=1,dep=1,og=4,tim=13239363618211
+STAT #3 id=1 cnt=1 pid=0 pos=1 obj=62 op='TABLE ACCESS BY USER ROWID VIEW$ (cr=1 pr=0 pw=0 time=36 us)'
+=====================
+PARSING IN CURSOR #7 len=148 dep=0 uid=76 oct=3 lid=76 tim=13239363625416 hv=1733184381 ad='90e13d20'
+SELECT substr(name,1,20) name,
+       substr(value,1,50) value,
+       substr(description,1,50) description
+FROM   v$parameter
+ORDER
+BY     name ASC
+END OF STMT
+PARSE #7:c=230000,e=321250,p=35,cr=558,cu=0,mis=1,r=0,dep=0,og=2,tim=13239363625405
+EXEC #7:c=0,e=120,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239363625687
+FETCH #7:c=30000,e=35972,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13239363661911
+FETCH #7:c=0,e=73,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239363663467
+FETCH #7:c=0,e=93,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239364387191
+FETCH #7:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239364388944
+FETCH #7:c=0,e=122,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239365667744
+FETCH #7:c=0,e=60,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239365669536
+FETCH #7:c=0,e=55,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239365671432
+FETCH #7:c=0,e=101,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239366262281
+FETCH #7:c=0,e=57,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239366264049
+FETCH #7:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239366265791
+FETCH #7:c=0,e=114,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239366872088
+FETCH #7:c=0,e=54,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239366873808
+FETCH #7:c=0,e=134,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239366875611
+FETCH #7:c=0,e=88,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239367712165
+FETCH #7:c=0,e=60,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239367714000
+FETCH #7:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239367715807
+FETCH #7:c=0,e=119,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239368582026
+FETCH #7:c=0,e=58,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239368583839
+FETCH #7:c=0,e=91,p=0,cr=0,cu=0,mis=0,r=3,dep=0,og=2,tim=13239368585766
+=====================
+PARSING IN CURSOR #1 len=52 dep=0 uid=76 oct=47 lid=76 tim=13239368588497 hv=1029988163 ad='90ac1438'
+BEGIN DBMS_OUTPUT.GET_LINES(:LINES, :NUMLINES); END;
+END OF STMT
+PARSE #1:c=0,e=127,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239368588487
+EXEC #1:c=0,e=844,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13239368589684
+STAT #7 id=1 cnt=259 pid=0 pos=1 obj=0 op='SORT ORDER BY (cr=0 pr=0 pw=0 time=36750 us)'
+STAT #7 id=2 cnt=259 pid=1 pos=1 obj=0 op='HASH JOIN  (cr=0 pr=0 pw=0 time=24973 us)'
+STAT #7 id=3 cnt=1434 pid=2 pos=1 obj=0 op='FIXED TABLE FULL X$KSPPI (cr=0 pr=0 pw=0 time=11540 us)'
+STAT #7 id=4 cnt=1440 pid=2 pos=2 obj=0 op='FIXED TABLE FULL X$KSPPCV (cr=0 pr=0 pw=0 time=4346 us)'
+=====================
+PARSING IN CURSOR #8 len=41 dep=0 uid=76 oct=42 lid=76 tim=13239438214810 hv=1994160639 ad='0'
+alter session set timed_statistics = true
+END OF STMT
+PARSE #8:c=0,e=636,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=0,tim=13239438214799
+EXEC #8:c=0,e=60,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=0,tim=13239438214978
+=====================
+PARSING IN CURSOR #9 len=52 dep=0 uid=76 oct=47 lid=76 tim=13239438215764 hv=1029988163 ad='90ac1438'
+BEGIN DBMS_OUTPUT.GET_LINES(:LINES, :NUMLINES); END;
+END OF STMT
+PARSE #9:c=0,e=73,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239438215757
+EXEC #9:c=0,e=750,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13239438216751
+*** 2009-03-27 11:49:47.009
+=====================
+PARSING IN CURSOR #7 len=37 dep=1 uid=0 oct=3 lid=0 tim=13239638989362 hv=1398610540 ad='927ae798'
+select text from view$ where rowid=:1
+END OF STMT
+PARSE #7:c=0,e=150,p=0,cr=0,cu=0,mis=0,r=0,dep=1,og=4,tim=13239638989347
+EXEC #7:c=0,e=93,p=0,cr=0,cu=0,mis=0,r=0,dep=1,og=4,tim=13239638989733
+FETCH #7:c=0,e=402,p=2,cr=3,cu=0,mis=0,r=1,dep=1,og=4,tim=13239638990199
+STAT #7 id=1 cnt=1 pid=0 pos=1 obj=62 op='TABLE ACCESS BY USER ROWID VIEW$ (cr=2 pr=2 pw=0 time=381 us)'
+=====================
+PARSING IN CURSOR #3 len=224 dep=0 uid=76 oct=3 lid=76 tim=13239639001636 hv=1315810033 ad='8df97a50'
+SELECT sid,
+       serial#,
+       substr(username,1,10) username,
+       status,
+       substr(schemaname,1,10) schemaname,
+       process,
+       substr(program,1,30) program,
+       substr(event,1,50) event
+FROM v$session
+END OF STMT
+PARSE #3:c=10000,e=13959,p=2,cr=3,cu=0,mis=1,r=0,dep=0,og=2,tim=13239639001627
+EXEC #3:c=0,e=92,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239639001885
+FETCH #3:c=0,e=779,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13239639002797
+FETCH #3:c=0,e=566,p=0,cr=0,cu=0,mis=0,r=15,dep=0,og=2,tim=13239639004773
+FETCH #3:c=0,e=245,p=0,cr=0,cu=0,mis=0,r=7,dep=0,og=2,tim=13239640330167
+=====================
+PARSING IN CURSOR #1 len=52 dep=0 uid=76 oct=47 lid=76 tim=13239640332145 hv=1029988163 ad='90ac1438'
+BEGIN DBMS_OUTPUT.GET_LINES(:LINES, :NUMLINES); END;
+END OF STMT
+PARSE #1:c=10000,e=139,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239640332134
+EXEC #1:c=0,e=744,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13239640333151
+STAT #3 id=1 cnt=23 pid=0 pos=1 obj=0 op='NESTED LOOPS  (cr=0 pr=0 pw=0 time=762 us)'
+STAT #3 id=2 cnt=23 pid=1 pos=1 obj=0 op='FIXED TABLE FULL X$KSUSE (cr=0 pr=0 pw=0 time=1820 us)'
+STAT #3 id=3 cnt=23 pid=1 pos=2 obj=0 op='FIXED TABLE FIXED INDEX X$KSLED (ind:2) (cr=0 pr=0 pw=0 time=125 us)'
+=====================
+PARSING IN CURSOR #8 len=71 dep=0 uid=76 oct=47 lid=76 tim=13239655874606 hv=3092121425 ad='91728fa8'
+BEGIN sys.dbms_system.set_sql_trace_in_session(182, 189, false); END;
+END OF STMT
+PARSE #8:c=0,e=585,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239655874595
+EXEC #8:c=0,e=289,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13239655875012
+=====================
+PARSING IN CURSOR #9 len=52 dep=0 uid=76 oct=47 lid=76 tim=13239655875965 hv=1029988163 ad='90ac1438'
+BEGIN DBMS_OUTPUT.GET_LINES(:LINES, :NUMLINES); END;
+END OF STMT
+PARSE #9:c=0,e=47,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239655875958
+EXEC #9:c=0,e=599,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13239655876764
+=====================
+PARSING IN CURSOR #7 len=34 dep=0 uid=76 oct=42 lid=76 tim=13239661008137 hv=2069488880 ad='0'
+alter session set sql_trace = true
+END OF STMT
+PARSE #7:c=0,e=56,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=0,tim=13239661008122
+EXEC #7:c=0,e=77,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=0,tim=13239661008368
+=====================
+PARSING IN CURSOR #3 len=52 dep=0 uid=76 oct=47 lid=76 tim=13239661009242 hv=1029988163 ad='90ac1438'
+BEGIN DBMS_OUTPUT.GET_LINES(:LINES, :NUMLINES); END;
+END OF STMT
+PARSE #3:c=0,e=80,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239661009235
+EXEC #3:c=0,e=776,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13239661010304
+*** 2009-03-27 11:50:33.758
+=====================
+PARSING IN CURSOR #8 len=772 dep=1 uid=77 oct=47 lid=77 tim=13239684645127 hv=2388904333 ad='8f6dc468'
+declare p varchar2(32767);                    begin  p := G$_OBJECT_SECURITY.PREDICATE_FNC(:sn, :on);                    :v1 := substr(p,1,4000); :v2 := substr(p,4001,4000);                    :v3 := substr(p,8001,4000); :v4 := substr(p,12001,4000);                    :v5 := substr(p,16001,4000); :v6 := substr(p,20001,4000);                    :v7 := substr(p,24001,4000); :v8 := substr(p,28001,4000);                    :v9 := substr(p,32001,767);                    :v10 := substr(p, 4001, 1); :v11 := substr(p,8001,1);                    :v12 := substr(p, 12001, 1); :v13 := substr(p,16001,1);                    :v14 := substr(p, 20001, 1); :v15 := substr(p,24001,1);                    :v16 := substr(p, 28001, 1); :v17 := substr(p,32001,1);                    end;
+END OF STMT
+PARSE #8:c=0,e=87,p=0,cr=0,cu=0,mis=0,r=0,dep=1,og=2,tim=13239684645115
+EXEC #8:c=0,e=398,p=0,cr=0,cu=0,mis=0,r=1,dep=1,og=2,tim=13239684645758
+=====================
+PARSING IN CURSOR #1 len=28 dep=0 uid=76 oct=3 lid=76 tim=13239684648523 hv=1701272619 ad='8ca25ad8'
+select count(*)
+from gubobjs
+END OF STMT
+PARSE #1:c=10000,e=5012,p=0,cr=0,cu=0,mis=1,r=0,dep=0,og=2,tim=13239684648513
+=====================
+PARSING IN CURSOR #9 len=772 dep=1 uid=77 oct=47 lid=77 tim=13239684648767 hv=2388904333 ad='8f6dc468'
+declare p varchar2(32767);                    begin  p := G$_OBJECT_SECURITY.PREDICATE_FNC(:sn, :on);                    :v1 := substr(p,1,4000); :v2 := substr(p,4001,4000);                    :v3 := substr(p,8001,4000); :v4 := substr(p,12001,4000);                    :v5 := substr(p,16001,4000); :v6 := substr(p,20001,4000);                    :v7 := substr(p,24001,4000); :v8 := substr(p,28001,4000);                    :v9 := substr(p,32001,767);                    :v10 := substr(p, 4001, 1); :v11 := substr(p,8001,1);                    :v12 := substr(p, 12001, 1); :v13 := substr(p,16001,1);                    :v14 := substr(p, 20001, 1); :v15 := substr(p,24001,1);                    :v16 := substr(p, 28001, 1); :v17 := substr(p,32001,1);                    end;
+END OF STMT
+PARSE #9:c=0,e=41,p=0,cr=0,cu=0,mis=0,r=0,dep=1,og=2,tim=13239684648760
+EXEC #9:c=0,e=167,p=0,cr=0,cu=0,mis=0,r=1,dep=1,og=2,tim=13239684649153
+EXEC #1:c=0,e=767,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239684649397
+FETCH #1:c=0,e=27284,p=21,cr=24,cu=0,mis=0,r=1,dep=0,og=2,tim=13239684676820
+FETCH #1:c=0,e=7,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=0,tim=13239684678223
+=====================
+PARSING IN CURSOR #7 len=52 dep=0 uid=76 oct=47 lid=76 tim=13239685467606 hv=1029988163 ad='90ac1438'
+BEGIN DBMS_OUTPUT.GET_LINES(:LINES, :NUMLINES); END;
+END OF STMT
+PARSE #7:c=0,e=142,p=0,cr=0,cu=0,mis=0,r=0,dep=0,og=2,tim=13239685467593
+EXEC #7:c=10000,e=822,p=0,cr=0,cu=0,mis=0,r=1,dep=0,og=2,tim=13239685468775

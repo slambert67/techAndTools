@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Web Storage</title>
+	
+	<script>
+	
+	  function checkStorageSupport() {
+	  
+	   // session storage
+	    if (window.sessionStorage) {
+	      alert('This browser supports session storage');
+	    } else {
+	      alert('This browser does not support session storage')
+        }
+		
+	   // local(file system) storage
+	    if (window.localStorage) {
+	      alert('This browser supports local storage');
+	    } else {
+	      alert('This browser does not support local storage')
+        }
+	  }
+	  
+	  function localCounter() {
+	  
+	    if (localStorage.clickCount) {  // check for key
+		  localStorage.clickCount = Number(localStorage.clickCount)+1;
+		} else {
+		  localStorage.clickCount = 1;
+		}
+		
+		document.getElementById("localResult").innerHTML = "You have clicked the button " + localStorage.clickCount + " times";
+	  }
+
+	  function sessionCounter() {
+	  
+	    if (sessionStorage.clickCount) {  // check for key
+		  sessionStorage.clickCount = Number(sessionStorage.clickCount)+1;
+		} else {
+		  sessionStorage.clickCount = 1;
+		}
+		
+		document.getElementById("sessionResult").innerHTML = "You have clicked the button " + sessionStorage.clickCount + " times";
+	  }
+	  
+	</script>
+  </head>
+  
+  <body onload="checkStorageSupport()">
+  
+    <!-- 
+	     data stored as key/value pairs - always stored as strings
+	     website can only access data stored by itself
+		 localStorage object for local storage
+		 sessionStorage object for session storage
+	-->
+	
+    <p><button onclick="localCounter()" type="button">Local Storage</button></p>
+    <div id="localResult"></div>
+    <p>Click the button to see the counter increase.</p>
+    <p>Close the browser tab (or window), and try again, and the counter will continue to count (is not reset).</p><br>
+	
+    <p><button onclick="sessionCounter()" type="button">Session Storage</button></p>
+    <div id="sessionResult"></div>
+    <p>Click the button to see the counter increase.</p>
+    <p>Close the browser tab (or window), and try again, and the counter will reset.</p><br>
+
+  </body>
+</html>

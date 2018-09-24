@@ -1,0 +1,8 @@
+The search functionality would be on the Employee list page.
+There should be a text box to enter the search text, and a button next to it to search.
+
+h4. Goals
+* Add Caption component with textbox and button for search.
+* Add search event listener.
+
+

@@ -1,0 +1,25 @@
+Connections
+===========
+DBA: sqlplus / as sysdba
+  / tells sqlplus to use OS authentication
+  as sysdba requests dba privileges 
+user: sqlplus user/password
+none: sqlplus /nolog - can use in shell script
+From script: 
+  sqlplus /nolog<<EOF
+  connect / as sysdba
+  select sysdate from dual;
+  EOF
+
+DBA
+===
+shutdown database: shutdown immediate
+startup database: startup
+
+Misc
+====
+exec <procedure name> invokes procedure
+
+
+
+  

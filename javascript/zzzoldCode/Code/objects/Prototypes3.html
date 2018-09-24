@@ -1,0 +1,43 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Prototypes</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+        var Person = function(){this.bar = "bar"};
+        var Chef = function(){this.foo = "foo"};
+        Chef.prototype = new Person();
+        var me = new Chef();
+        console.log(me.foo);
+        console.log(me.bar);
+        
+        var Person2 = function(){this.bar = "bar"};
+        var Chef2 = function(){this.foo = "foo"};
+        var me2 = new Chef2();
+        Chef2.prototype = new Person2();
+        console.log(me2.foo);
+        console.log(me2.bar);	
+
+        var Squoink = function(){this.squoink = "squoink"};
+        Chef2.prototype = new Squoink();
+        console.log(me2.foo);
+        console.log(me2.bar); 
+        console.log(me2.squoink);         
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

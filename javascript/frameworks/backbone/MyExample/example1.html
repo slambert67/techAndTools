@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="../jquery.js"></script>
+  <script src="../underscore.js"></script>
+  <script src="../backbone.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  // add button event handler
+  $('button#myButton')
+  .bind('click', function(event) {
+                   var oldval = myModelInstance.get("myNumber");
+				   var newval = oldval + 1;
+				   myModelInstance.set("myNumber", newval);
+				   
+				   // render called explicitly
+                   //myViewInstance.render();
+				   
+				   // ensure render is called automatically when model changes ???
+				   // bind view render() to model change event in view initialize()
+                 }
+  );
+  
+  // create a model class
+  var MyModelClass = Backbone.Model.extend({
+  
+    defaults : {
+	  myNumber: 0
+	},
+	
+    // initialize function optional
+    initialize: function(){
+      console.log('This model has been initialized.');
+	  
+	  /*this.on('change', function() {
+	                      console.log('Listener message: Values for this model have changed');
+	                    }
+	  )*/
+    }
+  
+  });
+  
+  // instantiate a model instance
+  var myModelInstance = new MyModelClass();
+  
+  // create a view class
+  var MyViewClass = Backbone.View.extend({
+  
+    initialize: function() {
+	              //this.render = _.bind(this.render, this);  // ??? binding all events to view instance
+				  _.bindAll(this, 'render'); // binding render function to this view instance
+				                             // ensures context not lost in web application
+											 // fixes loss of context for 'this' within methods
+
+	              this.model.bind('change', this.render); 
+	            },
+				
+    render: function() {
+			  var HTMLToRender = "hello world " + this.model.get("myNumber");
+			  $(this.el).html(HTMLToRender);
+	        }
+  });
+  
+  // instantiate a view instance
+  var myViewInstance = new MyViewClass( {el: $('div#viewdiv'), model: myModelInstance} );
+  //myViewInstance.render();
+   
+});
+</script>
+
+</head>
+
+<body>
+
+  <div id="viewdiv"></div>
+ 
+  <button type="button" id="myButton">Increment</button>
+  
+</body>
+</html>

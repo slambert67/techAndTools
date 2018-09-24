@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  /* disable submit button until form processing is complete */
+  $("form").submit
+  (
+    function()
+	{
+	  $(":submit",this).attr("disabled", "disabled");
+	  
+	  var j;
+	  var i;
+	  for (i=0;i<1000000000;i++)
+	  {
+	    j++;
+	  }
+	}
+  );
+  
+});
+</script>
+
+</head>
+
+<body>
+
+    <form action="">
+	<fieldset> <legend>My Form</legend>
+	
+	  <label>Remember me:<input type="checkbox" id="rememberme" checked></label><br>
+  
+	  <!-- submit the form -->
+	  <input type="submit">  <!-- validation done here -->
+	  	  
+	</fieldset>  
+	</form>
+
+</body>
+</html>

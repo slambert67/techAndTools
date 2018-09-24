@@ -1,0 +1,117 @@
+CREATE OR REPLACE PACKAGE sl_curvar is
+
+/**************************************************************************
+  Name		  : sl_curvar
+  Purpose	  : cursor variables
+  Developer	: U08998
+  Date		  : 07/05/2004
+---------------------------------------------------------------------------
+   Update Log:
+
+For readability, insert the most recent entry to the top of the list
+
+  	Version		By	Date	Details with CCR No
+
+  	
+  	1.0		U08998	07/05/2004	Original Version
+---------------------------------------------------------------------------
+  
+**************************************************************************/
+  
+  -- Public type declarations
+  TYPE my_cursor_ref_type IS REF CURSOR;
+
+  -- Public constant declarations
+
+  -- Public variable declarations
+
+  -- Public function and procedure declarations
+  PROCEDURE first_rec;
+
+end sl_curvar;
+/
+CREATE OR REPLACE PACKAGE BODY sl_curvar is
+
+/**************************************************************************
+  Name		  : sl_curvar
+  Purpose	  : cursor variables
+  Developer	: U08998
+  Date		  : 07/05/2004
+---------------------------------------------------------------------------
+  Update Log:
+
+For readability, insert the most recent entry to the top of the list
+
+  	Version		By	Date	Details with CCR No
+
+  	
+  	1.0		U08998	07/05/2004	Original Version
+---------------------------------------------------------------------------
+  
+**************************************************************************/
+
+  -- Private type declarations
+    TYPE conditions_rec IS RECORD
+         ( code     app_special_cond_types.code%TYPE,
+           category app_special_cond_types.category%TYPE );
+  
+  -- Private constant declarations
+
+  -- Private variable declarations
+
+  -- Function and procedure implementations
+
+  -- forward declaration
+  PROCEDURE other_recs (p_my_cursor_ref IN my_cursor_ref_type);
+
+
+  PROCEDURE first_rec
+  IS
+
+    -- local variable declarations
+    my_cursor_ref my_cursor_ref_type;
+    conditions    conditions_rec;
+
+  BEGIN
+
+    OPEN my_cursor_ref
+    FOR
+      SELECT   asct.code,
+               asct.category
+      FROM     app_special_cond_types asct
+      ORDER BY asct.code ASC;
+
+    FETCH my_cursor_ref
+    INTO  conditions;
+
+    dbms_output.put_line( conditions.code || ' : ' || conditions.category );
+
+    other_recs( my_cursor_ref );
+
+    CLOSE my_cursor_ref;
+
+  END;
+
+  PROCEDURE other_recs (p_my_cursor_ref IN my_cursor_ref_type)
+  IS
+
+    conditions conditions_rec;
+
+  BEGIN
+
+    FETCH p_my_cursor_ref
+    INTO  conditions;
+
+    dbms_output.put_line( conditions.code || ' : ' || conditions.category );
+  
+  END;
+
+  
+    
+
+begin
+  -- Initialization
+  null;
+
+end sl_curvar;
+/

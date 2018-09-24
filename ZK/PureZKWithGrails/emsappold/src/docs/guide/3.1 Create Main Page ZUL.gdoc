@@ -1,0 +1,15 @@
+Let's create the Main page zul file which should contain the ZK markup for the main page.
+We will use the create-zul target to generate this ZUL file.
+{code}
+grails create-zul MainPage
+{code}
+
+The above command will generate the mainPage.zul and MainPageComposer.groovy files.
+You can find the mainPage.zul file under emsapp/web-app directory
+MainPageComposer.groovy would be created under grails-app/composer/emsapp directory
+
+Now you could do a grails run-app and see the Main page. the URL to this page would be [http://localhost:8080/emsapp/mainPage.zul |http://localhost:8080/emsapp/mainPage.zul] 
+
+!image1.png!
+
+ 

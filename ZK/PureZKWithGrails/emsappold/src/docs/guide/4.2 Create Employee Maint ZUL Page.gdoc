@@ -1,0 +1,65 @@
+Let's get the Employee creation page. We will create a new zul file with the name EmployeeMaint using the create-zul target
+{code}
+grails create-zul EmployeeMaint
+{code}
+
+The above command should have created the employeeMaint.zul file under web-app directory and the EmployeeMaintComposer.groovy under the composer directory.
+
+Now, we can edit the employeeMaint.zul file to add the UI controls for capturing the Employee attributes.
+
+{code}
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" root="./employeemaintpanel"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+    <panel id="employeemaintpanel" title="Add New Employee" apply="emsapp.employeeMaintComposer">
+        <panelchildren>
+            <grid>
+                <columns>
+                    <column width="200px"/>
+                    <column/>
+                </columns>
+                <rows>
+                    <row>
+                        <label value="First Name"/>
+                        <textbox/>
+                    </row>
+                    <row>
+                        <label value="Last Name"/>
+                        <textbox/>
+                    </row>
+                    <row>
+                        <label value="Date of Birth"/>
+                        <datebox format="MM-dd-yyyy"/>
+                    </row>
+                    <row>
+                        <label value="Gender"/>
+                        <combobox>
+                            <comboitem label="Female" value="Female"/>
+                            <comboitem label="Male" value="Male"/>
+                        </combobox>
+                    </row>
+                    <row>
+                        <label value="Active"/>
+                        <checkbox/>
+                    </row>
+                    <row>
+                        <label value="Salary"/>
+                        <doublebox/>
+                    </row>
+                </rows>
+            </grid>
+        </panelchildren>
+    </panel>
+</zk>
+{code}
+
+{note}
+Run the EMS application and see the Employee Maint page [http://localhost:8080/emsapp/employeeMaint.zul |http://localhost:8080/emsapp/employeeMaint.zul] 
+{note}
+
+!image4.png!

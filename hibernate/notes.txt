@@ -1,0 +1,12 @@
+JPA : Jave Persistence API
+Hibernate : Abstraction above JPA
+GORM : Grails ORM
+
+Saving to DB
+============
+GORM cascades by default. Saving parent also saves child
+JPA does not by default.
+
+Referential Integrity
+=====================
+JPA doesn't seem to check this?

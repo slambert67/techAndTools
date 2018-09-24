@@ -1,0 +1,2 @@
+select * from user_errors
+select * from dba_errors

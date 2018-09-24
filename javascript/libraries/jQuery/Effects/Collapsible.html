@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="module.css">
+  <script src="h:/MyTechnologies/jQuery/jquery-1.4.js"></script>
+  <script type="text/javascript" src="myjs.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  /*$("div.caption img")
+  .click( function() {
+            var body$ = $(this).closest("div.module").find("div.body");
+			if ( body$.is(":hidden")) {
+			  body$.show();
+			}
+			else {
+			  body$.hide();
+			}
+          }
+        );*/
+		
+  // above can be replaced with toggle() to flip between show and hide 
+  /*$("div.caption img")
+  .click( function() {
+            $(this).closest("div.module").find("div.body").toggle("slow"); 
+          }
+		);*/
+
+  /*$("div.caption img")
+  .click( function() {
+            var body$ = $(this).closest("div.module").find("div.body");
+			if ( body$.is(":hidden")) {
+			  body$.fadeIn("slow");
+			}
+			else {
+			  body$.fadeOut("slow");
+			}
+          }
+        );*/		
+
+  /*$("div.caption img")
+  .click( function() {
+            var body$ = $(this).closest("div.module").find("div.body");
+			if ( body$.is(":hidden")) {
+			  body$.slideDown("slow");
+			}
+			else {
+			  body$.slideUp("slow");
+			}
+          }
+        );*/
+		
+  $("div.caption img")
+  .click( function() {
+            $(this).closest("div.module").find("div.body").slideToggle("slow"); 
+          }
+		);
+  
+});
+</script>
+
+</head>
+
+<body>
+
+<div class="module">
+
+  <div class="caption">
+    <span>Module Caption</span>
+	<img src="rollup.gif" alt="rollup" title="rolls up this module" />
+  </div>
+  
+  <div class="body">
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, 
+	sed diam nonummy nibh euismod tincidunt ut laoreet dolore 
+	magna aliquam erat volutpat. Ut wisi enim ad minim veniam, 
+	quis nostrud exerci tation ullamcorper suscipit lobortis nisl 
+	ut aliquip ex ea commodo consequat. Duis autem vel eum iriure 
+	dolor in hendrerit in vulputate velit esse molestie consequat, 
+	vel illum dolore eu feugiat nulla facilisis at vero eros et 
+	accumsan et iusto odio dignissim qui blandit praesent luptatum 
+	zzril delenit augue duis dolore te feugait nulla facilisi. 
+	Nam liber tempor cum soluta nobis eleifend option congue nihil 
+	imperdiet doming id quod mazim placerat facer possim assum. 
+	Typi non habent claritatem insitam; est usus legentis in iis 
+	qui facit eorum claritatem. Investigationes demonstraverunt 
+	lectores legere me lius quod ii legunt saepius. Claritas est 
+	etiam processus dynamicus, qui sequitur mutationem consuetudium 
+	lectorum. Mirum est notare quam littera gothica, quam nunc putamus 
+	parum claram, anteposuerit litterarum formas humanitatis per seacula 
+	quarta decima et quinta decima. Eodem modo typi, qui nunc nobis 
+	videntur parum clari, fiant sollemnes in futurum.
+  </div>
+  
+</div>
+
+  
+</body>
+</html>

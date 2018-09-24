@@ -1,0 +1,29 @@
+Offline Web Applications
+------------------------
+cache manifest
+
+if (window.applicationCache)
+
+in chrome : chrome://appcache-internals
+in firefox : about:cache
+
+chrome tools->Javascript console->Resources(Application Cache)
+
+<html manifest="application.manifest">  // manifest file exists on server
+
+window.applicationCache.status
+
+Research cache events?
+
+Events indicating update progress
+
+NB. entire caching of files in manifest must work else everything fails
+
+
+CACHE MANIFEST file
+
+#image
+./Neptune.jpg
+
+#css
+ex1.css

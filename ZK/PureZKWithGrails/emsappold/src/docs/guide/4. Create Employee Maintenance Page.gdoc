@@ -1,0 +1,11 @@
+The Employee Maintenance page would be used to create and edit the employee details.
+This page can be launched from the menu.
+
+h4. Goals
+* Create Employee Domain
+* Create Employee Maint zul page
+** Understand Panel, PanelChildren component
+** Understand Grid Component
+** Understand, textbox, datebox, combobox, checkbox, doublebox.
+* Implement Save Operation
+

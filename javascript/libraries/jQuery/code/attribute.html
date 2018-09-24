@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery-1.4.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $('#d1').html( $('a[href^="http://"]').size() + ' external sites selected' )
+  
+});
+</script>
+
+</head>
+
+<body>
+
+  <a href='http://www.google.com'>google</a>
+  <a href='http://www.imdb.com'>IMDB</a>
+  <a href='mypage.org'>my page</a>
+  <div id="d1"></div> 
+  
+</body>
+</html>

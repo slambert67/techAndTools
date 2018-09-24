@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+    <window>
+
+        <listbox>
+		
+		    <auxhead>
+			    <auxheader label="Group1" colspan="3" />
+				<auxheader label="Group2" colspan="3" />
+				<auxheader label="Group3" colspan="2" />
+			</auxhead>
+			
+		    <listhead>
+			    <listheader label="one" />
+				<listheader label="two" />
+				<listheader label="three" />
+				<listheader label="four" />
+				<listheader label="five" />
+				<listheader label="six" />
+				<listheader label="seven" />
+				<listheader label="eight" />
+			</listhead>
+			
+			<listitem>
+			    <listcell label="A" />
+				<listcell label="B" />
+				<listcell label="C" />
+				<listcell label="D" />
+				<listcell label="E" />
+				<listcell label="F" />
+				<listcell label="G" />
+				<listcell label="H" />
+			</listitem>
+			
+		</listbox>
+		
+    </window>
+
+</zk>

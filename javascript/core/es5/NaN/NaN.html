@@ -1,0 +1,47 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>NaN</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+
+    /**
+     * NaN is a property of the global object
+     * - returned value when Math functions fail
+     * - returned when parsing a number fails
+     * - compares as unequal to any value including itself!
+     * - is of type number!
+     * 
+     * 
+     */ 
+     
+    
+    (function() {
+
+        console.log("type of NaN = " + (typeof NaN));
+        
+        console.log("coercion equality NaN==NaN: " + (NaN == NaN));
+        console.log("no coercion equality NaN===NaN: " + (NaN === NaN));
+
+        var myNaN = NaN;
+        console.log("myNaN = " + myNaN);
+
+        var myMathFail = Math.round("abc");
+        console.log("myMathFail = " + myMathFail);
+
+        console.log("Using window.isNaN: returns true if value is currently NaN or is NaN after coercion");
+        console.log("window.isNan of hello world: " + window.isNaN('hello world'));  // true
+        console.log("Using Number.isNaN: returns true if value is currently NaN without coercion");
+        console.log("Number.isNan of hello world: " + Number.isNaN('hello world'));  // false
+
+
+    })();
+
+     
+	</script>
+  </body>
+</html>

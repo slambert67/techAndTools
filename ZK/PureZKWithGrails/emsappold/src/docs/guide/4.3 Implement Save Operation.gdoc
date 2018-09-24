@@ -1,0 +1,2 @@
+Now that we have the page to capture the Employee information. We need to build mechanism to persist the data to DB.
+For that lets add a save button to the page.

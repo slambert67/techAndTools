@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery.js"></script>
+  <script src="underscore.js"></script>
+  <script src="backbone.js"></script>
+
+<script>
+$(document).ready(function(){
+
+var Todo = Backbone.Model.extend({
+  defaults: {
+    completed: false
+  },
+  
+  validate: function(attribs){
+    if(attribs.title === undefined){
+        return "Remember to set a title for your todo.";  // fires an invalid event???
+    }
+  },
+  
+  initialize: function() {
+                console.log('This model has been initialized.');
+				
+				this.on( 'invalid', function(model,error) {
+				                       console.log(error);
+				                    }
+				)
+              }
+});
+  
+var myTodo = new Todo();
+console.log('setting without validation');
+myTodo.set('completed', true );  // does not perform validation
+console.log('setting with validation');
+myTodo.set('completed', true, {validate: true} );  // performs validation
+
+});
+</script>
+
+</head>
+
+<body>
+
+
+  
+</body>
+</html>

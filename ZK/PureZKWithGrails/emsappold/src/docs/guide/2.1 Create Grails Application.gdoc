@@ -1,0 +1,7 @@
+Your first step is to create a Grails application. To do this you open up a command window. Create a working directory under C drive.
+navigate to your C:\working directory and run create-app. 
+Lets call this application as emsapp.
+
+{code}
+grails create-app emsapp
+{code}

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?page zscriptLanguage="GroovyGrails"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+    xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+<style>
+  .gobutton {background:green;}
+</style>
+
+    <window id="mainwin" apply="amrit.CourseDetailInformationComposer">
+
+        <panel title="Key Block" border="normal" height="100px" style="margin-bottom:10px">
+            <panelchildren>
+                <space bar="true"/>
+                <hbox>
+                    Subject : <textbox id="subject"/>
+                    Course : <textbox id="course"/>
+                    Term : <textbox id="term" />
+                    <button id="go" label="GO" class="gobutton"/>
+                </hbox>
+            </panelchildren>
+        </panel>
+
+        <panel title="Main Block" border="normal" style="margin-bottom:50px" height="500px">
+        <panelchildren>
+        <tabbox id="tabBody">
+        <tabs>
+            <tab label="Fee Codes" />
+        </tabs>
+        <tabpanels>
+            <tabpanel id="feecodes">
+
+                <listbox id="courseFeesListbox"
+                         model="@{mainwin$composer.courseFeesModel}"
+                         selectedItem="@{selected}"
+                          emptyMessage="No items match your search"
+                          onSelect="del.setDisabled(false)">
+
+                    <listhead>
+                        <listheader label="catalog id" />
+                        <listheader label="Detail" />
+                        <listheader label="Amount" />
+                        <listheader label="Fee Type" />
+                        <listheader label="Level" />
+                    </listhead>
+
+                    <listitem self="@{each=fee}" value="@{fee}">
+                        <listcell> <textbox value="@{fee.courseCatalog.id}" /> </listcell>
+                        <listcell> <textbox value="@{fee.detail.code}" /> </listcell>
+                        <listcell> <textbox value="@{fee.feeAmount}" /> </listcell>
+                        <listcell> <textbox value="@{fee.feeType.code}" /> </listcell>
+                        <listcell> <textbox value="@{fee.levelStudent.description}" /> </listcell>
+                    </listitem>
+                </listbox>
+                <space />
+                <toolbar>
+                    <button label="Insert" disabled="true" />
+                    <button id="del" label="Delete" disabled="true" />
+                    <button id="save" label="Save" disabled="true" />
+                </toolbar>
+            </tabpanel>
+
+        </tabpanels>
+        </tabbox>
+        </panelchildren>
+        </panel>
+
+
+    </window>
+
+</zk>
+

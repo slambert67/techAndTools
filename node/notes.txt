@@ -1,0 +1,5 @@
+The Node Shell
+==============
+Often called Node REPL - Read-Eval-Print-Loop
+
+Invoke: node

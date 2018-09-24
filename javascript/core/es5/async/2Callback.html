@@ -1,0 +1,103 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+
+    (function() {
+      /**
+      Expressing asynchrony with callbacks doesn't map well to our brain's synchronous planning
+      - callback hell or pyramid of doom
+      =========================================================================================
+      listen( "click", function handler(evt){
+	      setTimeout( function request(){
+		      ajax( "http://some.url.1", function response(text){
+			      if (text == "hello") {
+				      handler();
+			      }
+			      else if (text == "world") {
+				      request();
+			      }
+		      } );
+	      }, 500) ;
+      } ); 
+
+      is better written as 
+
+      listen( "click", handler );
+
+      function handler() {
+	      setTimeout( request, 500 );
+      }
+
+      function request(){
+	      ajax( "http://some.url.1", response );
+      }
+
+      function response(text){
+	      if (text == "hello") {
+		      handler();
+	      }
+	      else if (text == "world") {
+		      request();
+	      }
+      } 
+
+      Inversion of Control
+      ====================
+      Most troublesome part of callbacks
+      Every callback needs loads of ad hoc defensive code
+      Callback UNDER CONTROL OF 3RD PARTY!
+      // A
+      externalAsyncFunc( "..", function(..){  // handing control to external resource. Needs to be trusted!
+	      // C
+      } );
+      // B  
+
+      Split callbacks - used by ES6 Promises API
+      ==========================================
+      Some API designs require split callbacks
+      function success(data) {
+	      console.log( data );
+      }
+
+      function failure(err) {
+	      console.error( err );
+      }
+
+      ajax( "http://some.url.1", success, failure ); 
+      
+      Error first style - used by Node
+      ================================
+      function response(err,data) {
+	      // error?
+	      if (err) {
+		      console.error( err );
+	      }
+	      // otherwise, assume success
+	      else {
+		      console.log( data );
+	      }
+      }
+
+      ajax( "http://some.url.1", response );  
+
+      Callback problem summary
+      ========================
+      Counterintuitive
+      Callback hell / pyramid of doom
+      Lack of sequenciality
+      Lack of trustability / inversion of control      
+    
+      */
+    })();
+
+     
+	</script>
+  </body>
+</html>

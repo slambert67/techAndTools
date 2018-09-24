@@ -1,0 +1,38 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+
+      /**
+      'this' binding made for each function invokation
+      NOT based on lexical scope
+      call-site - locate where function is invoked from
+      think about call stack
+      call-site we care about is in the invokation before the currently executing function
+      call site implements 1 of 4 rules to determine value of 'this'
+      */
+      
+
+      /**
+      rule 1 - default binding
+      standalone function invokation
+      */
+      console.log("rule 1 - default binding");
+      function foo1() {
+        // examine call-site to see how foo is called
+        console.log(this.a);
+      }
+      var a=2;  // global
+      // foo called with default binding. 'this' points to global object
+      // global object not available for default binding in strict mode
+      foo1();  // 2
+      
+	</script>
+  </body>
+</html>

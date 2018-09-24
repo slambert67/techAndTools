@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <script src="h:/MyTechnologies/jQuery/jquery.js"></script>
+	
+  <title>Form</title>
+	
+<script>
+$(document).ready(function(){
+
+  /* set value */
+  $("input#formelement").val("abc");
+  
+  /* get value */
+  $("p#p1").append( $("input#formelement").val() );
+});
+
+
+
+</script>
+  
+</head>
+  
+<body>
+
+  <form action="doNothing">
+  <fieldset> <legend>My Form</legend>
+	
+  <input type="text" id="formelement" placeholder="at least 3 characters"><br>
+  
+  <!-- submit the form -->
+  <input type="submit">  <!-- validation done here -->
+	  	  
+  </fieldset>  
+  </form>
+  
+  <p id="p1">value = </p>
+  
+	
+</body>
+</html>

@@ -1,0 +1,28 @@
+Add an onClick event listener to the delete button. 
+Edit EmployeeListComposer.groovy like below.
+{code}
+package emsapp
+
+import org.zkoss.zkgrails.*
+import org.zkoss.zkplus.databind.BindingListModelList
+import org.zkoss.zk.ui.event.Event
+import org.zkoss.zk.ui.event.Events
+
+class EmployeeListComposer extends GrailsComposer {
+
+    def employees
+    def employeeListbox
+
+    def afterCompose = { window ->
+        employees = new BindingListModelList(Employee.list(),true)
+    }
+
+    void onClick_delete(Event event) {
+        def selEmployee = employeeListbox.selectedItem?.value
+        employees.remove(selEmployee)
+        selEmployee.delete(failOnError: true, flush:true)
+        Events.postEvent(new Event("onLoadPage",event.target.root, "./employeeList.zul"))
+    }
+}
+{code}
+

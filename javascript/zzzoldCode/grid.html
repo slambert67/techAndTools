@@ -1,0 +1,50 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template Head</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+    <script src="underscore.js"></script>
+	<script src="jquery.js"></script>
+	<script src="backbone.js"></script>
+	
+    <script LANGUAGE="Javascript">
+	
+	  Backbone.Grid = Backbone.View.extend({
+	  
+	    initialize: function() {
+		
+		  console.log("initialize. this = " + this);
+		  _.bindAll(this, 'generateTable' );
+		  generateTable();
+		  
+		  //this.generateTable(); works
+		  
+		},
+		
+		generateTable: function() {
+		
+		  console.log("generate table");
+		}
+		
+	  });
+	  
+	  var myGrid = new Backbone.Grid({
+	  });
+	  
+	  
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

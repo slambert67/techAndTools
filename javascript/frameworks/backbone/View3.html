@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery.js"></script>
+  <script src="underscore.js"></script>
+  <script src="backbone.js"></script>
+
+<script>
+$(document).ready(function(){
+
+// We create two DOM elements representing buttons
+// which could easily be containers or something else
+var button1 = $('<button></button>');
+var button2 = $('<button></button>');
+
+// Define a new view
+var View = Backbone.View.extend({
+      events: {
+        click: function(e) {
+          console.log(view.el === e.target);
+        }
+      }
+    });
+
+	
+// Create a new instance of the view, applying it
+// to button1
+var view = new View({el: button1});
+console.log('el set to button 1');
+console.log('button1:');
+button1.trigger('click'); 
+console.log('button2:');// returns true
+button2.trigger('click'); 
+
+// Apply the view to button2 using setElement
+console.log('el set to button 2');
+view.setElement(button2);
+
+console.log('button1:');
+button1.trigger('click'); 
+console.log('button2:');
+button2.trigger('click'); // returns true
+});
+
+
+</script>
+
+</head>
+
+<body>
+ 
+</body>
+</html>

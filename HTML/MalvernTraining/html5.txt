@@ -1,0 +1,28 @@
+HTML5
+-----
+2 aspects
+  UI aspect
+  Core features
+  
+Browser has DOM parser
+DOM tree built (from the html) and then DOM renderer takes over
+No Javascript executed until DOM is ready
+
+Browser Status : www.caniuse.com
+
+Chrome Javascript Console. Ctrl, shift J
+!!navigator.geolocation -> true
+!!document.createElement('canvas').getContext -> true
+!!document.createElement('video').canPlayType -> true
+
+if omit !! then object is returned if it is recognised
+
+html : content
+css : decorator
+javascript : dynamism
+
+View DOM
+--------
+Chrome->Tools->Developer Tools
+Firefox(Add firebug)->Click on bug->DOM
+

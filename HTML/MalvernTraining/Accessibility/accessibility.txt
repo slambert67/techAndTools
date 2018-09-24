@@ -1,0 +1,13 @@
+www.w3c.org/WAI
+Keyboard navigation
+Use of colour
+CSS Sprites
+Role and States
+
+web standards + usability = accessibility
+
+ARAI Roles
+----------
+Enable screen reader intelligence
+
+banner, complementary, contentinfo, form, main, navigation etc

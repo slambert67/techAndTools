@@ -1,0 +1,13 @@
+SELECT  executions,
+        fetches,
+        disk_reads, -- can be subsequently cached
+        buffer_gets, -- logical reads
+        cpu_time,
+        rows_processed,
+        optimizer_mode,
+        module,
+        sql_fulltext
+FROM    v$sql
+WHERE   executions > 0
+AND     disk_reads/executions > &Ratio
+/

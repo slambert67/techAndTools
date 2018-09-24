@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Constructor</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	
+      var MyConstructor1 = function(x) {
+              
+        // public property
+        this.pub1 = x;
+      }
+      
+      var obj1 = new MyConstructor1(1); // obj1.pub1 = 1
+      var obj2 = new MyConstructor1(2); // obj2.pub1 = 2
+
+      /**
+      Note: 
+      - public property is directly modifiable
+      - public property is directly connected to instance - no prototypal inheritance
+      - cf class level variable
+      */
+
+      console.log("Original - obj1.pub1=" + obj1.pub1 + ", obj2.pub1=" + obj2.pub1);
+      obj1.pub1 = 3;
+      obj2.pub1 = 4;
+      console.log("Modified - obj1.pub1=" + obj1.pub1 + ", obj2.pub1=" + obj2.pub1);
+      
+      // breakpoint
+      console.log("stop");
+  
+	</script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Regular Expressions</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+      
+    console.log("Scruffy input string");
+    (function() {
+
+        var names = 'Orange Trump ;Fred Barney; Helen   Rigby ; Bill Abel  ; Chris Hand   ';
+        var output = ['--------- Original String\n', names + '\n'];
+
+        // pattern: possible white space then semi colon then white space
+        var pattern = /\s*;\s*/;
+        var nameList = names.split(pattern);
+        console.log(nameList);
+
+        // pattern: characters then spaces then characters
+        pattern = /(\w+)\s+(\w+)/; // terms in parentheses later referred to as $1, $2 etc
+        var bySurnameList = [];
+
+        output.push('---------- After Split by Regular Expression');
+        var i, len;
+        for (i = 0, len = nameList.length; i < len; i++) {
+            output.push(nameList[i]);
+            bySurnameList[i] = nameList[i].replace(pattern, '$2, $1');
+        }
+
+        // Display the new array.
+        output.push('---------- Names Reversed');
+        for (i = 0, len = bySurnameList.length; i < len; i++) {
+            output.push(bySurnameList[i]);
+        }
+
+
+        // Sort by last name, then display the sorted array.
+        bySurnameList.sort();
+        output.push('---------- Sorted');
+        for (i = 0, len = bySurnameList.length; i < len; i++) {
+        output.push(bySurnameList[i]);
+        }
+        output.push('---------- End');
+        console.log(output.join('\n'));
+
+    })();
+
+
+    (function() {
+
+        console.log("execute a search in a string");
+        var myRe = /d(b+)d/g;
+        var myArray = myRe.exec('cdbbdbsbz');
+        console.log(myArray);
+    })();
+     
+	</script>
+  </body>
+</html>

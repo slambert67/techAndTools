@@ -1,0 +1,132 @@
+http://grails.org/
+
+Pure
+====
+
+commands
+--------
+grails create-app <app name>
+grails run-app <app name>
+grails create-domain-class package.<Domain name>
+grails create-controller package.<Domain name>
+
+grails create-integration-test <package>.<Domain>Integration
+grails test-app -integration
+grails test-app -integration <domain>IntegrationTests
+grails test-app executes both unit and integration tests
+grails create-service <package>.<Domain>
+grails create-filters <name>
+
+customize default error messages
+--------------------------------
+grails-app/i18n/messages.properties
+{className}.{fieldName}.{errorCode}
+
+
+grails
+======
+
+
+
+
+Domain development
+------------------
+field : dateCreated. If exists then Grails sets this at record creation
+filed : lastUpdated. If exists then Grails updates on every update
+
+css
+---
+CSS styling for scaffold elements in /web-app/css/main.css
+- included in all standard grails templates
+
+layouts
+-------
+global layout : grails-app/views/layouts/main.gsp
+
+templates
+---------
+grails install-templates -> /src/templates
+
+queries
+-------
+dynamic finders
+query by example : QBE
+Criteria querying
+HQL : hibernate query language
+
+bootstrapping
+-------------
+/grails-app//conf/BootStrap.groovy
+
+controllers
+-----------
+Grails exposes controller actions as urls
+
+hubbub/post/timeline/id = application/controller/action/params.id
+
+grails convention : view name matches action name
+can use render() to override this
+render(view: "user_timeline", model: [user: user])
+
+logging
+-------
+special case of injection
+every controller, service & domain class injected with Log4j log object
+log.debug "debug message"
+log.anotherdebug "another debug message"
+logging controlled in grails-app/conf/Config.groovy
+
+error handling
+--------------
+domain.validate() populates domain.errors
+<g:hasErrors> & <g:renderErrors> use this information
+
+data binding
+------------
+whitelisting and blacklisting
+dataBind()
+command objects
+- form parameters into a non domain class that offers it's own validation
+- created inside same controller that uses them
+
+filters
+-------
+allow action to be taken before controller action fires
+-> grails-app/conf
+
+
+
+
+
+
+
+
+Banner XE
+=========
+
+compilation
+===========
+grails compile
+- takes account of current git branch
+
+database upgrade
+================
+grails banner-db-upgrade
+
+Domains
+=======
+
+Use natural keys!
+Can't specify primary key in domain. Let oracle validate this
+
+Plugins
+=======
+specify versions in application.properties
+grails clean and grails compile will install appropriate plugins
+
+Messages
+========
+grails-app/I18N/message.properties
+
+
+

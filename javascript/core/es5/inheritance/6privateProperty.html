@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Constructor</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	
+      var MyConstructor1 = function(x) {
+              
+        // private property
+        var priv1 = x;
+        
+        // public methods
+        this.setPriv1 = function(x) {
+          priv1 = x;
+        }
+        
+        this.getPriv1 = function(x) {
+          return priv1;
+        }
+      }
+      
+      var obj1 = new MyConstructor1(1);
+      var obj2 = new MyConstructor1(2); 
+
+      /**
+      Note: 
+      - private property is NOT directly accessible
+      - only accessible via public method
+      - each instance gets a copy of the private property      
+      */
+      console.log("obj1.priv1=" + obj1.priv1 + " obj2.priv1=" + obj2.priv1);
+      console.log("obj1.priv1=" + obj1.getPriv1() + " obj2.priv1=" + obj2.getPriv1());
+      obj1.setPriv1(3);
+      obj2.setPriv1(4);
+      console.log("obj1.priv1=" + obj1.getPriv1() + " obj2.priv1=" + obj2.getPriv1());
+      
+      // breakpoint
+      console.log("stop");
+        
+	</script>
+  </body>
+</html>

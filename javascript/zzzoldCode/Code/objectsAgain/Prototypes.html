@@ -1,0 +1,39 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Prototypes</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+        function User(forname, surname) {
+            this.forname = forname;
+            this.surname = surname;
+        };
+
+        User.prototype.fullname = function() {
+            return "[User: " + this.forname + " " + this.surname + "]";
+        };   
+
+        var u = new User("steve","lambert");
+        // Object.getPrototypeOf -> User {fullname: function()}
+        // u.fullname -> steve lambert
+        
+        // DIFFERENCE between adding to User.prototype and defining fields directly in function constructor
+       
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

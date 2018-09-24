@@ -1,0 +1,24 @@
+grails-137 project
+==================
+binder.loadAll() ?
+Not used in CRUDWorks?
+MVVM only?
+
+
+execution.createComponents(page,content,null) in mainPageComposer - when needed?
+- create components defined by page.zul under content zk element
+
+ZK website explaining crud - use templates?
+
+ZK website. Data binding only explained under MVVM. Not MVC?
+
+ZK documentation - extends SelectorComposer
+we extend GenericAutowireComposer? zk 5
+
+zk component reference events - no onclick?
+
+
+
+
+
+

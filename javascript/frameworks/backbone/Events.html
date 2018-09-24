@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery.js"></script>
+  <script src="underscore.js"></script>
+  <script src="backbone.js"></script>
+
+<script>
+$(document).ready(function(){
+
+var TodoView = Backbone.View.extend({
+
+  // with an events hash containing DOM events
+  // specific to an item. Item exists in el?
+  events: { 'click h1': 'sayHi'
+          },
+  
+  // optional function that defines the logic for rendering a template. What's a template???
+  render: function() {
+            var html = '<h1>' + 'hello world' + '</h1>';
+			$(this.el).html(html);
+			return this;
+          },
+
+  sayHi: function() {
+  // executed when todo label is clicked. WHAT IS THE LABEL???
+           console.log('hi again');
+         }  
+});
+
+var todoView = new TodoView();
+todoView.render();
+$('#d1').append( $(todoView.el) );
+
+});
+</script>
+
+</head>
+
+<body>
+
+  <div id="d1"></div>
+
+  
+</body>
+</html>

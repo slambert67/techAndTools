@@ -1,0 +1,39 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template</title>
+  </head>
+  
+  <body>
+    <script LANGUAGE="Javascript">
+	  
+    /**
+    Pattern known as revealing module
+    Implemented as 'singleton' allowing only 1 instance
+    */
+    var foo = (function CoolModule() {
+      var something = "cool";
+      var another = [1, 2, 3];
+
+      function doSomething() {
+	    console.log( something );
+      }
+
+      function doAnother() {
+        console.log( another.join( " ! " ) );
+      }
+
+      return {
+	    doSomething: doSomething,
+	    doAnother: doAnother
+      };
+    })();
+
+    foo.doSomething(); // cool
+    foo.doAnother(); // 1 ! 2 ! 3     
+                  
+	</script>
+  </body>
+</html>

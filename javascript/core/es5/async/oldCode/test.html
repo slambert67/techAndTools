@@ -1,0 +1,53 @@
+
+
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Async</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+
+    <script LANGUAGE="Javascript">
+	
+(function(){
+
+    var async1 = function() {
+        console.log("async1 started");
+        
+        // adds message to queue. Queue only checked after stack clears. Next message on queue is then processed
+        setTimeout(function(){console.log("callback executed");},0);
+        console.log("async1 ended");
+    };
+    
+    var func1 = function() {
+        var j=0;
+        console.log("func1 started");
+        async1();
+        console.log("func1 ended");
+        console.log("doing something that takes a while ...");
+        for (var i=0; i<10000000000; i++) {
+            j++;
+        };
+        console.log("done something that takes a while ...");
+        // this still completes before callback is executed
+    };
+    
+    func1();
+}());
+
+        
+	</script>
+	
+  </head>
+  
+  <body>
+  </body>
+</html>

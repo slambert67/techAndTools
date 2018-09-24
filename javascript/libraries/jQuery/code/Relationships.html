@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8"/>
+  <script src="jquery-1.4.js"></script>
+  <script type="text/javascript" src="myjs.js"></script>
+
+<script>
+$(document).ready(function(){
+
+  $('#d1').html( 'id of closest div = ' + $('p').closest('div')[0].id )
+  
+});
+</script>
+
+</head>
+
+<body>
+
+  <div id="d2">
+    <p></p>
+  </div>
+
+  <div id="d1"></div>
+  
+</body>
+</html>

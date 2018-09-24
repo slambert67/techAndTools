@@ -1,0 +1,30 @@
+<!DOCTYPE html>  
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Countdown</title>
+  </head>
+  
+  <body>
+
+    <p id="countdown"></p>
+
+    <script LANGUAGE="Javascript">
+        
+        var current = 10;
+        var display = document.getElementById("countdown");
+        display.innerHTML = current;
+
+        var x = setInterval( function() {
+            if (current>0) {
+                display.innerHTML = --current;
+            } else {
+                display.innerHTML = "EXPIRED";
+                clearInterval(x);
+            }          
+        }, 1000);
+    
+	</script>
+  </body>
+</html>

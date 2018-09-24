@@ -1,0 +1,17 @@
+Environment variables
+=====================
+Grails installation location
+----------------------------
+GRAILS_HOME : C:\MyGrails\grails-2.2.1
+
+Locations
+=========
+.grails : runtime classes for a project
+
+Files
+=====
+<project>/application.properties
+- app.grails.version
+- app.name : application name
+Together specify where runtime classes are generated
+eg. c:/users/slambert/.grails/app.grails.version/projects/app.name

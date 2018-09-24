@@ -1,0 +1,45 @@
+<!DOCTYPE html>  
+<!-- simplified and simply triggers standard mode -->
+
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+	<title>Template Head</title>
+	
+	<!-- ensure older browsers render these elements correctly -->
+	<style>
+	  article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display: block;}
+	</style>
+	
+  </head>
+  
+  <body>
+  
+    <script LANGUAGE="Javascript">
+	
+	  function processClick() {
+	    alert("event fired");
+		return true;  // ensures normal processing resumes after event processing.
+		              // returning false cancels the event
+	  }
+	  
+	</script>
+	
+    <!-- event handlers as attributes 
+	     <A> tag defines an object
+		 capturing onclick event of this object
+		 Native Javascript objects don't have events but DOM/BOM objects do
+	-->
+    <A href="http://www.bbc.co.uk" onclick="return processClick()">BBC</A>
+	
+	<!-- event handlers as properties
+	-->
+	<A href="http://www.imdb.com">IMDB</A>
+	
+	<script LANGUAGE="Javascript">
+	  window.document.links[1].onclick = processClick;  // no parentheses!
+	</script>
+	
+  </body>
+</html>

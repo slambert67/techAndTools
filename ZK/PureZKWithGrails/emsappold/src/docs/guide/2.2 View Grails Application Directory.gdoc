@@ -1,0 +1,27 @@
+Change to the newly created emsapp directory.
+{code}
+c:\working>cd emsapp
+
+c:\working\emsapp>dir
+ Volume in drive D is New Volume
+ Volume Serial Number is 7AF9-9421
+
+ Directory of d:\working\emsapp
+
+17-03-2012  18:31    <DIR>          .
+17-03-2012  18:31    <DIR>          ..
+17-03-2012  18:31               766 .classpath
+17-03-2012  18:31               487 .project
+17-03-2012  18:31    <DIR>          .settings
+17-03-2012  18:31               186 application.properties
+16-02-2011  09:48    <DIR>          grails-app
+17-03-2012  18:31    <DIR>          lib
+17-03-2012  18:31    <DIR>          scripts
+17-03-2012  18:31    <DIR>          src
+17-03-2012  18:31    <DIR>          test
+16-02-2011  09:48    <DIR>          web-app
+               3 File(s)          1,439 bytes
+               9 Dir(s)  92,050,837,504 bytes free
+
+
+{code}

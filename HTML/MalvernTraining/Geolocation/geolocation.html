@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Geolocation</title>
+  <meta charset="utf-8"/>
+  
+  <script>
+    function checkPosition() { 
+	
+      if (navigator.geolocation) {
+	    alert('This browser supports geolocation');
+		
+		navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+		
+	  } else {
+	    alert('This browser does not support geolocation')
+      }
+    }
+	
+	function successCallback(pos) {
+	  alert(pos.coords.latitude);
+	  alert(pos.coords.longitude);
+	}
+	
+	function errorCallback(err) {
+	
+	  alert("my error");
+	  
+  switch(err.code) 
+    {
+    case err.PERMISSION_DENIED:
+      alert("User denied the request for Geolocation.");
+      break;
+    case err.POSITION_UNAVAILABLE:
+      alert("Location information is unavailable.");
+      break;
+    case err.TIMEOUT:
+      alert("The request to get user location timed out.");
+      break;
+    case err.UNKNOWN_ERROR:
+      alert("An unknown error occurred.");
+      break;
+    }
+	}
+	
+  </script>	
+ 
+</head>
+
+<body onload="checkPosition()">
+
+  <div id="container">
+  
+    <header>
+	  <h1>Geolocation</h1>
+	</header>
+	
+  </div>
+
+  
+</body>
+</html>
