@@ -1,0 +1,26 @@
+/* 
+grid-template-columns
+grid-template-rows
+
+values can be length, percentage, fraction, auto(fill remaining space)
+
+grid-auto-rows ? - increases rows with addition of divs?
+grid-auto-columns ?
+*/
+.mainGrid {
+    display: grid;
+    grid-template-columns: 100px 100px 100px;  /* grid has 3 columns of 100px. >3 columns wrap */
+    grid-template-rows: 40px 80px;             /* grid has 2 rows. specify only 6 divs? */
+    grid-row-gap: 5px;
+    grid-column-gap: 5px;  /* grid-gap shorthand for both */
+}
+
+.mainGrid > div{
+  background-color: orange;
+  border: 1px black solid;
+}
+ 
+.mainGrid > div:nth-child(odd){
+  background-color: indianred;
+}
+
