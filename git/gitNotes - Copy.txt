@@ -1,0 +1,153 @@
+Distributed Version Control
+Fully mirror central repository locally
+
+Every time you commit, or save the state of your project in Git
+- snapshot taken of all files and stores reference to snapshot
+- unchanged files just link to previous version
+
+nearly every operation is local
+
+ANY file change detected by git
+mechanism called checksumming : SHA-1
+SHA-1 is essentially key to git database
+
+git has 3 main file states
+- modified
+  - changed but not commited to local database
+- staged
+  - modified file has been marked in it's current version to go into next commit snapshot
+- commited
+  - data safely stored in local database
+  
+git project has 3 main sections
+- git directory
+  - metadata and object database for project. Cloning creates this
+- working directory
+  - single checkout of 1 version of project
+  - These files are pulled out of the compressed database in the Git directory and placed on disk for you to use or modify.
+  - files in working directory are in 1 of 2 states
+    - tracked : files in last snapshot? Can have status of modified, unmodified, staged
+	- untracked : everything else
+  - file status lifecycle:
+    (untracked) -> add file -> (unmodified) -> edit file -> (modified) -> stage file -> (staged)
+	                           (unmodified) <---------------------------- commit file <- (staged)
+- staging area
+  - details what goes into next commit
+  
+The basic Git workflow goes something like this:
+- You modify files in your working directory.
+- You stage the files, adding snapshots of them to your staging area.
+- You do a commit, which takes the files as they are in the staging area and stores that snapshot permanently to your Git directory.
+
+Help
+====
+git help
+
+
+
+EOL considerations
+==================
+CR: ^M
+LF: ^J
+
+Windows uses CR LF at eol
+Unix uses LF only
+
+core.autocrlf true
+
+file from git(unix) -> windows : LF -> CRLF
+file from windows to git(unix) : CRLF -> LF
+
+
+
+
+git status
+details of most recent commit
+-----------------------------
+My most recent commit referred to as HEAD
+git show
+git show --name-only
+
+
+
+Differences
+===========
+eg - what have I changed but not staged? git diff
+   - what have I staged and am about to commit? git diff --staged (or --cached)
+   
+git diff <commit#> <commit#>
+git diff --name-only <commit#> <commit#>
+
+- need to know differences between my local code and latest pull from repo - CONFIRM THIS
+git diff HEAD
+git diff -- staged
+   
+
+  
+  finding branch of commit
+  ------------------------
+  git branch --contains SHA1
+  
+
+
+  To find common ancestor of 2 
+  ----------------------------
+  git merge-base <branch> <branch>
+ 
+
+Interactive rebasing - squashing commits
+========================================
+eg
+git log (master)
+m1
+m2
+
+git log (branch)
+m1
+m2
+b1
+b2
+b3
+b4
+
+I want to squash the 4 branch commits into 1 commit
+
+git rebase -i HEAD~4
+'pick' 1st commit
+'squash' rest of commits
+	  
+	  
+Stashing
+========
+Can't cleanly switch branches with messy working directory
+
+  stash working directory
+  -----------------------
+  git stash
+  
+  view stash stack
+  ----------------
+  git stash list
+  
+  apply stash
+  -----------
+  git stash apply
+  
+  
+b4 merge can try git diff <src_branch> <tgt branch>
+  
+
+  
+
+  
+  
+
+
+
+   
+
+
+
+
+
+

@@ -1,0 +1,23 @@
+Registration information:
+- Product code: AVJV - 7TJS - SSZN - BE39 - 3WXG - R9E6 - T5
+- Serial number: 01.79491
+- Password: xs374ca
+
+Download from: http://www.allroundautomations.com/bodyplsqldevreg.html
+
+
+Install oracle client and add to path env variable
+add TNS_ADMIN env variable pointing to directory of a tsnames.ora file
+
+entry example
+coreVM =
+ (DESCRIPTION = 
+   (ADDRESS_LIST =
+     (ADDRESS = (PROTOCOL = TCP)(HOST = 141.196.102.101)(PORT = 1521))
+   )
+ (CONNECT_DATA =
+   (SERVICE_NAME = AIMS-PC1503.ultra-as.net)
+ )
+)
+
+# service name can be obtained from listener
