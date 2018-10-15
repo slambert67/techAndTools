@@ -1,26 +1,34 @@
-/* 
-grid-template-columns
-grid-template-rows
+.wrapper1 {
+    display: grid;  /* all DIRECT children become grid items */
+                    /* single column grid created */
+    border: 2px solid #f76707;
+    border-radius: 5px;
+    background-color: #fff4e6;
+}
 
-values can be length, percentage, fraction, auto(fill remaining space)
-
-grid-auto-rows ? - increases rows with addition of divs?
-grid-auto-columns ?
-*/
-.mainGrid {
+.wrapper2 {
     display: grid;
-    grid-template-columns: 100px 100px 100px;  /* grid has 3 columns of 100px. >3 columns wrap */
-    grid-template-rows: 40px 80px;             /* grid has 2 rows. specify only 6 divs? */
-    grid-row-gap: 5px;
-    grid-column-gap: 5px;  /* grid-gap shorthand for both */
+    grid-template-columns: 200px 200px 200px;  /* define number of columns in grid in pixels*/
+                                               /* no rows specified in css so implicit rows  created in grid */
+    grid-auto-rows: minmax(100px, auto);       /* implicit rows min of 100px high + max of auto depending on content */
+    border: 2px solid #f76707;
+    border-radius: 5px;
+    background-color: #fff4e6;
 }
 
-.mainGrid > div{
-  background-color: orange;
-  border: 1px black solid;
+.wrapper3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;  /* define number of columns in grid */
+    border: 2px solid #f76707;
+    border-radius: 5px;
+    background-color: #fff4e6;
 }
- 
-.mainGrid > div:nth-child(odd){
-  background-color: indianred;
+
+.wrapper > div, .wrapper2 > div, .wrapper3 > div {
+  border: 2px solid #ffa94d;
+  border-radius: 5px;
+  background-color: #ffd8a8;
+  padding: 1em;
+  color: #d9480f;
 }
 
