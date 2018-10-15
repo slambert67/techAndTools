@@ -1,0 +1,3 @@
+show invisible chars. eg eol
+vi -b <file>
+- :set list
