@@ -1,0 +1,166 @@
+# Tools
+Git Bash on Windows
+
+# Pros
+Clean commit history - no extraneous merge commits
+
+Your latest work just appears as a new commit on top of latest Master
+
+Expanded workflow pushes current development to remote branch for safe keeping
+
+# Barebones Workflow
+### Clone Project
+<pre>
+git clone 'repository url'
+</pre>
+### Create a local development branch
+<pre>
+git checkout -b my-dev-branch
+</pre>
+### Create/Modify files on the local development branch
+
+<pre>
+Notepad++, PL/SQL Developer etc
+</pre>
+
+### Move files to staging area (index) ie. those to be committed
+<pre>
+git add 'filename'
+</pre>
+### Commit changes on local development branch
+<pre>
+git commit -m "my commit message"
+</pre>
+### Ensure master is up-to-date
+<pre>
+git checkout master
+git pull
+</pre>
+### Rebase local development branch from master (see 'Expanded Workflow and Description' for details of rebase)
+<pre>
+git checkout my-dev-branch
+git rebase master
+</pre>
+### Merge changes on local development branch to master
+<pre>
+git checkout master
+git merge my-dev-branch
+</pre>
+### Push changes to remote repository
+<pre>
+git push origin master
+</pre>
+### Delete local development branch
+<pre>
+git branch -d my-dev-branch
+</pre>
+
+# Expanded Workflow and Description
+### Clone Project
+Navigate to folder in which the project will be stored eg. my-git-projects.
+Invoke Git Bash from this folder and issue the command below. A copy of the 
+entire project repository will be copied to my-git-projects\project-name
+
+Git Bash should be invoked from this new project directory my-git-projects\project-name for all subsequent git operations
+<pre>
+git clone 'repository url'
+</pre>
+
+### Create a local development branch
+The command below creates a new local development branch and ensures that any changes made are on this new branch.
+<pre>
+git checkout -b my-dev-branch
+</pre>
+
+### Optional - Create remote development branch
+A remote branch can be created that is automatically linked to the local development branch. Pushes to this remote branch ensure no work is lost if your laptop breaks or is lost/stolen etc.
+<pre>
+git push -u origin my-dev-branch
+</pre>
+
+### Basic Git Iteration
+The basic Git iteration is shown below. 
+
+This sequence can be repeated as many times as required resulting in multiple commits on the local development branch. Meanwhile, other developers are likely to be pushing to the remote 'master'. A git pull on local 'master' branch will then result in a divergence between 'master' and 'my-dev-branch'.
+
+<pre>
+Create / modify files on my-dev-branch to implement required functionality 
+</pre>
+
+
+Add created / modified files to staging area (index) ie. the files that will constitute the next commit:
+<pre>
+git add filename
+</pre>
+
+
+Commit all files in staging area (index). Working directory will now be clean again:
+<pre>
+git commit -m "My commit message"
+</pre>
+
+
+Synchronize my-dev-branch with remote branch (if using) for safekeeping
+<pre>
+git push origin my-dev-branch 
+</pre>
+
+
+
+### Merge changes on local development branch to master
+
+It is likely at this stage that master and my-dev-branch have diverged and so the changes applied to my-dev-branch need to be 'merged' into master.
+
+This workflow uses 'git rebase' instead of 'git merge'.
+
+'git rebase' essentially reworks the commits on my-dev-branch based on the divergent commits in master. It is at this stage that merge conflicts may appear.
+
+The end result is that all the functionality on master is also now on my-dev-branch. It is as if you are at the most recent commit on master and have just created my-dev-branch at this point and done your local development.
+
+First ensure master is up-to-date:
+<pre>
+git checkout master
+
+git pull
+</pre>
+
+Rebase my-dev-branch from master
+<pre>
+git checkout my-dev-branch
+
+git rebase master
+</pre>
+
+### Merge changes on local development branch to master
+The previous rebase has essentially ensured that local development has been carried out on a branch that was created from the latest commit from master. These local changes now need to be merged back into master. NB. No merge conflicts will occur at this stage as there is no divergence.
+It is possible that in the short period between the above rebase and this intended merge that the remote master has been updated by another developer. This is the reason for the 'git pull' below. If this updates local master then the 'git rebase' will need to be repeated.
+<pre>
+git checkout master
+
+git pull
+
+git merge my-dev-branch
+</pre>
+
+### Push changes to remote repository
+<pre>
+git push origin master
+</pre>
+
+### Delete local and remote development branches
+<pre>
+git branch -d my-dev-branch
+
+git push origin --delete my-dev-branch
+</pre>
+
+
+
+
+
+
+
+
+
+
+

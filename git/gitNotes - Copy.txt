@@ -44,23 +44,6 @@ Help
 git help
 
 
-
-EOL considerations
-==================
-CR: ^M
-LF: ^J
-
-Windows uses CR LF at eol
-Unix uses LF only
-
-core.autocrlf true
-
-file from git(unix) -> windows : LF -> CRLF
-file from windows to git(unix) : CRLF -> LF
-
-
-
-
 git status
 details of most recent commit
 -----------------------------
@@ -68,32 +51,6 @@ My most recent commit referred to as HEAD
 git show
 git show --name-only
 
-
-
-Differences
-===========
-eg - what have I changed but not staged? git diff
-   - what have I staged and am about to commit? git diff --staged (or --cached)
-   
-git diff <commit#> <commit#>
-git diff --name-only <commit#> <commit#>
-
-- need to know differences between my local code and latest pull from repo - CONFIRM THIS
-git diff HEAD
-git diff -- staged
-   
-
-  
-  finding branch of commit
-  ------------------------
-  git branch --contains SHA1
-  
-
-
-  To find common ancestor of 2 
-  ----------------------------
-  git merge-base <branch> <branch>
- 
 
 Interactive rebasing - squashing commits
 ========================================
@@ -115,26 +72,7 @@ I want to squash the 4 branch commits into 1 commit
 git rebase -i HEAD~4
 'pick' 1st commit
 'squash' rest of commits
-	  
-	  
-Stashing
-========
-Can't cleanly switch branches with messy working directory
 
-  stash working directory
-  -----------------------
-  git stash
-  
-  view stash stack
-  ----------------
-  git stash list
-  
-  apply stash
-  -----------
-  git stash apply
-  
-  
-b4 merge can try git diff <src_branch> <tgt branch>
   
 
   

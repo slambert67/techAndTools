@@ -1,0 +1,32 @@
+html {
+  background-color: blue;
+}
+
+body {
+  background-color: yellow;
+  margin: 10px;
+  border-color: black;
+  border-style: solid;
+}
+
+#wrapper {
+  background-color: red;
+  margin: 10px;
+  border-color: black;
+  border-style: solid;
+  height: 50px;
+  overflow: scroll;
+}
+
+/*body {
+  background-color: yellow;
+  margin: 0px;
+  border-color: black;
+  border-style: dotted;
+}
+
+#wrapper {
+  background-color: red;
+  height:200px;
+}*/
+

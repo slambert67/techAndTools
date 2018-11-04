@@ -1,0 +1,230 @@
+# Glossary
+
+**Staging Area (Index)**
+This is where files that are to be part of the next commit reside.
+
+**Working Area**
+This is where new/modified files that have not yet been moved to the Staging Area reside.
+
+**HEAD**
+Refers to the most recent commit
+
+**SHA**
+Unique id for a commit
+
+# Commands
+## Configuration
+The following is the minimum required config to be able to use a repository
+<pre>
+git config --global user.name "name"            : specify your name
+git config --global user.email "email"          : specify your email address
+git config --list                               : list all config settings
+git config --list --show-origin                 : list all config settings and show directory of
+                                                  config file defining a particular setting
+</pre>
+##### End of Line(EOL) Considerations
+Text files on windows have a Carriage Return(CR) and a Line Feed(LF) at end of each line.
+Transferring to Linux will show ^M$ for CR and LF respectively.
+Text files on Linux have a $ character at end of each line.
+Transferring to Windows will show LF.
+
+<pre>
+git config --global core.autocrlf true          : Ensures Windows to Linux conversion and Linux to
+                                                  Windows conversion on push and pull 
+                                                  respectively.
+</pre>
+
+## Cloning a remote repository
+<pre>
+git clone repository-url
+</pre>
+
+## Project History
+<pre>
+git log                                : lists all commits in repository
+git log -p                             : shows all differences between commits in repository
+git log -n                             : lists only the n most recent commits
+git log --oneline                      : compact version
+git log --graph                        : lists all commits in repository showing merges
+git log --ancestry-path SHA1..SHA2     : lists all the commits between the 2 specified
+                                         including those resulting from merges
+</pre>
+
+## Staging changes
+These commands move new/modified/deleted files from the Working Area to the Staging Area. The files will no longer be shown as residing in the Working Area
+<pre>
+git add filename                     :  stage a single new/modified file
+git rm filename                      :  stages a file deletion. This file will no longer be 
+                                        accessible from the new commit
+git add -A                           :  stage all new or modified files
+git mv old-filename new-filename     :  Renames a file. Equivalent to git rm + git add
+</pre>
+
+## Committing changes
+Creates a commit based on all files in the Staging Area
+<pre>
+git commit -m "Single line commit message"
+
+git commit -m "Multi line         : multiple lines allowed until closing quote is entered
+commit message"
+</pre>
+
+## Tagging
+Specific commits in a project history can be tagged as being important. This functionality is typically used to mark releases.
+
+<pre>
+git tag                                 : shows all tags    
+git tag -d tagname                      : deletes a tag
+git tag -a tagname -m "comment" SHA     : tags a specific commit
+</pre>
+
+## Updating remote repository
+Pushing latest local commits back to the remote repository
+<pre>
+git push origin branchname     : push all new commits to remote repository
+git push --tags                : pushes all new tags to remote repository
+</pre>
+
+## Modifying committed changes
+**Only the last LOCAL commit can be modified**
+
+eg. the omission of a file can be rectified
+<pre>
+git add forgotten-filename
+git commit --amend -m "updated commit message"
+</pre>
+
+## Reverting changes
+
+##### From a commit
+**Only the last LOCAL commit can be undone**
+<pre>
+git reset --soft HEAD^1
+</pre>
+
+##### From Staging Area
+<pre>
+git reset filename          : unstage file but retain changes in Working Area
+git reset                   : unstage all files but retain changes in Working Area
+git reset --hard            : unstage all files and revert all changes
+</pre>
+
+##### From Working Area
+<pre>
+git checkout -- filename          : revert changes to a single file in Working Area
+git checkout -- *                 : revert changes to all files in Working Area
+git reset --hard                  : revert all changes to files in both Staging Area and
+                                    Working Area
+</pre>
+
+## Differences between commits
+<pre>
+git diff                               : differences between Working Area and HEAD
+git diff --staged                      : difference between Staged Area and HEAD
+git diff SHA1 SHA2                     : differences between 2 commits
+git diff --name-only SHA1 SHA2         : differences between 2 commits (filenames only)
+git diff branch1 branch2               : differences between 2 branches
+</pre>
+
+
+## Stashing
+Stashing allows temporary saving of changes made without having to perform a commit. This allows quick cleaning of Working Area and switching between branches when needed. The changes in the stash can be reapplied at a later time. Multiple 'named' stashes are possible.
+<pre>
+git stash list                     : list named stashes
+git stash save "stash comment"     : save Working Area in a stash associated with a comment
+git stash pop stash@{n}            : apply named stash back to Working Area
+</pre>
+
+
+## Branching
+
+##### Creating
+A branch is created from your current commit
+<pre>
+git branch branchname                  : create new local branch
+git checkout -b branchname             : create and navigate to new local branch
+git push -u origin branchname          : create new remote branch to track previously created
+                                         local branch
+</pre>
+##### Showing
+<pre>
+git branch -a     : shows all branches in repository
+</pre>
+
+##### Switching between
+Note that it is good practice to only switch between branches with nothing staged for commit and with a clean Working Area. Commit or Stash any changes before switching branches. 
+<pre>
+git checkout branchname
+</pre>
+
+##### Merging
+###### Stage 1
+<pre>
+git merge branchname          : merges branchname into the branch on which you currently
+                                reside
+</pre>
+###### Stage 2 - only if merge conflicts arise
+Fix all merge conflicts as described below
+<pre>
+git add fixed-filename         : Stage all the files that have had a merge conflict resolved
+git merge --continue           : Continue with the merge
+git merge --abort              : Start again from scratch if things get messy!
+</pre>
+
+##### Rebasing
+The end result of a rebase is that all the functionality on eg. master is also now on eg. my-dev-branch. It is as if you are at the most recent commit on master and have just created my-dev-branch at this point and done your local development.
+It is at this stage merge conflicts can occur. See below in this document for how to resolve merge conflicts.
+
+###### Stage 1
+Initiate the rebase
+<pre>
+git checkout master                 : Move to master
+git pull                            : Ensure master is up-to-date
+git checkout my-dev-branch          : Move to my-dev-branch
+git rebase master                   : Moves the base of the branch on which you reside to the 
+                                      latest commit of 'branch name'
+</pre>
+
+###### Stage 2 - only if merge conflicts arise
+Fix all merge conflicts as described below
+<pre>
+git add fixed-filename          : Stage all the files that have had a merge conflict resolved
+git rebase --continue           : Continue with the rebase
+git rebase --abort              : Start again from scratch if things get messy!
+</pre>
+
+##### Deleting
+<pre>
+git branch -d branchname                     : delete local branch
+git branch -D branchname                     : delete local branch and force removal of 
+                                               unmerged commits
+git push origin --delete branchname          : delete remote branch
+</pre>
+
+##### Miscellany
+<pre>
+git branch --contains SHA          : returns the branch on which a particular commit resides
+git merge-base branch1 branch2     : returns the common ancestor of 2 branches
+</pre>
+
+## Fixing Merge Conflicts
+I find it easiest to use a simple editor such as Notepad++.
+Edit a file marked as having a merge conflict
+Individual conflicts can be seen between conflict markers ie.
+
+<pre>
+<<<<<<< branch 1
+conflicted code is here
+>>>>>>> branch 2
+</pre>
+
+Ensure the code between the conflict markers is as required and then delete the conflict markers and save the file
+
+<pre>
+git add fixed-filename                   : re-stage the fixed file
+git [merge | rebase] --continue          : continue with operation once all conflicts are resolved
+git [merge | rebase] --abort             : Start again from scratch if things get messy!
+</pre>
+
+
+
