@@ -1,0 +1,16 @@
+html, body {
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: yellow;
+  border-width: 2px;
+  border-style: solid;
+  border-color: black;
+  margin: 0;
+}
+
+.x {
+    height: 20%;
+    background-color: red;
+    box-sizing: border-box;
+    overflow-y: scroll;
+}
