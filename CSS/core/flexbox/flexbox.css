@@ -36,3 +36,11 @@
     height: 200px;
     background-color: darkcyan;
 }
+
+.flex-bottom {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    height: 200px;
+    background-color: red;
+}

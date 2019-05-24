@@ -1,5 +1,16 @@
 sqlplus sys as sysdba
-
 password = change_on_install or manager
-
 sqlplus / as sysdba
+===========================================
+
+APPN_DATABASE=aims/quilt1@//delta-rac-scan:1521/DLRAC.DELTA.COM
+HOSTNAME=DLFIDSAIM01.delta.com
+TWO_TASK=echo ${APPN_DATABASE}| awk -F@ '{print $2}' => //delta-rac-scan:1521/DLRAC.DELTA.COM
+
+connect sys/${SYSPASSWORD}@"`echo ${APPN_DATABASE}| awk -F@ '{print $2}'`" as sysdba
+===========================================
+
+
+sqlplus /nolog => enter sqlplus without db connection
+sqlplus username/password@connect_identifier as sysdba
+

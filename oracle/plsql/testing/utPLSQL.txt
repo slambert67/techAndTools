@@ -5,6 +5,11 @@ curl -LOk $(curl --silent https://api.github.com/repos/utPLSQL/utPLSQL/releases/
 gives utPLSQL.zip
 unzip -q utPLSQL.zip -> utPLSQL
 
-create utPLSQL schema: @create_utPLSQL_owner.sql ut3 ut3 users (schema,pwd(s instead of 5 in prefix),tablespace)
-install utPLSQL: @install.sql ut3
+cd utPLSQL/source
+create utPLSQL schema: sqlplus / as sysdba @create_utplsql_owner ut ut514725 users
+install utPLSQL: @install.sql ut (schema)
 @create_synonyms_and_grants_for_public.sql
+
+
+IN the short term (and out of interest) you may be able to use the new utplsql if you can put the index into a tablespace that uses an 8K blocksize.
+You can created tablespaces with non-default blocksizes - https://docs.oracle.com/cd/B28359_01/server.111/b28310/tspaces003.htm#ADMIN11373

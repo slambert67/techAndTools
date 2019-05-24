@@ -279,8 +279,11 @@ b4
 I want to squash the 4 branch commits into 1 commit
 
 git rebase -i HEAD~4
-'pick' 1st commit
+'pick' 1st commit listed
 'squash' rest of commits
+
+Once this is done and saved, another editor pops up.
+Edit the message as you see fit, then save and quit.
 	  
 	  
 Stashing

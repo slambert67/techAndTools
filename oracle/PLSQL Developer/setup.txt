@@ -1,9 +1,26 @@
+Product: PL/SQL Developer
+- Licenses: 20
+- Base version: 12.0
+- Service contract expiration date: June 1, 2018
+
 Registration information:
-- Product code: AVJV - 7TJS - SSZN - BE39 - 3WXG - R9E6 - T5
-- Serial number: 01.79491
+- Product code: KJK3 - 2HAT - U89Q - S9CC - XRTB - AFKY - XB
+- Serial number: 02.113843
 - Password: xs374ca
 
-Download from: http://www.allroundautomations.com/bodyplsqldevreg.html
+Contact information:
+- Company: Ultra Electronics Airport Systems
+- Name: Jackie Smith
+- Email address: jackie.smith@ultra-as.com
+
+The product code includes information about the ordered product, version, licenses, service contract and more. This is a personal code that should NOT be distributed to others than the licensed user(s).
+
+The serial number is a unique number per customer. The Base version is the version for which you can download patches. If you have a service contract you can download any version, until the contract period has expired.
+
+To register PL/SQL Developer, enter the product code, serial number, and password when prompted, or use the Register menu item from the Help menu. If you have not yet installed PL/SQL Developer 12.0, you can download it here:
+
+https://www.allroundautomations.com/registered/plsqldev.html
+
 
 
 Install oracle client and add to path env variable

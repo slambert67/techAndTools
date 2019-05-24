@@ -1,0 +1,14 @@
+typescriptlang.org
+.ts extension
+cross browser
+tsc hello.ts -> js
+
+code hierarchy
+- module/namespace
+  - class
+    - fields
+    - constructors
+    - properties
+    - functions
+    - interfaces
+

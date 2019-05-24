@@ -1,0 +1,14 @@
+browser
+^
+|
+bootstrap file(main.ts)
+^
+|
+root module (app.module.ts)
+^
+|
+root component (app.component.ts)
+^                       ^
+|                       |
+model (model.ts)        template (app.component.html)
+              
