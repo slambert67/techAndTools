@@ -7,6 +7,8 @@ unzip -q utPLSQL.zip -> utPLSQL
 
 cd utPLSQL/source
 create utPLSQL schema: sqlplus / as sysdba @create_utplsql_owner ut ut514725 users
+OR
+create utPLSQL schema: sqlplus / as sysdba @create_utplsql_owner c##ut ut514725 users
 install utPLSQL: @install.sql ut (schema)
 @create_synonyms_and_grants_for_public.sql
 

@@ -1,0 +1,2 @@
+RClick on package -> Add debug info
+Open new test window

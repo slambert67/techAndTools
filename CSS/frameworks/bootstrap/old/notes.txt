@@ -1,0 +1,15 @@
+Containers
+==========
+required when using default grid system
+fixed width container: max-width changes at each breakpoint
+fluid width container: 100% wide all the time
+
+Responsive Breakpoints
+======================
+bootstrap developed to be mobile first
+media queries used to create sensible breakpoints for layouts and interfaces
+
+Grid
+====
+Uses containers, rows, columns and flexbox
+

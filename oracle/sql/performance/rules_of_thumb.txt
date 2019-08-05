@@ -1,0 +1,5 @@
+It starts by retrieving all the data for the first (driving) table
+it is best to process tables that will retrieve a small number of rows first. 
+you should always place your driving table at the end of the FROM clause
+Confusingly, the WHERE clause should be writen in the opposite order, with the driving tables conditions first and the final driven table last
+alias all tables for parse speed

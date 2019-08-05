@@ -1,0 +1,41 @@
+JSON data is stored using the common SQL data types VARCHAR2, CLOB, and BLOB
+always use an is_json check constraint
+
+SQL/JSON generation functions json_object, json_array, json_objectagg, and json_arrayagg
+
+SQL/JSON query functions json_value, json_query, and json_table, SQL/JSON conditions json_exists, is json, 
+is not json, and json_textcontains, and Oracle SQL condition json_equal. Except for is json, is not json, 
+and json_equal, these evaluate SQL/JSON path expressions against JSON data to produce SQL values.
+
+A dot notation that acts similar to a combination of query functions json_value and json_query 
+
+Query the JSON data. The return value is always a VARCHAR2 instance that represents a JSON value. Here are some simple examples
+
+In JSON each property name and each string value must be enclosed in double quotation marks (")
+
+json objects
+============
+JSON_ELEMENT_T, JSON_OBJECT_T, JSON_ARRAY_T, JSON_SCALAR_T and JSON_KEY_LIST
+must be serialized for storage
+
+You construct an object-type instance in memory either all at once, by parsing JSON text, 
+or piecemeal, starting with an empty object or array instance and adding object members or array elements to it.
+
+JSON_ELEMENT_T is the supertype of the other JSON object types
+JSON_OBJECT_T and JSON_ARRAY_T are used for JSON objects and arrays, respectively.
+JSON_SCALAR_T is used for scalar JSON values: strings, numbers, the Boolean values true and false, and the value null.
+
+Static function parse accepts an instance of type VARCHAR2, CLOB, or BLOB as argument, 
+which it parses as JSON text to return an instance of type JSON_ELEMENT_T, JSON_OBJECT_T, or JSON_ARRAY_T.
+
+to_string() returns a string (VARCHAR2) representation of the JSON object-type instance you apply it to.
+
+Types JSON_OBJECT_T and JSON_ARRAY_T have getter and setter methods, which obtain and update, respectively, 
+the values of a given object field or a given array element position.
+
+JSON_ELEMENT_T has introspection methods
+is_*
+get_size(), which returns the number of members of a JSON_OBJECT_T instance and the number of elements of a JSON_ARRAY_T instance (it returns 1 for a JSON_SCALAR_T instance).
+is_date() and is_timestamp()
+get_keys(), which returns an instance of PL/SQL object type JSON_KEY_LIST, which is a varray of type VARCHAR2(4000). 
+The varray contains the names of the fieldsFoot 2 Footref 2 present in the given JSON_OBJECT_T instance. 

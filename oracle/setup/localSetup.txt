@@ -1,0 +1,7 @@
+Install from oracle website
+sqlplus: sys or / as sysdba
+container database? : alter session set "_ORACLE_SCRIPT"=true;
+create user stevel identified by stevel;
+grant connect,resource,dba to stevel;
+alter user stevel default tablespace users;
+

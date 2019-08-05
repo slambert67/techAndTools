@@ -7,7 +7,7 @@ FROM   /* tables listed in order of decreasing restriction conditions ie. most r
        dual
 WHERE  -- inner joins are the default
 
-       -- tab1.col1 = tab2.col1 (+)  -- outer join. (+) on data deficient table
+       -- tab1.col1 = tab2.col1 (+)  -- outer join. (+) on optional table
        
        -- tab1.col1 = tab2.col1 -- equi join
        
@@ -35,3 +35,22 @@ WHERE  -- inner joins are the default
        -- init.ora : HASH_AREA_SIZE
        -- Partially rendered Sort Merge Join obsolete
        -- Performs badly with skewed data
+
+inline views
+============
+select my_table.x, inline_view.y
+  from my_table,
+       (select y
+          from another_table) inline_view
+
+
+with clause
+===========
+alternative to inline view
+This can be used to make a very complicated FROM clause look much simpler.
+
+
+pipelined table functions
+=========================
+
+
