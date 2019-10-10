@@ -24,7 +24,7 @@
   Make sure that the sum adds up to 12 or fewer (it is not required that you use all 12 available columns).
 
   The Bootstrap 4 grid system has five classes:
-    .col- (extra small devices - screen width less than 576px)
+    .col-xs- (extra small devices - screen width less than 576px)
     .col-sm- (small devices - screen width equal to or greater than 576px)
     .col-md- (medium devices - screen width equal to or greater than 768px)
     .col-lg- (large devices - screen width equal to or greater than 992px)
@@ -34,13 +34,20 @@
 </head>
 
 <body>
-<div class="container-fluid">
+<div class="container">
   <div class="row">
-    <div class="col-sm-3 col-md-6">
-      <p>Lorem ipsum...</p>
+    <div class="col-sm-12 col-md-6 bg-primary">
+      <h1>Lorem ipsum...</h1>
     </div>
-    <div class="col-sm-9 col-md-6">
-      <p>Sed ut perspiciatis...</p>
+    <div class="col-md-6 bg-secondary">
+      <div class="row">
+        <div class="col-sm-6 bg-success">
+          <p>success</p>
+        </div>
+        <div class="col-sm-6 bg-danger">
+          <p>danger</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
