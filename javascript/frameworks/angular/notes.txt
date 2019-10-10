@@ -1,3 +1,7 @@
+questions
+=========
+
+=========
 browser
 ^
 |
@@ -7,8 +11,60 @@ bootstrap file(main.ts)
 root module (app.module.ts)
 ^
 |
-root component (app.component.ts)
+root component (app.component.ts)  <- cf. grails controller
 ^                       ^
 |                       |
 model (model.ts)        template (app.component.html)
+
+
+main.ts (bootstrap file)
+=======
+imports top level module and bootstraps from this
+ie. starts the application
+
+eg.
+import { AppModule } from './app/app.module';
+platformBrowserDynamic().bootstrapModule(AppModule)
+
+
+app.module.ts (bootstrap module)
+=============
+specifies top level module:
+bootstrap: [AppComponent]
+
+imports required modules (also import files in which these modules are defined):
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+  ]
+
+declare imported components:
+  declarations: [
+    AppComponent
+  ]
+
+export the module:
+export class AppModule { }
+
+
+app.component.ts (root component)
+================
+manages content of <app-root> in the html document
+takes responsibility for top level content presented to user
+NB. No code in AppComponent class as root component exists just to manage content shown to user
+
+angular.json
+============
+
+
+package.json
+============
+"json": "json-server data.js -p 3500 -m authMiddleware.js"
+static data 
+
+
+authMiddleware.js
+=================
+
+
               

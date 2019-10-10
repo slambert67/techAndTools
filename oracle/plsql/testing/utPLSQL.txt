@@ -15,3 +15,29 @@ install utPLSQL: @install.sql ut (schema)
 
 IN the short term (and out of interest) you may be able to use the new utplsql if you can put the index into a tablespace that uses an 8K blocksize.
 You can created tablespaces with non-default blocksizes - https://docs.oracle.com/cd/B28359_01/server.111/b28310/tspaces003.htm#ADMIN11373
+
+
+02/10/19
+========
+utplsql.org
+
+#!/bin/bash
+curl -LOk $(curl --silent https://api.github.com/repos/utPLSQL/utPLSQL/releases/latest | awk '/browser_download_url/ { print $2 }' | grep ".zip\"" | sed 's/"//g')
+unzip -q utPLSQL.zip
+
+headless installation
+---------------------
+execute scripts as sysdba
+default username: ut3
+default pwd: XNtxj8eEgA6X6b6f
+default tablespace: users
+
+cd utPLSQL/source
+documentation example: sqlplus sys/sys_pass@db as sysdba @install_headless.sql utp3 my_verySecret_password utp3_tablespace
+I use: sqlplus / as sysdba @install_headless.sql ut3 XNtxj8eEgA6X6b6f users - worked without errors
+
+install:
+pkg_dyn_sql
+pkg_db_testing
+
+
