@@ -1,5 +1,11 @@
-The Node Shell
-==============
-Often called Node REPL - Read-Eval-Print-Loop
+2 primary ways to use node
 
-Invoke: node
+Node Shell
+==========
+aka Node REPL - Read-Eval-Print-Loop
+invoke by typing node
+ctrl+D to exit
+
+JS files
+========
+node <mytest.js>
