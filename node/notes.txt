@@ -9,3 +9,25 @@ ctrl+D to exit
 JS files
 ========
 node <mytest.js>
+
+
+Node.js globals
+===============
+global
+------
+In a bowser the window object acts as a global
+Node has similar object called global
+
+console
+-------
+.log(msg) : msg to stdout
+.warn(msg) : msg to stderr
+.time(label) : marks a timestamp
+.timeEnd(label) : elapsed time since .time was called
+.assert(cond, msg) : Throw AssertionFailure if cind evaluates to false
+
+process
+-------
+.exit
+.env
+.cwd : working directory

@@ -13,5 +13,6 @@ function process_request(req, res) {
   res.end(body);
 }
 
+// takes 1 argument. Function to be called on each request
 var s = http.createServer(process_request);
 s.listen(8080);
