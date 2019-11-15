@@ -9,5 +9,6 @@ Promise.reject( Error('promise rejected') )  // return error object
 .catch( function(e) {
           console.log('Error - see below');
           console.log(e);
+          // rejection not propagated further unless 'throw' is invoked
         }
 )
