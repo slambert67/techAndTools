@@ -1,0 +1,8 @@
+/node_modules
+/*.iml
+/.idea
+/.vscode
+/.nyc_output
+/coverage
+*.tap
+npm-debug.log
