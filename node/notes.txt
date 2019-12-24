@@ -15,7 +15,7 @@ Node.js globals
 ===============
 global
 ------
-In a bowser the window object acts as a global
+In a browser the window object acts as a global
 Node has similar object called global
 
 console
@@ -31,3 +31,29 @@ process
 .exit
 .env
 .cwd : working directory
+
+packages/modules
+================
+nodemon
+-------
+nodemon monitors code changes so no need to manually restart server
+npm i -D nodemon
+add to package.json:
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+invoke with npm run dev
+
+moment - handles dates and times
+------
+npm i moment
+
+uuid - generates random unique ids
+----
+npm i uuid
+
+handlebars - templating
+----------
+npm install express-handlebars
+

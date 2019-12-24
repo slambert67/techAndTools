@@ -1,0 +1,4 @@
+{   "name": "l3-module",
+    "version": "1.0.0",
+    "main": "./lib/main.js"
+}
