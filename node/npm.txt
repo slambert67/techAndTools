@@ -2,3 +2,6 @@ npm init -y : create package.json. -y => no questions to answer
 npm install <module> : adds node_modules
 npm install -D <module> : dev dependency
 
+Packages installed at top level of hierarchy
+Installed at lower level if need to be overridden
+

@@ -1,0 +1,23 @@
+CREATE TABLE orders
+( order_id integer NOT NULL,
+  customer_ref varchar2(50) NOT NULL,
+  order_date date,
+  product_id integer,
+  quantity integer,
+  CONSTRAINT orders_pk PRIMARY KEY (order_id)
+);
+
+select * from orders;
+
+SELECT * FROM
+(
+  SELECT customer_ref, product_id
+  FROM orders
+)
+PIVOT
+(
+  COUNT(product_id)
+  FOR product_id IN (10 as ten, 20 as twenty, 30 as thirty ,40 as forty)  -- entries become columns (pivot into headings)
+  -- implicit group by on customer_ref
+)
+ORDER BY customer_ref;
