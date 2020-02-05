@@ -1,0 +1,67 @@
+Prerequisites
+=============
+
+node.js
+-------
+runtime/dev environment
+node -v
+
+package manager
+npm -v
+
+
+ide
+---
+Visual Studio Code
+- good typescript support
+
+
+angular cli
+-----------
+ng v
+
+
+Create new project
+==================
+ng new first-project
+
+
+Test run
+========
+ng serve
+- creates simple http server
+- hosts angular project
+
+invoke with http://localhost:4200/
+
+
+Create new component
+====================
+ng generate component hello-world
+- hello-world.component.ts/html/css/spec.ts
+- updates app.module.ts
+
+
+Use new component
+=================
+add new tag to existing html/view for root component
+<app-hello-world></app-hello-world> - instantiates new hello-world component
+
+
+Notes
+=====
+cli has created topmost component in tree for us
+root component is rendering initial page - index.html
+<app-root></app-root>
+created in src/app
+component view    => app.component.html & app.component.css
+component logic   => app.component.ts
+component testing => app.component.spec
+
+Every component is a typescript class
+Class needs to be registered as an angular component
+- @Component decorator/metadata
+- eg. selector, templateUrl, styleUrls etc
+
+
+
