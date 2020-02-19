@@ -9,10 +9,15 @@ import { User } from './user.model';
 export class AddressCard2Component implements OnInit {
 
   // decorator that accepts user object from component tag app-address-card2 (passed from app component)
-
   @Input('user') user: User;
 
+  isCollapsed: boolean = true;
+
   constructor() { }
+
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+  }
 
   ngOnInit() {
   }

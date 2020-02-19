@@ -1,4 +1,8 @@
-var script1 = (function () {
+console.log("hello from script1");
 
-    console.log("script1");
-})();
+function func1() {
+	console.log("hello from script1 func1");
+}
+
+	
+	

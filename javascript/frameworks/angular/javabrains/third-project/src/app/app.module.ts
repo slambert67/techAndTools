@@ -1,24 +1,23 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AddressCardComponent } from './address-card/address-card.component';
-import { AddressCard2Component } from './address-card2/address-card2.component';
+import { ViewModule } from './view/view.module';
+import { TestService } from './test.service';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    AddressCardComponent,
-    AddressCard2Component
+    AppComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule  // allows use of ngModel
+    HttpClientModule,  // contains HttpClient service
+    ViewModule
   ],
-  providers: [],
+  providers: [TestService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

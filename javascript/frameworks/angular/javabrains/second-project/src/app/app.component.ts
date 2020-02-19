@@ -11,6 +11,9 @@ export class AppComponent {
   // uses address-card-2 component. Higher in hierarchy
   user: User;  // can be used in template with []
 
+  // TWO WAY DATA BINDING
+  inputText: string = 'Initial value';
+
   constructor() {
     this.user = new User();
 

@@ -38,6 +38,7 @@ invoke with http://localhost:4200/
 Create new component
 ====================
 ng generate component hello-world
+ng generate component <module-name>/hello-world
 - hello-world.component.ts/html/css/spec.ts
 - updates app.module.ts
 
@@ -62,7 +63,7 @@ Every component is a typescript class
 Class needs to be registered as an angular component
 - @Component decorator/metadata
 - eg. selector, templateUrl, styleUrls etc
-Data binding with {{}}
+Data binding with {{}} : ONE WAY DATA BINDING
 - view always reflects current value in related component class member variable
 {{}} triggers interpolation/evaluation
 - {{ myNum + 1 }} 
@@ -72,6 +73,8 @@ loop: <p *ngFor="let phoneNumber of user.phone">{{phoneNumber}}</p>
 - *ngFor is built in directive
 If: <div *ngIf="user.phone.length > 0">
 - actually conditionally removed div from dom
+- *ngIf determines if element is in dom and rendered
+- value in "user.phone.length > 0" used by angular (not me) so not considered to be data binding
 
 Component Lifecycle
 - use of selector in markup creates instance of component class
@@ -80,6 +83,63 @@ Component Lifecycle
 - eg. populating values with @Input decorator
 
 Pass member variables to components : use [] in tag
+
+styles in css apply only to that component. Angular implements this by adding various attributes
+root (in src folder) of angular project has styles.css in able to specify global styles
+
+click=myfunc() => native HTML
+(click)="myFunc()"  => angular takes care of click. myFunc resides in component.ts
+TWO WAY DATA BINDING : view reflects back to model
+[(ngModel)]="something"
+Need to import FormsModule
+
+View
+[] <- Component
+() -> Component
+
+Module
+- container/namespace
+- contains different things
+- build feature modules - groups of related components
+- to create a module
+  - ng generate module <name>
+  - add ngModule annotation with passed in object
+    - declarations : COMPONENTS that are part of MODULE
+	- imports      : establishing dependency with other MODULES
+	- exports      : COMPONENTS that can be used by other MODULES (cf private v public)
+	- providers    : SERVICES that are part of MODULE
+	
+// typescript imports
+import { NgModule } from '@angular/core';
+
+// angular imports
+imports: [CommonModule]
+
+Not all reusable code is associated with a view  - Service
+@Injectable annotation - tells angular this class is a service
+CLI does not add service to a particular module - this is a manual task
+Add to ngModule providers
+Service now available for other components to use (dependency injection)
+constructor(private myServiceInstance: TestService) {}
+- service is injected into component
+- angular knows about dependent services
+- private is a shortcut
+  - creates a member variable and assigns injected service to that variable
+
+Services/providers are in a shared space and available to all modules
+- this shared space known as Dependency Injection Context
+
+So why specify service in a module provider?
+Lazy Loading
+
+Built in services
+
+
+
+
+
+
+
 
 
 

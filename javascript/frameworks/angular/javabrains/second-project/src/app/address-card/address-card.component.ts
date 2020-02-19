@@ -16,6 +16,7 @@ export class AddressCardComponent implements OnInit {
   }
 
   // lifecycle method/hook. Invoked by angular
+  // Angular needs component to be constructed before initialising values
   // see implements onInit above
   ngOnInit() {
 
