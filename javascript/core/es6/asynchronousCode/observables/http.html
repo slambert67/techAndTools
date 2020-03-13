@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Template">
+    <meta name="author" content="Steve Lambert">
+
+    <!-- Images -->
+
+    <!-- CDN Stylesheets -->
+
+    <!-- Project stylesheets -->
+
+    <!-- CDN Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/6.5.4/rxjs.umd.min.js"></script>-->
+    <script src="https://unpkg.com/rxjs/bundles/rxjs.umd.min.js"></script>
+
+    <!-- Project scripts -->
+    <script src="http.js"></script>
+
+<body >
+    <div class="container">
+        <!-- Search controls -->
+        <h1>Search Github Users</h1>
+        <div class="form-group">
+            <label for="search-box">
+                Username:
+            </label>
+            <input
+                id="search-box"
+                type="text"
+                class="form-control"
+            />
+        </div>
+        <button
+            id="search-button"
+            class="btn btn-primary"
+        >
+            Search
+        </button>
+        <hr/>
+    <!-- Search result -->
+    <a
+        href=""
+        target="_blank"
+        id="search-result"
+        style="display:none;"
+    >
+        <h2 id="search-result__login"></h2>
+        <img
+            src=""
+            alt="avatar"
+            width="150px"
+            height="150px"
+            id="search-result__avatar"
+        />
+    </a>
+    </div>
+</body>
+
+</html>
