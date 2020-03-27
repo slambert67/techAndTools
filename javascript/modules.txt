@@ -1,0 +1,37 @@
+ES6
+===
+
+import moduleFunc from '/sub.js';
+import {sub2Func1} from '/sub2.js';
+import {sub2Func2} from '/sub2.js';
+
+sub.js
+------
+export default function() {
+  console.log('hello world');
+}
+
+sub2.js
+-------
+export {sub2Func1, sub2Func2};
+
+
+Node
+====
+main.js
+-------
+var l1 = require('./level1');
+l1.printl1();
+
+./level1/main.js
+----------------
+var l2 = require('../../level2');
+exports.printl1 = function() {
+    console.log("In level 1");
+    l2.printl2();
+}
+
+other.js
+--------
+var async = require('async');
+
