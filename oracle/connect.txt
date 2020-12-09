@@ -1,0 +1,22 @@
+database server
+- database
+  - set of files located on disk that store data. Exist independently of instance
+- 1 or more instances
+  - set of memory structures that manage database files. 
+    system global area (SGA)
+	
+multiple users connect to instance : program global area (PGA)
+
+Oracle SID is the unique name that uniquely identifies your instance/database
+
+ezconnect
+=========
+eliminates the need for service name lookups in tnsnames.ora
+
+CONNECT username/password@[//][host][:port][/service_name]
+CONNECT ultraproxy[ops$aims]/quilt1@HostServer:1521/AIMS
+
+
+A service name is a logical representation of a database. 
+When an instance starts, it registers itself with a listener using one or more service names. 
+When a client program or database connects to a listener, it requests a connection to a service.

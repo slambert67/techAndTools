@@ -1,0 +1,42 @@
+-- find all sessions
+SELECT SID, program, SERIAL#, USERNAME 
+FROM   V$SESSION;
+
+
+--find my session
+SELECT SID, SERIAL# FROM V$SESSION WHERE AUDSID = Sys_Context('USERENV', 'SESSIONID'); 
+
+
+-- recognise session trace file
+SELECT p.tracefile
+FROM   v$session s
+       JOIN v$process p ON s.paddr = p.addr
+WHERE  s.sid = <sid>;
+
+
+-- enable tracing for a session
+BEGIN 
+  DBMS_MONITOR.SESSION_TRACE_ENABLE(
+    session_id => 27 
+  , serial_num => 60
+  , waits      => true
+  , binds      => false);
+END;
+
+
+-- disable tracing for a session
+BEGIN
+  DBMS_MONITOR.SESSION_TRACE_DISABLE(
+    session_id => 27
+  , serial_num => 60);
+END;
+
+
+-- analysis
+-- copy trace file to local directory
+tkprof <tracefile> <output file>
+
+
+
+
+

@@ -135,6 +135,13 @@ Lazy Loading
 Built in services
 
 
+Extra notes
+===========
+1 way data binding
+{{}} & [] are used to bind a property to the dom. ie component -> view
+[] property binding
+
+
 
 
 
