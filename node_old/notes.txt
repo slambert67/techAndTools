@@ -1,0 +1,119 @@
+2 primary ways to use node
+
+Node Shell
+==========
+aka Node REPL - Read-Eval-Print-Loop
+invoke by typing node
+ctrl+D to exit
+
+JS files
+========
+node <mytest.js>
+
+
+Node.js globals
+===============
+global
+------
+In a browser the window object acts as a global
+Node has similar object called global
+
+console
+-------
+.log(msg) : msg to stdout
+.warn(msg) : msg to stderr
+.time(label) : marks a timestamp
+.timeEnd(label) : elapsed time since .time was called
+.assert(cond, msg) : Throw AssertionFailure if cind evaluates to false
+
+process
+-------
+.exit
+.env
+.cwd : working directory
+
+packages/modules
+================
+nodemon
+-------
+nodemon monitors code changes so no need to manually restart server
+npm i -D nodemon
+add to package.json:
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  },
+invoke with npm run dev
+
+moment - handles dates and times
+------
+npm i moment
+
+uuid - generates random unique ids
+----
+npm i uuid
+
+handlebars - templating
+----------
+npm install express-handlebars
+
+
+new stuff
+---------
+prerequisites
+-------------
+Install node. This installs npm
+
+
+create a new project
+--------------------
+npm init -y : create package.json. -y => no questions to answer
+Actually creating a new npm package
+Think of as meta data about project being developed
+Default entry point : index.js
+
+
+which npm version
+-----------------
+npm -v
+
+
+install and use a library
+-------------------------
+npm install <module/dependency>
+e.g. npm install moment (a date & time library)
+- node_modules folder created. Currently contains moment.js etc
+- dependencies object in package.json updated with moment specified as a dependency
+
+index.js can now use require to use moment.js functionality
+let moment = require('moment');
+
+npm install -D <module> : dev dependency
+
+Packages installed at top level of hierarchy
+Installed at lower level if need to be overridden
+
+
+node_modules
+------------
+Delete before transferring to others
+Other dev just types: npm install
+- looks at package.json
+- identifies dependencies
+- pulls down all the code into node_modules
+
+
+package.json
+------------
+"scripts" object used to define aliases (or scripts to run)
+e.g. "start":"node index.js"
+invoke: npm start
+start and test are reserved names for lifecycle scripts
+
+personal script invoked differently
+e.g.
+"myscript":"ls"
+npm run myscript
+
+
+

@@ -1,0 +1,59 @@
+{
+  "name": "webfids-data-service",
+  "version": "1.3.2",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "get-service-url": "^1.1.0",
+    "jsonwebtoken": "7.1.9",
+    "on-finished": "2.3.0",
+    "oracledb": "3.1.2",
+    "promise-reflect": "^1.1.0",
+    "qs": "6.3.1",
+    "query-string-validator": "^1.0.1",
+    "request": "2.74.0",
+    "response-helper": "^1.1.0",
+    "restify": "^4.3.4",
+    "restify-url-semver": "^1.0.1",
+    "socket.io": "^2.3.0",
+    "ssl-root-cas": "^1.2.4",
+    "strawman-logger": "^2.0.0",
+    "token-auth": "^2.0.3",
+    "uuid": "2.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^2.5.3",
+    "rewire": "2.5.2",
+    "nyc": "^14.1.1",
+    "semver-release-utility": "^2.0.5",
+    "sinon": "1.17.6",
+    "sinon-stub-promise": "3.0.1",
+    "tap-spec": "4.1.1",
+    "tape": "^4.5.1"
+  },
+  "scripts": {
+    "test": "nyc --reporter=lcov --reporter=clover --reporter=text-summary tape \"test/**/*.js\" | tap-spec",
+    "start": "node server.js",
+    "start-debug": "node %NODE_DEBUG_OPTION% server.js",
+    "ci-test": "nyc tape \"test/**/*.js\" > test.tap && nyc report --reporter=lcov --reporter=clover --reporter=text-summary",
+    "ci-lint": "eslint -f checkstyle **/*.js > checkstyle-result.xml",
+    "prepublishOnly": "npm shrinkwrap",
+    "release:prerelease": "npm version prerelease -m \"%s prerelease CI release\" && git push && git push --tags && npm publish",
+    "release:patch": "npm version patch -m \"%s patch CI release\" && git push && git push --tags && npm publish",
+    "release:minor": "npm version minor -m \"%s minor CI release\" && git push && git push --tags && npm publish",
+    "release:major": "npm version major -m \"%s major CI release\" && git push && git push --tags && npm publish",
+    "sru:propose-release": "sru --propose-release --git .",
+    "sru:tag:patch": "sru --tag-issue-semver-level --git . --semver PATCH --issue ",
+    "sru:tag:minor": "sru --tag-issue-semver-level --git . --semver MINOR --issue ",
+    "sru:tag:major": "sru --tag-issue-semver-level --git . --semver MAJOR --issue "
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://man-cisrv-1.ultra-as.net:8000/webfids/webfids-data-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "publishConfig": {
+    "registry": "https://artifactory.ultra.aero/artifactory/api/npm/brs-npm-repos"
+  }
+}
