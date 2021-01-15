@@ -1,37 +1,53 @@
-ES6
-===
-
-import moduleFunc from '/sub.js';
-import {sub2Func1} from '/sub2.js';
-import {sub2Func2} from '/sub2.js';
-
-sub.js
-------
-export default function() {
-  console.log('hello world');
-}
-
-sub2.js
--------
-export {sub2Func1, sub2Func2};
+module has 3 parts
+- imports (dependencies)
+- the module code itself
+- exports (module interface)
 
 
-Node
-====
-main.js
--------
-var l1 = require('./level1');
-l1.printl1();
+1. IIFE module pattern - power of closure. Access to variables out of function scope
 
-./level1/main.js
-----------------
-var l2 = require('../../level2');
-exports.printl1 = function() {
-    console.log("In level 1");
-    l2.printl2();
-}
+2. CommonJS group - not built in modules
+- browsers don't support out of the box
+- baked into node
+- designed with server in mind
+- modules loaded synchronously
+  - solved by module bundler. (1.js, 2.js) -> Bundler(e.g. webpack,browserify,SystemJS,rollup.js. Examines exports and requires) -> bundle.js
+- require to import
+- module.export to export. e.g. module.exports = <function name>
+- Alternatives for client - AMD, UMD(try to supposr CJS and AMD) -> failed
 
-other.js
---------
-var async = require('async');
+3. ES Modules - built in modules
+- browsers support ES modules
+- baked into javascript language
+- supports asynchronous loading
+- import (instead of require) and export (instead of module.export)
+- Node support being worked on. Progress?
+  - .mjs. c.f. type=module in browser
+
+e.g.
+// msg.js
+export default const msg = 'Yay ES6!';			import msg from './msg.js';
+
+// lib.js
+export const sum = (a,b) => a+b;				import * as lib from './lib.js';
+export const product = (a,b) => a*b				import {sum,product}  from './lib.js';
+export const quotient = (a,b) => a/b
+
+in browser:
+// add a module script
+<script type="module" src="main.js"></script>
+
+// fallback for older browsers
+<script nomodule src="bundle.js"></script>
+
+
+
+scripts included in html are not modules. Operate in global namespace
+order of scripts matters
+
+
+
+diy modules - name spacing
+- yahoo global object
+- jquery global object
 
