@@ -1,4 +1,4 @@
-2 primary ways to use node
+2 primary ways to use node to evaluate code
 
 Node Shell
 ==========
