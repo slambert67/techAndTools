@@ -1,0 +1,12 @@
+Every file is a module
+CommonJS modules have an implicit local scope
+global scope needs to be accesses explicitly
+export and import can be dynamic?
+require used to resolve dependencies
+require function calls are synchronous and return the interface exposed by the module
+require function takes a module identifier
+A CommonJS module has an object called module provided by node
+
+e.g.
+const fs = require('fs');          // fs module is part of node core
+const hi = require('./sayHi.js');  // module retrieved from file system 
