@@ -6,7 +6,122 @@ require used to resolve dependencies
 require function calls are synchronous and return the interface exposed by the module
 require function takes a module identifier
 A CommonJS module has an object called module provided by node
+type 'module' at node prompt to see Module object
 
 e.g.
 const fs = require('fs');          // fs module is part of node core
 const hi = require('./sayHi.js');  // module retrieved from file system 
+
+
+Possibly node specific?
+-----------------------
+The main object exported by the require module is a function (as used in the above example). 
+When Node invokes that require() function with a local file path as the function’s only argument, 
+Node goes through the following sequence of steps:
+- Resolving: To find the absolute path of the file.
+- Loading: To determine the type of the file content.
+- Wrapping: To give the file its private scope. This is what makes both the require and module objects local to every file we require.
+- Evaluating: This is what the VM eventually does with the loaded code.
+- Caching: So that when we require this file again, we don’t go over all the steps another time.
+
+
+Resolving a local path
+---------------------
+Every module object gets an id property to identify it. This id is usually the full path to the file, but in a REPL session it’s simply <repl>.
+Node modules have a one-to-one relation with files on the file-system. We require a module by loading the content of a file into memory.
+However, since Node allows many ways to require a file (for example, with a relative path or a pre-configured path), before we can load the content of a file into the memory we need to find the absolute location of that file.
+e.g.
+require( 'find-me' )  -- no path specified
+Node will look for find-me.js in all the paths specified by module.paths — in order.
+
+Requiring a folder
+Node searches for that folder in path and uses index.js by default
+Can override default using main property in package.json
+
+Can specify relative and absolute paths - require( './squoink/find-me' )
+
+require.resolve('find-me') works in same way as require but does not load module. Returns path if found
+
+
+Parent-child relation between files
+-----------------------------------
+
+
+exports, module.exports, and synchronous loading of modules
+-----------------------------------------------------------
+In any module, exports is a special object
+exports is a reference to module.exports
+You can put as many attributes as you want on that exports object, and you can actually change the whole object to be something else. 
+For example, to change the exports object to be a function instead of an object, we do the following:
+module.exports = function() {};
+
+
+requiring json
+--------------
+If a file extension was not specified, the first thing Node will try to resolve is a .js file. If it can’t find a .js file, it will try a .json file and it will parse the .json file if found as a JSON text file. 
+After that, it will try to find a binary .node file. However, to remove ambiguity, you should probably specify a file extension when requiring anything other than .js files.
+
+Requiring JSON files is useful if, for example, everything you need to manage in that file is some static configuration values, or some values that you periodically read from an external source. 
+For example, if we had the following config.json file:
+{
+  "host": "localhost",
+  "port": 8080
+}
+We can require it directly like this:
+const { host, port } = require('./config');
+
+console.log(`Server will run at http://${host}:${port}`);  -- template literal interpolation
+
+
+Wrapping
+--------
+All code you write in Node will be wrapped in functions
+exports is just a reference to module.exports
+
+In a browser, when we declare a variable in a script like this:
+var answer = 42;
+That answer variable will be globally available in all scripts after the script that defined it.
+This is not the case in Node. When we define a variable in one module, the other modules in the program will not have access to that variable. So how come variables in Node are magically scoped?
+The answer is simple. Before compiling a module, Node wraps the module code in a function, which we can inspect using the wrapper property of the module module.
+
+~ $ node
+> require('module').wrapper
+[ '(function (exports, require, module, __filename, __dirname) { ',
+  '\n});' ]
+>
+
+The wrapping function’s return value is module.exports
+
+require object
+--------------
+nothing special
+It’s an object that acts mainly as a function that takes a module name or path and returns the module.exports object
+The require object also has properties of its own. We’ve seen the resolve property, which is a function that performs only the resolving step of the require process
+There is also require.main which can be helpful to determine if the script is being required or run directly.
+
+// In print-in-frame.js
+
+const printInFrame = (size, header) => {
+  console.log('*'.repeat(size));
+  console.log(header);
+  console.log('*'.repeat(size));
+};
+
+if (require.main === module) {
+  printInFrame(process.argv[2], process.argv[3]);
+} else {
+  module.exports = printInFrame;
+}
+
+When the file is not being required, we just call the printInFrame function with process.argv elements. Otherwise, we just change the module.exports object to be the printInFrame function itself.
+
+
+Caching
+-------
+All modules will be cached
+
+log_to_console.js : console.log('logging');
+require('./log_to_console') // will show the header.
+require('./log_to_console') // will not show the header.
+
+wrap the log line in log_to_console.js with a function and export that function. This way, when we require the log_to_console.js file, we get a function that we can execute to invoke the log line every time:
