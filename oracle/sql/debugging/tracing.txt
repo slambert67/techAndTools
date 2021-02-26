@@ -5,6 +5,7 @@ FROM   V$SESSION;
 
 --find my session
 SELECT SID, SERIAL# FROM V$SESSION WHERE AUDSID = Sys_Context('USERENV', 'SESSIONID'); 
+or SELECT sid,serial# FROM v$session WHERE username = 'CDSTEST';
 
 
 -- recognise session trace file
@@ -35,6 +36,10 @@ END;
 -- analysis
 -- copy trace file to local directory
 tkprof <tracefile> <output file>
+
+
+
+or
 
 
 
