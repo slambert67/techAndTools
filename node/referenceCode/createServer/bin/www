@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+
+// paste code from createNodeServer or createExpressServer
+
+// module dependencies
+var http = require('http');
+const dotenv = require('dotenv');
+dotenv.config();
+
+// get port from environment
+const port = process.env.PORT;
+
+/**
+* http.createServer takes a requestListener function
+* The requestListener function is the function that is executed each time the server gets a request
+* The requestListener function handles requests from the user, and also the response back to the user
+*/
+
+// http.createServer returns http.Server. Extends net.server. Extends EventEmitter. Has .on function
+var server = http.createServer( (req, res) => {
+    console.log('request received!');
+    var body = 'Thanks for calling\n';
+    var content_length = body.length;
+  
+    // construct response
+    res.writeHead( 200, {
+      'Content-Length': content_length,
+  'Content-Type': 'text/plain'
+    });
+   res.end(body);
+});
+server.listen(port);
+server.on('listening', () => {console.log('listening');});
+server.on('error', onError);
+
+// error handler
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
