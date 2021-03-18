@@ -21,7 +21,7 @@ BEGIN
     session_id => 27 
   , serial_num => 60
   , waits      => true
-  , binds      => false);
+  , binds      => false);  -- true shows bind variable values
 END;
 
 
