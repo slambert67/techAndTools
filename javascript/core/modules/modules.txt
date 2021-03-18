@@ -33,6 +33,8 @@ export const sum = (a,b) => a+b;				import * as lib from './lib.js';
 export const product = (a,b) => a*b				import {sum,product}  from './lib.js';
 export const quotient = (a,b) => a/b
 
+All CommonJS and AMD modules are presented to ES6 as having a default export, which is the same thing that you would get if you asked require() for that module—that is, the exports object.
+
 in browser:
 // add a module script
 <script type="module" src="main.js"></script>
