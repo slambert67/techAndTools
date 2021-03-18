@@ -17,6 +17,7 @@ var server = http.createServer( (req, res) => {
             'Content-Length': content_length,
             'Content-Type': 'text/plain' // text/css, text/html, text/javascript, image/jpeg, application/json
         });
+        // close the response by adding body content
         res.end(body);  // MUST be called on each response
     }
     else if (req.url == '/html') {
