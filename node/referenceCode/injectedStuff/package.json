@@ -1,10 +1,10 @@
 {
-  "name": "requestResponse",
+  "name": "injectedStuff",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.mjs"
+    "start": "node --experimental-modules injections.mjs"
   },
   "keywords": [],
   "author": "",
