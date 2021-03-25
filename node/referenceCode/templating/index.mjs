@@ -3,21 +3,14 @@ import { router as indexRouter } from './routes/index.mjs';
 import * as http from 'http';
 import * as path from'path';
 
-import { default as dotenv } from 'dotenv';
-dotenv.config();
-
-import { approotdir } from './approotdir.mjs';
-const __dirname = approotdir;
-
 export const app = express();
 
-
 // view/templating engine setup - npm install hbs
-app.set('view engine', 'hbs');                    // template engine to use
-app.set('views', path.join(__dirname, 'views'));  // specify where templates reside
+app.set('view engine', 'hbs');  // template engine to use
+app.set('views', './views');    // specify where templates reside
 
 // Router function lists
 app.use('/', indexRouter);
 
 export const server = http.createServer(app);
-server.listen(process.env.PORT);
+server.listen(3000);
