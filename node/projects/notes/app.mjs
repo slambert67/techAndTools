@@ -1,5 +1,6 @@
 import { default as express } from 'express';
 import { router as indexRouter } from './routes/index.mjs';
+import { default as hbs } from'hbs';
 import * as http from 'http';
 import * as path from'path';
 
@@ -13,14 +14,18 @@ import {
     normalizePort, onError, onListening, handle404, basicErrorHandler
 } from './appsupport.mjs';
 
+import { InMemoryNotesStore } from './models/notes-memory.mjs';
+export const NotesStore = new InMemoryNotesStore();
+
 export const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 // view/templating engine setup - npm install hbs
-app.set('view engine', 'hbs');                    // template engine to use
-app.set('views', path.join(__dirname, 'views'));  // specify where templates reside
+app.set('view engine', 'hbs');                           // template engine to use
+app.set('views', path.join(__dirname, 'views'));         // specify where templates reside
+hbs.registerPartials(path.join(__dirname, 'partials'));  // specify where partial templates reside
 
 // Router function lists
 app.use('/', indexRouter);
