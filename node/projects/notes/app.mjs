@@ -1,5 +1,6 @@
 import { default as express } from 'express';
 import { router as indexRouter } from './routes/index.mjs';
+import { router as notesRouter }  from './routes/notes.mjs';
 import { default as hbs } from'hbs';
 import * as http from 'http';
 import * as path from'path';
@@ -29,6 +30,7 @@ hbs.registerPartials(path.join(__dirname, 'partials'));  // specify where partia
 
 // Router function lists
 app.use('/', indexRouter);
+app.use('/notes', notesRouter);
 
 // error handlers
 // catch 404 and forward to error handler
