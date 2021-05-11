@@ -1,0 +1,18 @@
+sELECT B.Owner, B.Object_Name, A.Oracle_Username, A.OS_User_Name  
+FROM V$Locked_Object A, All_Objects B
+WHERE A.Object_ID = B.Object_ID
+
+-- Query to Get List of all locked objects
+SELECT B.Owner, B.Object_Name, A.Oracle_Username, A.OS_User_Name  
+FROM V$Locked_Object A, All_Objects B
+WHERE A.Object_ID = B.Object_ID ; 
+-- and A.OS_USER_NAME = 'mahendar' 
+
+-- Query to Get List of locked sessions        
+--select SID,SERIAL#,INST_ID from gv$session a  where schemaname = 'OPS$AIMS';
+select * from gv$session a  where schemaname = 'OPS$AIMS';
+-- and osuser =  'mahendar';
+-- o/p: 314 26513   1
+
+-- Statement to Kill the session [pass values in the same order and append @ for inst_id]
+alter system kill session '56,46,@1';
