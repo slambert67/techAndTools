@@ -20,3 +20,10 @@ CONNECT ultraproxy[ops$aims]/quilt1@HostServer:1521/AIMS
 A service name is a logical representation of a database. 
 When an instance starts, it registers itself with a listener using one or more service names. 
 When a client program or database connects to a listener, it requests a connection to a service.
+
+dba_users - real schemas
+sys
+system
+
+sysdba and sysoper are roles
+

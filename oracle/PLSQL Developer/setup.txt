@@ -1,18 +1,12 @@
 Product: PL/SQL Developer
 - Licenses: 20
-- Base version: 12.0
-- Service contract expiration date: June 1, 2018
+- Base version: 14.0
+- Service contract expiration date: July 1, 2022
 
-Registration information: 
-- Product code: AF6H - JYL4 - BW2D - 2J2S - HK5R - MGXW - QNQ6 
-- Serial number: 02.126202 
+Registration information:
+- Product code: AWKF - KUVN - 25W5 - FSLT - QHQX - S56K - A4KV
+- Serial number: 02.136991
 - Password: xs374ca
-
-
-Contact information:
-- Company: Ultra Electronics Airport Systems
-- Name: Jackie Smith
-- Email address: jackie.smith@ultra-as.com
 
 The product code includes information about the ordered product, version, licenses, service contract and more. This is a personal code that should NOT be distributed to others than the licensed user(s).
 

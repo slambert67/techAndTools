@@ -5,7 +5,7 @@ FROM   V$SESSION;
 
 --find my session
 SELECT SID, SERIAL# FROM V$SESSION WHERE AUDSID = Sys_Context('USERENV', 'SESSIONID'); 
-or SELECT sid,serial# FROM v$session WHERE username = 'CDSTEST';
+or SELECT sid,serial# FROM v$session WHERE username = 'AIMS';
 
 
 -- recognise session trace file
@@ -21,7 +21,7 @@ BEGIN
     session_id => 27 
   , serial_num => 60
   , waits      => true
-  , binds      => false);  -- true shows bind variable values
+  , binds      => true);  -- true shows bind variable values
 END;
 
 
