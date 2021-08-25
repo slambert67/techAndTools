@@ -48,10 +48,16 @@
 -- AIMS-3957 - Steve Lambert - 01/10/29 - Prefix all generated packages with AST_
 -- AIMS-4076 - Steve Lambert - 06/11/20 - Handle CLOBs representing JSON for routine parameters
 -- AIMS-4039 - Steve Lambert - 22/10/20 - Implement seed data functionality
+-- AIMS-4417 - Steve Lambert - 18/12/20 - Support 128 byte/char lengths for identifiers
+-- AIMS-4433 - Steve Lambert - 22/12/20 - WHERE clause no longer mandatory for DML operations and assertions
+-- AIMS-4467 - Steve Lambert - 11/01/21 - Handle procedures with no parameters
+-- AIMS-4542 - Steve Lambert - 25/01/21 - Fix 'maximum open cursors exceeded' error by closing cursor
+--                                        after successful select_row execution
+-- AIMS-4700 - Steve Lambert - 19/02/21   Support new date format - today[+/-]ddTHH24:MI
 -- -----------------------------------------------------------------------------
 
 CREATE OR REPLACE PACKAGE BODY 
--- Identifier: AIMS-4039
+-- Identifier: AIMS-4700
 
 pkg_dynamic_sql
 IS
@@ -91,10 +97,6 @@ IS
   columns_not_specified CONSTANT NUMBER := -20207;
   columns_not_specified_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(columns_not_specified_excp, columns_not_specified);
-
-  where_not_specified CONSTANT NUMBER := -20208;
-  where_not_specified_excp EXCEPTION;
-  PRAGMA EXCEPTION_INIT(where_not_specified_excp, where_not_specified);
 
   routine_not_specified CONSTANT NUMBER := -20209;
   routine_not_specified_excp EXCEPTION;
@@ -295,7 +297,7 @@ IS
      AND object_name = UPPER(p_routine_name)
    ORDER BY position ASC;
 
-  l_param_name   VARCHAR2(30);
+  l_param_name   VARCHAR2(128);
   l_param_names  JSON_KEY_LIST;
 
 BEGIN
@@ -343,6 +345,12 @@ BEGIN
         RAISE_APPLICATION_ERROR(unsupported_data_type, 'Parameter ' || param.param_name || ' has an unsupported data type: ' || param.data_type); 
     END CASE;
   END LOOP;
+
+  -- return NULL instead of empty object
+  IF p_results.get_keys IS NULL THEN
+    p_results := NULL;
+  END IF;
+
 END get_output_param_values;
 
 
@@ -463,7 +471,8 @@ FUNCTION get_column_data_type( p_table_name  IN user_tab_cols.table_name%TYPE,
                                p_column_name IN user_tab_cols.column_name%TYPE)
 RETURN VARCHAR2
 IS
-  l_key       VARCHAR2(50);
+  l_key       VARCHAR2(257);  -- max json key size = 255 but user may specify table name and column name = 128
+                              -- key length would then be 257. Let Oracle raise exception in this case
   l_data_type user_tab_cols.data_type%TYPE;
 
 BEGIN
@@ -561,6 +570,7 @@ END describe_columns;
 -- - todayTHH24:MI        : specify a time today                         e.g. todayT02:30
 -- - today[+|-]n          : specify an offset in days [n=1-99]           e.g. today+31
 -- - today[+|-]DD:HH24:MI : specify an offset in days, hours and mins    e.g. today-31:23:59
+-- - today[+|-]DDTHH24:MI : specify an offset in days plus a time        e.g. today-02:16:45
 -- - now                  : specify non truncated dbtime                 e.g. now
 -- - now[+|-]n            : specify an offset in days [n=1-99]           e.g. now+31
 -- - now[+|-]DD:HH24:MI   : specify an offset in days, hours and mins    e.g. now-31:23:59
@@ -576,6 +586,7 @@ IS
   l_today_string   VARCHAR2(10);
   l_now_string     VARCHAR2(20);
   l_date_string    VARCHAR2(20);
+  l_day_string     VARCHAR2(20);
   l_modifier       VARCHAR2(1);
   l_today          DATE;
   l_now            DATE;
@@ -629,6 +640,23 @@ BEGIN
       ELSE
         NULL; 
     END CASE;
+
+  ELSIF regexp_like(p_json_date_string, '^today[\+-][0-9][0-9]T(([01][0-9])|(2[0-3]))[:][0-5][0-9]$') THEN  -- an offset in days and a time stipulation e.g. today-01T02:30 
+
+    l_modifier       := SUBSTR(p_json_date_string,6,1);
+    l_offset_in_days := TO_NUMBER( SUBSTR(p_json_date_string,7,2) );
+
+    CASE l_modifier
+      WHEN '+' THEN
+        l_date := l_today + l_offset_in_days;
+      WHEN '-' THEN
+        l_date := l_today - l_offset_in_days;
+      ELSE
+        NULL; 
+    END CASE;
+
+    l_date_string := TO_CHAR(l_date, DAY_FORMAT) || 'T' || SUBSTR(p_json_date_string,10,5);
+    l_date := TO_DATE(l_date_string, DATE_FORMAT);
 
   ELSIF regexp_like(p_json_date_string, '^now$') THEN  -- non truncated dbtime
 
@@ -788,9 +816,6 @@ BEGIN
   END LOOP;
 EXCEPTION
   WHEN OTHERS THEN
-    IF dbms_sql.is_open(p_cursor) THEN
-      dbms_sql.close_cursor(p_cursor);
-    END IF;
     RAISE_APPLICATION_ERROR(expected_parameter, 'Missing or incorrectly specified parameters for routine call'); 
 
 END bind_param_variables;
@@ -891,10 +916,10 @@ END bind_column_variables;
 -- p_results       : JSON object detailing parameter and function return values and data types
 --
 -- =============================================================================
-PROCEDURE call_routine( p_package_name IN  VARCHAR2,
-                        p_routine_name IN  VARCHAR2,
-                        p_parameters   IN OUT  JSON_OBJECT_T,
-                        p_results      OUT JSON_OBJECT_T )
+PROCEDURE call_routine( p_package_name IN     VARCHAR2,
+                        p_routine_name IN     VARCHAR2,
+                        p_parameters   IN OUT JSON_OBJECT_T,
+                        p_results         OUT JSON_OBJECT_T )
 IS
   l_cursor SMALLINT;
   l_sql    VARCHAR2(4000);
@@ -927,6 +952,12 @@ BEGIN
   -- close cursor
   dbms_sql.close_cursor(l_cursor);
 
+EXCEPTION
+  WHEN OTHERS THEN
+    IF dbms_sql.is_open(l_cursor) THEN
+      dbms_sql.close_cursor(l_cursor);
+    END IF;
+    RAISE; 
 END call_routine;
 
 
@@ -951,7 +982,7 @@ END call_routine;
 -- =============================================================================
 PROCEDURE select_row( p_table_name           IN VARCHAR2,
                       p_select_column_names  IN JSON_ARRAY_T,
-                      p_where_column_details IN JSON_OBJECT_T,
+                      p_where_clause         IN JSON_OBJECT_T,
                       p_results              IN OUT JSON_ARRAY_T )
 IS
   l_select_string      VARCHAR2(32767) := NULL;
@@ -960,7 +991,7 @@ IS
   l_cursor             SMALLINT;
   l_col_count          INTEGER;
   l_col_type           PLS_INTEGER;
-  l_col_name           VARCHAR2(30);
+  l_col_name           VARCHAR2(128);
   l_date               DATE;
   l_number             NUMBER;
   l_varchar2           VARCHAR2(4000);
@@ -978,25 +1009,23 @@ BEGIN
   IF p_select_column_names IS NULL THEN
     RAISE_APPLICATION_ERROR(columns_not_specified, 'Columns to be selected not specified for SELECT statement');
   END IF;
-  IF p_where_column_details IS NULL THEN
-    RAISE_APPLICATION_ERROR(where_not_specified, 'Where clause not specified for SELECT statement');
-  END IF;
 
   -- construct SELECT string 
   FOR i IN 0..p_select_column_names.get_size()-1 LOOP
     l_select_string := l_select_string || ',' || p_select_column_names.get_String(i);
   END LOOP;
+  l_sql := 'SELECT ' || substr(l_select_string,2) || ' FROM ' || p_table_name;  -- substr removes leading ','
 
-  -- construct WHERE string 
-  l_where_column_names := p_where_column_details.get_keys;
-  FOR i IN 1..l_where_column_names.COUNT LOOP
-    l_where_string := l_where_string || ' AND ' || l_where_column_names(i) || ' = :bv' || i;
-  END LOOP;
+  -- construct WHERE clause
+  IF p_where_clause IS NOT NULL
+  THEN
+    l_where_column_names := p_where_clause.get_keys;
+    FOR i IN 1..l_where_column_names.COUNT LOOP
+      l_where_string := l_where_string || ' AND ' || l_where_column_names(i) || ' = :bv' || i;
+    END LOOP;
+    l_sql := l_sql || ' WHERE ' || substr(l_where_string,6);  -- remove leading ' AND '
+  END IF;
 
-  -- construct the full dynamic sql statement
-  l_sql := 'SELECT ' || substr(l_select_string,2) ||
-           ' FROM ' || p_table_name ||
-           ' WHERE ' || substr(l_where_string,6) || ' and rownum < 10';
   testing_log(l_sql);
 
   -- open cursor
@@ -1008,7 +1037,7 @@ BEGIN
   -- bind the unique key variables
   bind_column_variables(l_cursor, 
                         p_table_name,
-                        p_where_column_details,
+                        p_where_clause,
                         0, 
                         FALSE); -- select so no new pk
 
@@ -1063,6 +1092,9 @@ BEGIN
 
   END LOOP;
 
+  -- close the cursor
+  dbms_sql.close_cursor(l_cursor);
+
   IF l_rows_fetched = 0 THEN
     RAISE_APPLICATION_ERROR(no_rows_selected, 'No rows selected');
   END IF;
@@ -1108,6 +1140,7 @@ BEGIN
   END IF;
 
   IF p_where_clause IS NOT NULL THEN
+
     l_where_column_names := p_where_clause.get_keys;
     l_where_column_count   := l_where_column_names.COUNT;
 
@@ -1115,7 +1148,7 @@ BEGIN
     FOR i IN 1..l_where_column_count LOOP
       l_where_string := l_where_string || ' AND ' || l_where_column_names(i) || ' = ' || ':bv' || i;
     END LOOP;
-    l_where_string := ' WHERE ' || substr(l_where_string,6);
+    l_where_string := ' WHERE ' || substr(l_where_string,6);  -- remove leading ' AND '
   END IF;
 
   -- construct SQL string
@@ -1192,30 +1225,29 @@ BEGIN
   IF p_column_details IS NULL THEN
     RAISE_APPLICATION_ERROR(columns_not_specified, 'Columns not specified for UPDATE statement');
   END IF;
-  IF p_where_clause IS NULL THEN
-    RAISE_APPLICATION_ERROR(where_not_specified, 'Where clause not specified for UPDATE statement');
-  END IF;
 
   -- initialisation
   l_column_names := p_column_details.get_keys;
-  l_column_count   := l_column_names.COUNT; 
-  l_where_column_names := p_where_clause.get_keys;
-  l_where_column_count   := l_where_column_names.COUNT; 
+  l_column_count := l_column_names.COUNT; 
+  l_sql          := 'UPDATE ' || p_table_name || ' SET ';
 
   -- construct UPDATE string
   FOR i IN 1..l_column_count LOOP
     l_update_string := l_update_string || ',' || l_column_names(i) || ' = ' || ':bv' || i;
   END LOOP;
+  l_sql := l_sql || substr(l_update_string,2);  -- remove leading ','
 
   -- construct WHERE clause string
-  FOR i IN 1..l_where_column_count LOOP
-    l_where_string := l_where_string || ' AND ' || l_where_column_names(i) || ' = ' || ':bv' || (l_column_count+i);
-  END LOOP;
+  IF p_where_clause IS NOT NULL
+  THEN
+    l_where_column_names := p_where_clause.get_keys;
+    l_where_column_count := l_where_column_names.COUNT; 
 
-  -- construct SQL string
-  l_sql := 'UPDATE ' || p_table_name || ' SET ' ||
-           substr(l_update_string,2) || ' WHERE ' ||
-           substr(l_where_string,6);
+    FOR i IN 1..l_where_column_count LOOP
+      l_where_string := l_where_string || ' AND ' || l_where_column_names(i) || ' = ' || ':bv' || (l_column_count+i);
+    END LOOP;
+    l_sql := l_sql || ' WHERE ' || substr(l_where_string,6);  -- remove leading ' AND '
+  END IF;
   testing_log(l_sql);
 
   -- open cursor

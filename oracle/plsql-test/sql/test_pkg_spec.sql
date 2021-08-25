@@ -21,9 +21,13 @@
 -- AIMS-3270 - Steve Lambert - 17/04/20 - Miscellaneous cosmetic changes
 -- AIMS-3460 - Steve Lambert - 27/05/20 - Handle Booleans
 -- AIMS-4076 - Steve Lambert - 03/11/20 - Handle CLOBs representing JSON for routine parameters
+-- AIMS-4467 - Steve Lambert - 11/01/21 - Handle procedures with no parameters
 -- -----------------------------------------------------------------------------
 
-CREATE OR REPLACE PACKAGE auto_test_pkg IS
+CREATE OR REPLACE PACKAGE 
+-- Identifier: AIMS-4467
+
+auto_test_pkg IS
 
 PROCEDURE pkgProc(pIn1  IN NUMBER,  pIn2 IN VARCHAR2,   pIn3 IN DATE, pIn4 IN BOOLEAN,
                   pOut1 OUT NUMBER, pOut2 OUT VARCHAR2, pOut3 OUT DATE, pOut4 OUT BOOLEAN);
@@ -42,6 +46,8 @@ FUNCTION pkgBooleanFunc(pIn1 IN BOOLEAN, pOut1 OUT BOOLEAN) RETURN BOOLEAN;
 FUNCTION pkgClobFunc(pOut1 OUT CLOB) RETURN CLOB;
 
 FUNCTION pkgNoParamsFunc RETURN VARCHAR2;
+
+PROCEDURE pkgNoParamsProc;
 
 END;
 /

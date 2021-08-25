@@ -3,7 +3,9 @@
 # Script to install utPLSQL
 # #########################
 
-cd ../utplsql
+dir=$(dirname $0)
+
+cd $dir/../utplsql
 if [ -f utPLSQL.zip ]
 then
    rm -fr utPLSQL

@@ -35,23 +35,32 @@
 -- AIMS-4076 - Steve Lambert - 06/11/20 - Handle CLOBs representing JSON for routine parameters
 -- AIMS-4039 - Steve Lambert - 22/10/20 - Implement seed data functionality
 -- AIMS-4285 - Steve Lambert - 30/11/20 - Improve reporting of failed assertions
+-- AIMS-4382 - Steve Lambert - 11/12/20 - Support much larger sizes for dynamically created packages
+-- AIMS-4417 - Steve Lambert - 18/12/20 - Support 128 byte/char lengths for identifiers
+-- AIMS-4433 - Steve Lambert - 22/12/20 - WHERE clause no longer mandatory for DML operations and assertions
+-- AIMS-4446 - Steve Lambert - 24/12/20 - Miscellaneous naming changes
+-- AIMS-4650 - Steve Lambert - 12/02/21 - Add sequence to SERVER_TEST_RUN_STATUSES table
+-- AIMS-5022 - Steve Lambert - 03/08/21 - Rework of seed data functionality. Added backout functionality
 -- -----------------------------------------------------------------------------
 
 CREATE OR REPLACE PACKAGE BODY 
--- Identifier: AIMS-4285
+-- Identifier: AIMS-5022
 
 pkg_server_testing
 IS
+  TYPE TEST_STEPS IS TABLE OF server_tests%ROWTYPE INDEX BY PLS_INTEGER;  -- steps for a suite and test number
+  TYPE SEED_DATA IS TABLE OF TEST_STEPS INDEX BY VARCHAR2(10);
+
   -- package globals
   g_log_detail           SMALLINT;  -- 0:none, 1:low, 2:medium, 3:high
   g_expectation_index    SMALLINT;
   g_package_spec         VARCHAR2(32767);
-  g_package_body         VARCHAR2(32767);
-  g_current_package_name VARCHAR2(30);
+  g_package_body         CLOB;
+  g_current_package_name VARCHAR2(128);
 
-  g_primary_keys JSON_OBJECT_T;
-  g_outputs      JSON_OBJECT_T;
-  g_column_types JSON_OBJECT_T;
+  g_primary_keys     JSON_OBJECT_T;
+  g_framework_values JSON_OBJECT_T;
+  g_column_types     JSON_OBJECT_T;
 
   g_log_number              server_test_logs.log_number%TYPE;
   g_current_functional_area server_tests.functional_area%TYPE;
@@ -60,19 +69,31 @@ IS
   g_current_test_step       server_tests%ROWTYPE;
   g_current_assertion       INTEGER;
   g_site_id                 VARCHAR2(3);
-
-  TYPE seed_data_table IS TABLE OF server_tests%ROWTYPE INDEX BY PLS_INTEGER;  
-  g_seed_data seed_data_table;
+  g_test_stage              SMALLINT;  
+  g_bypass_operation        BOOLEAN;
+  g_all_seed_data           SEED_DATA;
+  g_all_seed_data_backout   SEED_DATA;
+  g_seed_data_backout       JSON_ARRAY_T;
 
   -- package constants
-  DIAG                   CONSTANT SMALLINT     := 1;
-  HIGH_DETAIL            CONSTANT SMALLINT     := 3;
-  NO_DETAIL              CONSTANT SMALLINT     := 4;
-  DATE_FORMAT            CONSTANT VARCHAR2(20) := 'YYYY-MM-DD"T"HH24:MI';
-  DBMS_TYPES_BOOLEAN     CONSTANT PLS_INTEGER  := 0;
-  DBMS_TYPES_NULL_JSON   CONSTANT PLS_INTEGER  := -1;
-  DBMS_TYPES_JSON_OBJECT CONSTANT PLS_INTEGER  := -2;
-  DBMS_TYPES_JSON_ARRAY  CONSTANT PLS_INTEGER  := -3;
+  DIAG                   CONSTANT SMALLINT         := 1;
+  HIGH_DETAIL            CONSTANT SMALLINT         := 3;
+  NO_DETAIL              CONSTANT SMALLINT         := 4;
+  DATE_FORMAT            CONSTANT VARCHAR2(20)     := 'YYYY-MM-DD"T"HH24:MI';
+  DBMS_TYPES_BOOLEAN     CONSTANT PLS_INTEGER      := 0;
+  DBMS_TYPES_NULL_JSON   CONSTANT PLS_INTEGER      := -1;
+  DBMS_TYPES_JSON_OBJECT CONSTANT PLS_INTEGER      := -2;
+  DBMS_TYPES_JSON_ARRAY  CONSTANT PLS_INTEGER      := -3;
+  SEED_DATA_STAGE                CONSTANT SMALLINT := 1;
+  OPERATION_STAGE                CONSTANT SMALLINT := 2;
+  EXPECTATION_STAGE              CONSTANT SMALLINT := 3;
+  LAST_TEST_STEP_BEFORE_BACKOUT  CONSTANT SMALLINT := 900;
+
+
+  -- procedure types
+  NORMAL_TEST_PROCEDURE       CONSTANT SMALLINT := 1;
+  BACKOUT_SEED_DATA_PROCEDURE CONSTANT SMALLINT := 2;
+  BACKOUT_TEST_DATA_PROCEDURE CONSTANT SMALLINT := 3;
 
 
   -- application exceptions
@@ -127,10 +148,6 @@ IS
   invalid_u_ref_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(invalid_u_ref_excp, invalid_u_ref);
 
-  missing_u_where CONSTANT NUMBER := -20113;
-  missing_u_where_excp EXCEPTION;
-  PRAGMA EXCEPTION_INIT(missing_u_where_excp, missing_u_where);
-
   missing_d_ref CONSTANT NUMBER := -20115;
   missing_d_ref_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(missing_d_ref_excp, missing_d_ref);
@@ -152,10 +169,6 @@ IS
   invalid_s_ref_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(invalid_s_ref_excp, invalid_s_ref);
 
-  missing_s_where CONSTANT NUMBER := -20120;
-  missing_s_where_excp EXCEPTION;
-  PRAGMA EXCEPTION_INIT(missing_s_where_excp, missing_s_where);
-
   too_many_s_rows CONSTANT NUMBER := -20121;
   too_many_s_rows_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(too_many_s_rows_excp, too_many_s_rows);
@@ -164,10 +177,6 @@ IS
   missing_e_table_name CONSTANT NUMBER := -20151;
   missing_e_table_name_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(missing_e_table_name_excp,missing_e_table_name);
-
-  missing_e_where CONSTANT NUMBER := -20152;
-  missing_e_where_excp EXCEPTION;
-  PRAGMA EXCEPTION_INIT(missing_e_where_excp, missing_e_where);
 
   missing_e_ref CONSTANT NUMBER := -20153;
   missing_e_ref_excp EXCEPTION;
@@ -252,6 +261,10 @@ IS
   missing_object_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(missing_object_excp, missing_object);    
 
+  expected_seed_data_error CONSTANT NUMBER := -20196;
+  expected_seed_data_error_excp EXCEPTION;
+  PRAGMA EXCEPTION_INIT(expected_seed_data_error_excp, expected_seed_data_error);
+
   expected_expectation_error CONSTANT NUMBER := -20197;
   expected_expectation_error_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(expected_expectation_error_excp, expected_expectation_error);
@@ -264,13 +277,25 @@ IS
   fatal_test_error_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(fatal_test_error_excp, fatal_test_error);  
 
-  fatal_seed_data_error CONSTANT NUMBER := -20200;
-  fatal_seed_data_error_excp EXCEPTION;
-  PRAGMA EXCEPTION_INIT(fatal_seed_data_error_excp, fatal_seed_data_error);
-
   suite_failed_compilation      CONSTANT NUMBER := -20300;
   suite_failed_compilation_excp EXCEPTION;
   PRAGMA EXCEPTION_INIT(suite_failed_compilation_excp, suite_failed_compilation);
+
+  invalid_seed_data_reference CONSTANT NUMBER := -20301;
+  invalid_seed_data_reference_excp EXCEPTION;
+  PRAGMA EXCEPTION_INIT(invalid_seed_data_reference_excp, invalid_seed_data_reference);
+
+  missing_seed_data_backout CONSTANT NUMBER := -20302;
+  missing_seed_data_backout_excp EXCEPTION;
+  PRAGMA EXCEPTION_INIT(missing_seed_data_backout_excp, missing_seed_data_backout);
+
+  temp_seed_data CONSTANT NUMBER := -20307;
+  temp_seed_data_excp EXCEPTION;
+  PRAGMA EXCEPTION_INIT(temp_seed_data_excp, temp_seed_data);
+
+  fatal_seed_data CONSTANT NUMBER := -20304;
+  fatal_seed_data_excp EXCEPTION;
+  PRAGMA EXCEPTION_INIT(fatal_seed_data_excp, fatal_seed_data);
 
   -- forward declarations for mutually recursive routines
   PROCEDURE flatten_json_object(p_key IN VARCHAR2, p_object IN JSON_OBJECT_T);
@@ -321,7 +346,7 @@ BEGIN
 
   END IF;
 
-  g_outputs.put(p_fully_qualified_key, l_scalar_result);
+  g_framework_values.put(p_fully_qualified_key, l_scalar_result);
 END;
 
 
@@ -341,29 +366,31 @@ END;
 -- =============================================================================
 PROCEDURE flatten_json_object(p_key IN VARCHAR2, p_object IN JSON_OBJECT_T)
 IS
-  l_object_keys JSON_KEY_LIST;
-  l_object_key        VARCHAR2(1000);
-  l_element JSON_ELEMENT_T;
-  l_fully_qualified_key     VARCHAR2(1000);
-  l_result  JSON_OBJECT_T;
+  l_object_keys         JSON_KEY_LIST;
+  l_object_key          VARCHAR2(1000);
+  l_element             JSON_ELEMENT_T;
+  l_fully_qualified_key VARCHAR2(1000);
+  l_result              JSON_OBJECT_T;
 
 BEGIN
   -- get object keys
   l_object_keys := p_object.get_keys;
 
   IF l_object_keys IS NULL THEN
+    -- create entry to allow null/not null assertions against an object as a whole
     l_result := new JSON_OBJECT_T;
     l_result.put('data_type', DBMS_TYPES_JSON_OBJECT);
     l_result.put_Null('data_value');
-    g_outputs.put(p_key, l_result);
+    g_framework_values.put(p_key, l_result);
 
   ELSE
-
+    -- create entry to allow null/not null assertions against an object as a whole
     l_result := new JSON_OBJECT_T;
     l_result.put('data_type', DBMS_TYPES_JSON_OBJECT);
     l_result.put('data_value', 'Not NULL');
-    g_outputs.put(p_key, l_result);
+    g_framework_values.put(p_key, l_result);
 
+    -- process each object key in turn
     FOR i IN 1..l_object_keys.COUNT()
     LOOP
       l_object_key          := l_object_keys(i);
@@ -420,24 +447,25 @@ END flatten_json_object;
 -- =============================================================================
 PROCEDURE flatten_json_array(p_key IN VARCHAR2, p_array IN JSON_ARRAY_T)
 IS
-  l_element JSON_ELEMENT_T;
-  l_fully_qualified_key     VARCHAR2(1000);
-  l_result  JSON_OBJECT_T;
+  l_element             JSON_ELEMENT_T;
+  l_fully_qualified_key VARCHAR2(1000);
+  l_result              JSON_OBJECT_T;
 
 BEGIN
   -- check if array is empty
   IF p_array.get_Size() = 0 THEN
+    -- create entry to allow null/not null assertions against array as a whole
     l_result := new JSON_OBJECT_T;
     l_result.put('data_type', DBMS_TYPES_JSON_ARRAY);
     l_result.put_Null('data_value');
-    g_outputs.put(p_key, l_result);
+    g_framework_values.put(p_key, l_result);
 
   ELSE
-
+    -- create entry to allow null/not null assertions against an array as a whole
     l_result := new JSON_OBJECT_T;
     l_result.put('data_type', DBMS_TYPES_JSON_ARRAY);
     l_result.put('data_value', 'Not NULL');
-    g_outputs.put(p_key, l_result);
+    g_framework_values.put(p_key, l_result);
 
     -- examine each array element in turn
     FOR i IN 0..p_array.get_size()-1
@@ -531,7 +559,16 @@ BEGIN
 END process_clob_as_json;
 
 
--- blurb
+-- =============================================================================
+-- Name: log
+-- =========
+--
+-- Summary
+-- =======
+-- Inserts a log entry for development/debug purposes
+-- To be reworked so logs are directed more to a user
+--
+-- =============================================================================
 PROCEDURE log( p_type        IN SMALLINT,
                p_log_details IN server_test_logs.log_details%TYPE,
                p_log_detail  IN SMALLINT DEFAULT NO_DETAIL,
@@ -566,7 +603,7 @@ END log;
 --
 -- Summary
 -- =======
--- This routine updates the server_test_results entry for the currently executed 
+-- This routine updates the server_test_run_statuses entry for the currently executed 
 -- test step within an autonomous transaction
 --
 -- Parameters
@@ -578,9 +615,9 @@ END log;
 --                       package fails compilation.
 --
 -- =============================================================================
-PROCEDURE update_test_status(p_test_status       IN server_test_results.test_status%TYPE,
-                             p_exception_code    IN server_test_results.exception_code%TYPE,
-                             p_exception_message IN server_test_results.exception_message%TYPE,
+PROCEDURE update_test_status(p_test_status       IN server_test_run_statuses.test_status%TYPE,
+                             p_exception_code    IN server_test_run_statuses.exception_code%TYPE,
+                             p_exception_message IN server_test_run_statuses.exception_message%TYPE,
                              p_compilation_excp  IN BOOLEAN DEFAULT FALSE)
 IS
   PRAGMA AUTONOMOUS_TRANSACTION;
@@ -589,14 +626,14 @@ BEGIN
   IF p_compilation_excp
   THEN
 
-    INSERT INTO server_test_results VALUES
-    (g_current_functional_area, g_current_test_suite, -1, -1,
+    INSERT INTO server_test_run_statuses VALUES
+    (server_test_run_statuses_seq.nextval, g_current_functional_area, g_current_test_suite, -1, -1,
      'FAILED', p_exception_code, SUBSTR(p_exception_message,1,4000));
 
   ELSE
 
-    INSERT INTO server_test_results VALUES
-    (g_current_functional_area, g_current_test_suite, g_current_test_number, g_current_test_step.test_step,
+    INSERT INTO server_test_run_statuses VALUES
+    (server_test_run_statuses_seq.nextval, g_current_functional_area, g_current_test_suite, g_current_test_number, g_current_test_step.test_step,
      p_test_status, p_exception_code, SUBSTR(p_exception_message,1,4000));
 
   END IF;
@@ -623,12 +660,12 @@ END update_test_status;
 -- p_exception_expected : Output parameter set to TRUE or FALSE
 --
 -- =============================================================================
-PROCEDURE is_exception_expected(p_exception_code      IN  server_test_results.exception_code%TYPE,
-                                p_exception_msg       IN  server_test_results.exception_message%TYPE,
+PROCEDURE is_exception_expected(p_exception_code      IN  server_test_run_statuses.exception_code%TYPE,
+                                p_exception_msg       IN  server_test_run_statuses.exception_message%TYPE,
                                 p_exception_expected  OUT BOOLEAN)
 IS
-  l_source            VARCHAR2(7);
-  l_exception_message VARCHAR2(200);
+  l_source            VARCHAR2(9);
+  l_exception_message VARCHAR2(500);
   l_expectations      JSON_ARRAY_T;
   l_expectation       JSON_OBJECT_T;
   l_assertion         JSON_OBJECT_T;
@@ -664,7 +701,7 @@ BEGIN
         RAISE_APPLICATION_ERROR(missing_e_source, l_exception_message); -- careful - recursion!
       END IF;
 
-      IF l_source = 'outputs' THEN
+      IF l_source = 'framework' THEN
 
         -- retrieve and validate assertions
         IF NOT l_expectation.has('assertions') THEN
@@ -748,7 +785,7 @@ END is_exception_expected;
 --              This is the typical, standard scenario
 --              We just need to cleanup and end the current test number (transaction)
 --              and then move onto the next test number (transaction)
---              - update server_test_results with a status of FAIL
+--              - update server_test_run_statuses with a status of FAILED
 --              - raise fatal_test_error exception which ensures:
 --                - the expectations for this step are not executed (exception may have come from here)
 --                - further steps for this test number (transaction) are ignored
@@ -772,14 +809,15 @@ END is_exception_expected;
 --                      package fails compilation.
 --
 -- =============================================================================
-PROCEDURE handle_exception(p_exception_code   IN server_test_results.exception_code%TYPE,
-                           p_exception_msg    IN server_test_results.exception_message%TYPE,
+PROCEDURE handle_exception(p_exception_code   IN server_test_run_statuses.exception_code%TYPE,
+                           p_exception_msg    IN server_test_run_statuses.exception_message%TYPE,
                            p_raise_excp       IN BOOLEAN DEFAULT TRUE,
-                           p_compilation_excp IN BOOLEAN DEFAULT FALSE) 
+                           p_compilation_excp IN BOOLEAN DEFAULT FALSE)
 IS
   l_exception_expected BOOLEAN;
   l_output             JSON_OBJECT_T;
   l_exception_msg      VARCHAR2(1000);
+  l_assertion_string   VARCHAR2(2000);
 
 BEGIN
 
@@ -789,17 +827,17 @@ BEGIN
     RETURN;
   END IF;
 
-  -- populate g_outputs with exception code
+  -- populate g_framework_values with exception code
   l_output := new JSON_OBJECT_T;
   l_output.put('data_type', dbms_types.TYPECODE_NUMBER);
   l_output.put('data_value',p_exception_code);
-  g_outputs.put('step' || g_current_test_step.test_step || '.exception_code', l_output );
+  g_framework_values.put('step' || g_current_test_step.test_step || '.exception_code', l_output );
 
-  -- populate g_outputs with exception message
+  -- populate g_framework_values with exception message
   l_output := new JSON_OBJECT_T;
   l_output.put('data_type', dbms_types.TYPECODE_VARCHAR2);
   l_output.put('data_value',p_exception_msg);
-  g_outputs.put('step' || g_current_test_step.test_step || '.exception_msg', l_output );
+  g_framework_values.put('step' || g_current_test_step.test_step || '.exception_msg', l_output );
 
   BEGIN
     is_exception_expected(p_exception_code, p_exception_msg, l_exception_expected);
@@ -817,28 +855,39 @@ BEGIN
 
   IF l_exception_expected  -- not a problem - continue processing
   THEN
-    -- if currently processing operation - exit and move onto expectations
-    IF g_expectation_index = -1 THEN
-      RAISE_APPLICATION_ERROR(expected_operation_error, 'FATAL OPERATION ERROR - but expected');
-    ELSE
-      -- if currently processing expectations - move on to the next expectation
-      RAISE_APPLICATION_ERROR(expected_expectation_error, 'FATAL EXPECTATION ERROR - but expected');
-    END IF;
+
+    CASE g_test_stage
+
+      WHEN SEED_DATA_STAGE THEN
+        -- exit and move onto expectations (bypassing operation)
+        RAISE_APPLICATION_ERROR(expected_seed_data_error, 'SEED DATA ERROR - but expected');
+
+      WHEN OPERATION_STAGE THEN
+        -- exit and move onto expectations
+        RAISE_APPLICATION_ERROR(expected_operation_error, 'OPERATION ERROR - but expected');
+
+      WHEN EXPECTATION_STAGE THEN
+        -- move on to the next expectation
+        RAISE_APPLICATION_ERROR(expected_expectation_error, 'EXPECTATION ERROR - but expected');
+
+    END CASE;
 
   ELSE
     -- unanticipated exception
-    update_test_status('FAILED', p_exception_code, l_exception_msg);
+    update_test_status('FAILED', p_exception_code, p_exception_msg);
 
     -- create assertion to highlight test failure
     l_exception_msg := g_current_functional_area || ' : ' || 'Suite ' || g_current_test_suite || ' : ' ||
                        'Test ' || g_current_test_number || ' : ' || 'Step ' || g_current_test_step.test_step || ' : ' ||
                        p_exception_msg;
-    g_package_body := g_package_body ||
-                      'ut.expect(' || '''' || p_exception_code || ':' || p_exception_msg || '''' || ',' || '''' || l_exception_msg || '''' || ')' ||
-                      '.to_equal(' || '''' || 'Success' || '''' || ');' || CHR(10);
 
-    IF g_current_functional_area = 'SEED_DATA' THEN
-      RAISE_APPLICATION_ERROR(fatal_seed_data_error, 'FATAL SEED DATA ERROR - Testing cannot continue without successful seed data setup');
+    l_assertion_string := 'ut.expect(' || '''' || p_exception_code || ':' || p_exception_msg || '''' || ',' || '''' || l_exception_msg || '''' || ')' ||
+                          '.to_equal(' || '''' || 'Success' || '''' || ');' || CHR(10);
+    dbms_lob.writeappend(g_package_body, length(l_assertion_string), l_assertion_string);
+
+    IF g_current_functional_area = 'BACKOUT'
+    THEN
+      update_test_status('FAILED', -1, '*** IMPORTANT - FIX ASAP!!! The backout script has failed and so unwanted data may still reside in the DB. As such, all subsequent test cases may be compromised!');
     END IF;
 
     IF p_raise_excp = TRUE THEN
@@ -888,12 +937,13 @@ END create_pkg;
 PROCEDURE create_pkg_code( p_functional_area IN server_tests.functional_area%TYPE,
                            p_test_suite      IN server_tests.test_suite%TYPE )
 IS
-  package_description server_tests.test_suite_desc%TYPE;
+  l_package_description server_tests.test_suite_desc%TYPE;
+  l_package_declaration VARCHAR2(200);
 BEGIN
 
   -- determine suite description for reporting purposes
   SELECT test_suite_desc
-    INTO package_description
+    INTO l_package_description
     FROM server_tests
    WHERE functional_area = g_current_functional_area
      AND test_suite = g_current_test_suite
@@ -902,9 +952,12 @@ BEGIN
   g_current_package_name := 'AST_' || p_functional_area || '_Suite' || p_test_suite;
 
   g_package_spec := 'CREATE OR REPLACE PACKAGE ' || g_current_package_name || ' IS' || chr(10) ||
-                    '--%suite(' || p_functional_area || ' - suite:' || p_test_suite || ' - ' || package_description  || ')' || chr(10) || chr(10);
+                    '--%suite(' || p_functional_area || ' - suite:' || p_test_suite || ' - ' || l_package_description  || ')' || chr(10) || chr(10);
 
-  g_package_body := 'CREATE OR REPLACE PACKAGE BODY ' || g_current_package_name || ' IS' || chr(10);
+  l_package_declaration := g_current_package_name || ' IS' || chr(10);
+  g_package_body := 'CREATE OR REPLACE PACKAGE BODY ';
+  dbms_lob.writeappend(g_package_body, length(l_package_declaration), l_package_declaration);
+
 END create_pkg_code;
 
 
@@ -918,26 +971,48 @@ END create_pkg_code;
 -- This procedure will contain all the assertions for a particular test number
 --
 -- =============================================================================
-PROCEDURE add_procedure_to_pkg
+PROCEDURE add_procedure_to_pkg( p_procedure_type        IN SMALLINT,
+                                p_main_test_number      IN SMALLINT DEFAULT NULL,
+                                p_seed_data_backout_key IN VARCHAR2 DEFAULT NULL )
 IS
-  procedure_description server_tests.test_number_desc%TYPE;
+  l_procedure_name        VARCHAR2(128);
+  l_procedure_description server_tests.test_number_desc%TYPE := NULL;
+  l_procedure_declaration VARCHAR2(200);
+  l_backout_key           VARCHAR2(10);
 BEGIN
 
-  -- determine test description for reporting purposes
-  SELECT test_number_desc
-    INTO procedure_description
-    FROM server_tests
-   WHERE functional_area = g_current_functional_area
-     AND test_suite = g_current_test_suite
-     AND test_number = g_current_test_number
-     and rownum = 1;
+  -- replace . with _ in key
+  l_backout_key := p_seed_data_backout_key;
+  select REPLACE(l_backout_key,'.','_') into l_backout_key from dual;
+
+  -- structure of procedure names is dependant on context
+  CASE p_procedure_type
+
+    WHEN NORMAL_TEST_PROCEDURE THEN
+      l_procedure_name := 'test_' || g_current_test_number;
+
+      SELECT test_number_desc
+        INTO l_procedure_description
+        FROM server_tests
+       WHERE functional_area = g_current_functional_area
+         AND test_suite = g_current_test_suite
+         AND test_number = g_current_test_number
+         AND ROWNUM = 1;
+
+    WHEN BACKOUT_SEED_DATA_PROCEDURE THEN
+      l_procedure_name := 'test_' || p_main_test_number || '_backout_SEED_DATA_' || l_backout_key;
+
+    WHEN BACKOUT_TEST_DATA_PROCEDURE THEN
+      l_procedure_name := 'test_' || g_current_test_number || '_backout_TEST_DATA';
+
+  END CASE;
 
   g_package_spec := g_package_spec ||
-                    '--%test(Test number:' || g_current_test_number || ': ' || procedure_description || ')' || chr(10) ||
-                    'PROCEDURE test' || g_current_test_number || ';' || chr(10);
+                    '--%test(Test number: ' || l_procedure_name || ' : ' || l_procedure_description || ')' || chr(10) ||
+                    'PROCEDURE ' || l_procedure_name || ';' || chr(10);
 
-  g_package_body := g_package_body ||
-                    'PROCEDURE test' || g_current_test_number || ' IS BEGIN' || chr(10);
+  l_procedure_declaration := 'PROCEDURE ' || l_procedure_name || ' IS BEGIN' || chr(10);
+  dbms_lob.writeappend(g_package_body, length(l_procedure_declaration), l_procedure_declaration);
 
 END add_procedure_to_pkg;
 
@@ -953,11 +1028,13 @@ END add_procedure_to_pkg;
 -- =============================================================================
 PROCEDURE finalise_pkg_code
 IS
+  l_finalise VARCHAR2(20);
 BEGIN
   g_package_spec := g_package_spec || chr(10) || 'END;';
-  g_package_body := g_package_body || chr(10) || 'BEGIN NULL; END;';
+  l_finalise := chr(10) || 'BEGIN NULL; END;';
+  dbms_lob.writeappend(g_package_body, length(l_finalise), l_finalise); 
 
-  log(DIAG, null, HIGH_DETAIL, g_package_body);
+  --log(DIAG, null, HIGH_DETAIL, g_package_body);
 END finalise_pkg_code;
 
 
@@ -972,8 +1049,10 @@ END finalise_pkg_code;
 -- =============================================================================
 PROCEDURE finalise_proc_code
 IS
+  l_finalise VARCHAR2(20);
 BEGIN
-  g_package_body := g_package_body || 'NULL; END;' || chr(10);
+  l_finalise := 'NULL; END;' || chr(10);
+  dbms_lob.writeappend(g_package_body, length(l_finalise), l_finalise);
 END finalise_proc_code;
 
 
@@ -1079,7 +1158,7 @@ IS
   l_expected_json_object_or_array VARCHAR2(10); -- chosen arbitrarily
   l_expected_date_string          VARCHAR2(30);
   l_assertion                     VARCHAR2(4000);
-  l_exception_message             VARCHAR2(200);
+  l_exception_message             VARCHAR2(500);
   l_expected_key                  VARCHAR2(1000);
   l_expected_object               JSON_OBJECT_T;
   l_assertion_msg                 VARCHAR2(200);
@@ -1191,9 +1270,9 @@ BEGIN
   -- determine the expected value as specified by assertion (right hand side of expression)
   IF p_assertion.get_Type('value') = 'OBJECT' 
   THEN
-    -- retrieve value from referenced test step (g_outputs)
+    -- retrieve value from referenced test step (g_framework_values)
     l_expected_key := p_assertion.get_Object('value').get_String('ref');
-    l_expected_object := g_outputs.get_Object(l_expected_key);
+    l_expected_object := g_framework_values.get_Object(l_expected_key);
     l_expected_data_type := l_expected_object.get_Number('data_type');
 
     IF l_expected_object.get('data_value').is_null() THEN
@@ -1466,7 +1545,8 @@ BEGIN
   END CASE;
 
   -- add assertion to package
-  g_package_body := g_package_body || l_assertion || chr(10);
+  l_assertion := l_assertion || chr(10);
+  dbms_lob.writeappend(g_package_body, length(l_assertion), l_assertion);
 
 EXCEPTION
   WHEN invalid_matcher_data_type_excp THEN
@@ -1495,7 +1575,7 @@ PROCEDURE add_assertions_to_pkg( p_assertions IN JSON_OBJECT_T,
                                  p_results    IN JSON_ARRAY_T )
 IS
   l_result_column_name VARCHAR2(200);
-  l_exception_message  VARCHAR2(200);
+  l_exception_message  VARCHAR2(500);
   l_result             JSON_OBJECT_T;
   l_result_key_names   JSON_KEY_LIST;
   l_assertion_result   JSON_OBJECT_T;
@@ -1550,7 +1630,7 @@ PROCEDURE validate_reference_object(p_operation  IN VARCHAR2,
                                     p_key        IN VARCHAR2,
                                     p_ref_object IN JSON_OBJECT_T)
 IS
-  l_exception_message VARCHAR2(200);
+  l_exception_message VARCHAR2(500);
 BEGIN
   -- check that a step output is actually specified
   IF NOT p_ref_object.has('ref') THEN
@@ -1580,7 +1660,7 @@ BEGIN
   END IF;
 
   -- check that it exists
-  IF NOT g_outputs.has(p_ref_object.get_String('ref')) THEN
+  IF NOT g_framework_values.has(p_ref_object.get_String('ref')) THEN
     l_exception_message := 'Value reference specified incorrectly for (' || p_key || '). Check previous test steps have actually generated the required value';
     CASE p_operation
       WHEN 'I' THEN             
@@ -1630,7 +1710,7 @@ PROCEDURE validate_assertions(p_expectation IN JSON_OBJECT_T,
 IS
   l_matcher           VARCHAR2(30);
   l_dummy             SMALLINT;
-  l_exception_message VARCHAR2(200);
+  l_exception_message VARCHAR2(500);
   l_assertion_key     VARCHAR2(200);
   l_assertion_columns JSON_KEY_LIST;
   l_assertion         JSON_OBJECT_T;
@@ -1647,9 +1727,9 @@ log(DIAG, '------validating assertions', HIGH_DETAIL);
   FOR i IN 1..l_assertion_columns.COUNT() LOOP
 
     l_assertion_key := l_assertion_columns(i);
-    IF p_source = 'outputs' THEN
-      -- check entry exists in g_outputs
-      IF NOT g_outputs.has(l_assertion_key) THEN
+    IF p_source = 'framework' THEN
+      -- check entry exists in g_framework_values
+      IF NOT g_framework_values.has(l_assertion_key) THEN
         l_exception_message := 'Value reference specified incorrectly for column (' || l_assertion_key || '). Check previous test steps have actually generated the required value';
         RAISE_APPLICATION_ERROR(invalid_a_ref, l_exception_message);
       END IF;
@@ -1723,8 +1803,8 @@ END validate_assertions;
 PROCEDURE process_sql_inputs(p_operation  IN VARCHAR2,
                              p_sql_inputs IN OUT JSON_OBJECT_T)
 IS
-  l_key_name        VARCHAR2(50);
-  l_var             VARCHAR2(1000);
+  l_key_name        VARCHAR2(200);
+  l_var             VARCHAR2(200);
   l_data_type       PLS_INTEGER;
   l_sql_inputs_keys JSON_KEY_LIST;
 
@@ -1745,20 +1825,20 @@ BEGIN
         validate_reference_object(p_operation, l_key_name, p_sql_inputs.get_Object(l_key_name));
         l_var:= p_sql_inputs.get_Object(l_key_name).get_String('ref');
 
-        l_data_type := g_outputs.get_Object(l_var).get_Number('data_type');
+        l_data_type := g_framework_values.get_Object(l_var).get_Number('data_type');
 
         CASE l_data_type
           WHEN dbms_types.TYPECODE_VARCHAR2 THEN
-            p_sql_inputs.put(l_key_name, g_outputs.get_Object(l_var).get_String('data_value'));
+            p_sql_inputs.put(l_key_name, g_framework_values.get_Object(l_var).get_String('data_value'));
 
           WHEN dbms_types.TYPECODE_NUMBER THEN
-            p_sql_inputs.put(l_key_name, g_outputs.get_Object(l_var).get_Number('data_value'));
+            p_sql_inputs.put(l_key_name, g_framework_values.get_Object(l_var).get_Number('data_value'));
 
           WHEN dbms_types.TYPECODE_DATE THEN
-            p_sql_inputs.put(l_key_name, to_char(g_outputs.get_Object(l_var).get_Date('data_value'), DATE_FORMAT) );
+            p_sql_inputs.put(l_key_name, to_char(g_framework_values.get_Object(l_var).get_Date('data_value'), DATE_FORMAT) );
 
           WHEN DBMS_TYPES_BOOLEAN THEN
-            p_sql_inputs.put(l_key_name, g_outputs.get_Object(l_var).get_Boolean('data_value'));
+            p_sql_inputs.put(l_key_name, g_framework_values.get_Object(l_var).get_Boolean('data_value'));
 
           ELSE
             -- unsupported data type 
@@ -1808,15 +1888,14 @@ END process_sql_inputs;
 -- =============================================================================
 PROCEDURE process_expectation( p_expectation IN JSON_OBJECT_T )
 IS
-  l_source            VARCHAR2(7);
-  l_table_name        VARCHAR2(30);
-  l_exception_message VARCHAR2(200);
+  l_source            VARCHAR2(9);
+  l_table_name        VARCHAR2(128);
+  l_exception_message VARCHAR2(500);
   l_result            JSON_OBJECT_T;
   l_output            JSON_ELEMENT_T;
   l_where             JSON_OBJECT_T;
   l_results           JSON_ARRAY_T;   
   l_assertion_keys    JSON_KEY_LIST;
-
   l_column_names      JSON_ARRAY_T;
   l_expectation_keys  JSON_KEY_LIST;
   
@@ -1840,16 +1919,13 @@ BEGIN
 
     -- retrieve and validate where clause
     l_where := p_expectation.get_Object('where');
-    IF l_where IS NULL THEN
-      l_exception_message := 'Missing WHERE clause in expectation';
-      RAISE_APPLICATION_ERROR(missing_e_where, l_exception_message);
-    END IF;
 
+    -- replace referenced values with the actual value eg. "step1.appn_row_id" -> 123456
     process_sql_inputs('E', l_where);
 
-  ELSIF l_source != 'outputs' THEN
+  ELSIF l_source != 'framework' THEN
 
-    l_exception_message := 'Expectation source must be table or outputs';
+    l_exception_message := 'Expectation source must be table or framework';
     RAISE_APPLICATION_ERROR(invalid_e_source, l_exception_message);
 
   END IF;
@@ -1883,11 +1959,11 @@ BEGIN
         END IF;
     END;
 
-  ELSE -- source = outputs
+  ELSE -- source = framework
     l_assertion_keys := p_expectation.get_Object('assertions').get_keys;
     l_result := new JSON_OBJECT_T;
     FOR i IN 1..l_assertion_keys.COUNT LOOP
-      l_output := g_outputs.get(l_assertion_keys(i));
+      l_output := g_framework_values.get(l_assertion_keys(i));
       l_result.put(l_assertion_keys(i),l_output);
     END LOOP;
     l_results.append(l_result);
@@ -1902,8 +1978,8 @@ BEGIN
 EXCEPTION
   WHEN missing_e_source_excp OR
        invalid_e_source_excp OR
-       missing_e_table_name_excp OR  
-       missing_e_where_excp
+       missing_e_table_name_excp --OR  
+       --missing_e_where_excp
   THEN
     handle_exception( SQLCODE, l_exception_message );
 END process_expectation;
@@ -1925,6 +2001,9 @@ IS
 
 BEGIN
   log(DIAG, '------Processing expectations', HIGH_DETAIL);
+
+  -- note the stage of processing for future reference
+  g_test_stage := EXPECTATION_STAGE;
 
   IF g_current_test_step.expectations IS NOT NULL THEN
 
@@ -1971,8 +2050,8 @@ END process_expectations;
 -- =============================================================================
 PROCEDURE delete_row( p_operation IN JSON_OBJECT_T )
 IS
-  l_table_name        VARCHAR2(30);
-  l_exception_message VARCHAR2(200);
+  l_table_name        VARCHAR2(128);
+  l_exception_message VARCHAR2(500);
   l_where             JSON_OBJECT_T;
 
 BEGIN
@@ -2024,8 +2103,8 @@ END delete_row;
 -- =============================================================================
 PROCEDURE update_row( p_operation IN JSON_OBJECT_T )
 IS
-  l_table_name        VARCHAR2(30);
-  l_exception_message VARCHAR2(200);
+  l_table_name        VARCHAR2(128);
+  l_exception_message VARCHAR2(500);
   l_where             JSON_OBJECT_T;
   l_columns           JSON_OBJECT_T;
 
@@ -2051,10 +2130,6 @@ BEGIN
 
   -- retrieve and validate where clause
   l_where := p_operation.get_Object('where');
-  IF l_where IS NULL THEN
-    l_exception_message := 'WHERE clause not specified for UPDATE operation';
-    RAISE_APPLICATION_ERROR(missing_u_where, l_exception_message);
-  END IF;
 
   -- replace referenced values with the actual value eg. "step1.appn_row_id" -> 123456 
   process_sql_inputs('U', l_where);
@@ -2074,8 +2149,8 @@ BEGIN
 
 EXCEPTION
   WHEN missing_crud_table_name_excp OR
-       missing_u_columns_excp OR
-       missing_u_where_excp
+       missing_u_columns_excp --OR
+       --missing_u_where_excp
   THEN
     handle_exception( SQLCODE, l_exception_message );
 END update_row;
@@ -2088,7 +2163,7 @@ END update_row;
 -- Summary
 -- =======
 -- Validates the JSON and then invokes a routine to insert a new row.
--- For relevant tables, stores the generated appn_row_id in g_outputs for future 
+-- For relevant tables, stores the generated appn_row_id in g_framework_values for future 
 -- reference by other test steps in this transaction
 --
 -- Parameters
@@ -2098,8 +2173,8 @@ END update_row;
 -- =============================================================================
 PROCEDURE insert_row( p_operation IN JSON_OBJECT_T )
 IS
-  l_table_name        VARCHAR2(30);
-  l_exception_message VARCHAR2(200);
+  l_table_name        VARCHAR2(128);
+  l_exception_message VARCHAR2(500);
   l_columns           JSON_OBJECT_T;
   l_new_ari           JSON_OBJECT_T;
 
@@ -2135,17 +2210,17 @@ BEGIN
       handle_exception( SQLCODE, 'Error inserting row: ' || SQLERRM );
   END;
 
-  -- store generated appn_row_id in g_outputs for future reference by other test steps in this transaction
+  -- store generated appn_row_id in g_framework_values for future reference by other test steps in this transaction
   IF l_new_ari IS NOT NULL THEN
 
     IF g_current_functional_area = 'SEED_DATA' THEN
 
-      g_outputs.put('seed_data.' || g_current_test_step.test_suite || '.' 
-                                 || g_current_test_step.test_number || '.' 
-                                 || g_current_test_step.test_step || '.' 
-                                 ||'appn_row_id', l_new_ari );
+      g_framework_values.put('seed_data.' || g_current_test_step.test_suite || '.' 
+                                          || g_current_test_step.test_number || '.' 
+                                          || g_current_test_step.test_step || '.' 
+                                          ||'appn_row_id', l_new_ari );
     ELSE
-      g_outputs.put('step' || g_current_test_step.test_step || '.' || 'appn_row_id', l_new_ari );
+      g_framework_values.put('step' || g_current_test_step.test_step || '.' || 'appn_row_id', l_new_ari );
     END IF;
   END IF;
 
@@ -2167,10 +2242,10 @@ END insert_row;
 -- Summary
 -- =======
 -- Validates the JSON and then performs a specified function or procedure call
--- Any named parameters (input and output) are stored in g_outputs for future reference eg. "step1.param1"
--- A function return value is stored in g_outputs for future reference eg. "step1.function_name"
+-- Any named parameters (input and output) are stored in g_framework_values for future reference eg. "step1.param1"
+-- A function return value is stored in g_framework_values for future reference eg. "step1.function_name"
 --
--- g_outputs : { "step1.routine_name" : {"data_type":<2|9|12>, "value":<numval|stringval|dateval> } }
+-- g_framework_values : { "step1.routine_name" : {"data_type":<2|9|12>, "value":<numval|stringval|dateval> } }
 --
 --
 -- Parameters
@@ -2180,10 +2255,10 @@ END insert_row;
 -- =============================================================================
 PROCEDURE call_routine( p_operation IN JSON_OBJECT_T )
 IS
-  l_package_name      VARCHAR2(30);
-  l_routine_name      VARCHAR2(30);
-  l_param_name        VARCHAR2(30);
-  l_exception_message VARCHAR2(200);
+  l_package_name      VARCHAR2(128);
+  l_routine_name      VARCHAR2(128);
+  l_param_name        VARCHAR2(128);
+  l_exception_message VARCHAR2(500);
   l_parameters        JSON_OBJECT_T;
   l_results           JSON_OBJECT_T;
   l_param_names       JSON_KEY_LIST;
@@ -2219,7 +2294,7 @@ BEGIN
       handle_exception( SQLCODE, 'Error calling routine: ' || SQLERRM );
   END;  
 
-  -- store retrieved values in g_outputs for future reference by other test steps in this transaction
+  -- store retrieved values in g_framework_values for future reference by other test steps in this transaction
   IF l_results IS NOT NULL THEN
 
     l_param_names := l_results.get_keys;
@@ -2232,7 +2307,7 @@ BEGIN
       THEN
         process_clob_as_json( l_param_name, l_result );
       ELSE
-        g_outputs.put('step' || g_current_test_step.test_step || '.' || l_param_name, l_results.get(l_param_name));
+        g_framework_values.put('step' || g_current_test_step.test_step || '.' || l_param_name, l_results.get(l_param_name));
       END IF;
 
     END LOOP;
@@ -2255,7 +2330,7 @@ END call_routine;
 -- Summary
 -- =======
 -- Validates the JSON and then invokes a routine to select a row.
--- Stores the selected column values in g_outputs for future 
+-- Stores the selected column values in g_framework_values for future 
 -- reference by other test steps in this transaction
 --
 -- Parameters
@@ -2265,9 +2340,9 @@ END call_routine;
 -- =============================================================================
 PROCEDURE select_row( p_operation IN JSON_OBJECT_T )
 IS
-  l_table_name        VARCHAR2(30);
-  l_column_name       VARCHAR2(30);
-  l_exception_message VARCHAR2(200);
+  l_table_name        VARCHAR2(128);
+  l_column_name       VARCHAR2(128);
+  l_exception_message VARCHAR2(500);
   l_where             JSON_OBJECT_T;
   l_columns           JSON_ARRAY_T;
   l_col_names         JSON_KEY_LIST;
@@ -2292,10 +2367,6 @@ BEGIN
 
   -- retrieve and validate where clause
   l_where := p_operation.get_Object('where');
-  IF l_where IS NULL THEN
-    l_exception_message := 'WHERE clause not specified for SELECT operation';
-    RAISE_APPLICATION_ERROR(missing_s_where, l_exception_message);
-  END IF;
 
   -- replace referenced values with the actual value eg. "step1.appn_row_id" -> 123456 
   process_sql_inputs('S', l_where);
@@ -2318,7 +2389,7 @@ BEGIN
       END IF;
   END;
 
-  -- store retrieved values in g_outputs for future reference by other test steps in this transaction
+  -- store retrieved values in g_framework_values for future reference by other test steps in this transaction
   IF l_results IS NOT NULL THEN
 
     IF l_results.get_size() > 1 THEN
@@ -2330,18 +2401,19 @@ BEGIN
     l_col_names := l_result.get_keys;
     FOR i IN 1..l_col_names.COUNT LOOP
       l_column_name := l_col_names(i);
-      g_outputs.put('step' || g_current_test_step.test_step || '.' || l_column_name, l_result.get(l_column_name));
+      g_framework_values.put('step' || g_current_test_step.test_step || '.' || l_column_name, l_result.get(l_column_name));
     END LOOP;
   END IF;
 
 EXCEPTION
   WHEN missing_crud_table_name_excp OR
        missing_s_columns_excp OR
-       missing_s_where_excp OR
+       --missing_s_where_excp OR
        too_many_s_rows_excp
   THEN
     handle_exception( SQLCODE, l_exception_message );
 END select_row;
+
 
 -- =============================================================================
 -- Name: process_operation
@@ -2367,11 +2439,14 @@ END select_row;
 PROCEDURE process_operation
 IS
   l_operation         VARCHAR2(1);
-  l_exception_message VARCHAR2(200);
+  l_exception_message VARCHAR2(500);
   l_test_operation    JSON_OBJECT_T;
 
 BEGIN
   log(DIAG, '------Performing operation', HIGH_DETAIL);
+
+  -- note the stage of processing for future reference
+  g_test_stage := OPERATION_STAGE;
 
   IF g_current_test_step.test_operation IS NOT NULL
   THEN
@@ -2385,17 +2460,17 @@ BEGIN
     -- ensure the specified operation is supported
     l_operation := l_test_operation.get_String('operation');
     CASE l_operation
-      WHEN 'I' THEN 
+      WHEN 'I' THEN
         insert_row( l_test_operation );
-      WHEN 'U' THEN 
+      WHEN 'U' THEN
         update_row( l_test_operation );
-      WHEN 'D' THEN 
+      WHEN 'D' THEN
         delete_row( l_test_operation );
-      WHEN 'S' THEN 
+      WHEN 'S' THEN
         select_row( l_test_operation );
-      WHEN 'R' THEN 
+      WHEN 'R' THEN
         call_routine( l_test_operation );
-      ELSE 
+      ELSE
         l_exception_message := 'Invalid operation specified [I, U, D, R, S]';
         RAISE_APPLICATION_ERROR(invalid_operation, l_exception_message);
     END CASE;
@@ -2404,8 +2479,8 @@ BEGIN
   log(DIAG, '------Performed operation', HIGH_DETAIL);
 
 EXCEPTION
-  WHEN missing_operation_excp OR 
-       invalid_operation_excp 
+  WHEN missing_operation_excp OR
+       invalid_operation_excp
   THEN
     handle_exception( SQLCODE, l_exception_message );
 
@@ -2465,7 +2540,6 @@ END execute_test_step;
 -- Summary
 -- =======
 -- Applies seed data to the database prior to any test case that requests it
--- i.e. server_tests.load_seed_data = Y
 --
 -- Any generated appn_row_ids are made available by the framework to the test
 -- number in question in a similar manner that usual test step generated appn_row_ids
@@ -2480,53 +2554,270 @@ END execute_test_step;
 -- n3 = step number
 -- e.g. {"ref" : "seed_data.1.2.3.appn_row_id"}
 -- =============================================================================
-PROCEDURE load_seed_data
+PROCEDURE load_seed_data( p_seed_data IN VARCHAR2 )
 IS
   l_current_functional_area server_tests.functional_area%TYPE;
   l_current_test_suite      server_tests.test_suite%TYPE;
   l_current_test_number     server_tests.test_number%TYPE;
   l_current_test_step       server_tests%ROWTYPE;
+  l_test_suite              server_tests.test_suite%TYPE;
+  l_test_number             server_tests.test_number%TYPE;
+  l_seed_data_key           VARCHAR2(10);
+  l_backout_key             VARCHAR2(10);
+  l_seed_data               JSON_ARRAY_T;
+  l_seed_data_steps         TEST_STEPS;
+  l_exception_message VARCHAR2(500);
+
+  -- small internal routine to restore global values
+  PROCEDURE restore_globals
+  IS
+  BEGIN
+    g_current_functional_area := l_current_functional_area;
+    g_current_test_suite      := l_current_test_suite;
+    g_current_test_number     := l_current_test_number;
+    g_current_test_step       := l_current_test_step;
+  END restore_globals;
 
 BEGIN
+  g_test_stage := SEED_DATA_STAGE;
 
-  IF g_current_functional_area != 'SEED_DATA'
-  THEN
+  -- note details of current (non seed data) test step so we can revert to this after seed data has been applied
+  l_current_functional_area := g_current_functional_area;
+  l_current_test_suite      := g_current_test_suite;
+  l_current_test_number     := g_current_test_number;
+  l_current_test_step       := g_current_test_step;
 
-    IF g_seed_data.FIRST IS NOT NULL
-    THEN
-      l_current_functional_area := g_current_functional_area;
-      l_current_test_suite      := g_current_test_suite;
-      l_current_test_number     := g_current_test_number;
-      l_current_test_step       := g_current_test_step;
+  -- note global values for future reference
+  g_seed_data_backout := new JSON_ARRAY_T;
+  g_current_functional_area := 'SEED_DATA';
 
-      g_current_functional_area := 'SEED_DATA';
+  -- parse into JSON array
+  l_seed_data := JSON_ARRAY_T.parse(p_seed_data);
 
-      FOR i IN g_seed_data.FIRST..g_seed_data.LAST 
-      LOOP
-        g_current_test_step   := g_seed_data(i);
-        g_current_test_suite  := g_current_test_step.test_suite;
-        g_current_test_number := g_current_test_step.test_number;
-        execute_test_step();
-      END LOOP;
+  FOR i IN 0..l_seed_data.get_size()-1
+  LOOP
+    l_seed_data_key := l_seed_data.get_String(i);
 
-      g_current_functional_area := l_current_functional_area;
-      g_current_test_suite      := l_current_test_suite;
-      g_current_test_number     := l_current_test_number;
-      g_current_test_step       := l_current_test_step;
+    -- validate format of seed data reference
+    IF NOT regexp_like(l_seed_data_key,'^([1-9]|[1-9][0-9])[.]([1-9]|[1-9][0-9]|[1-9][0-9][0-9])$') THEN
+      l_exception_message := 'Seed data reference must be in format nn.mmm where n is suite number and m is test number';
+      RAISE_APPLICATION_ERROR(invalid_seed_data_reference, l_exception_message);
     END IF;
+
+    -- extract the test number
+    l_test_number := TO_NUMBER( SUBSTR(l_seed_data_key,( INSTR(l_seed_data_key,'.')+1)));
+
+    -- ensure the seed data exists
+    IF ( NOT g_all_seed_data.exists(l_seed_data_key) ) THEN
+      l_exception_message := 'Seed data does not exist';
+      RAISE_APPLICATION_ERROR(invalid_seed_data_reference, l_exception_message);
+    END IF;
+
+    -- extract the suite number
+    l_test_suite := TO_NUMBER( SUBSTR(l_seed_data_key, 1, ( INSTR(l_seed_data_key,'.')-1)) );
+
+    -- load reference to backout if it exists. Data to be backed out after this main transaction completes
+    l_backout_key := l_test_suite || '.' || (l_test_number);
+    IF g_all_seed_data_backout.exists(l_backout_key) THEN
+      g_seed_data_backout.append(l_backout_key);
+    END IF;
+
+    -- note global values for future reference
+    g_current_test_suite  := l_test_suite;
+    g_current_test_number := l_test_number;
+
+    l_seed_data_steps := g_all_seed_data(l_seed_data_key);
+    FOR j IN l_seed_data_steps.FIRST..l_seed_data_steps.LAST
+    LOOP
+      -- note global value for future reference
+      g_current_test_step := l_seed_data_steps(j);
+
+      BEGIN
+        execute_test_step();
+      EXCEPTION
+        WHEN OTHERS THEN
+          -- revert to the non seed data test step details
+          restore_globals();
+          RAISE;
+      END;
+    END LOOP;
+  END LOOP;
+
+  -- revert to the non seed data test step details
+  restore_globals();
+
+EXCEPTION
+
+  WHEN invalid_seed_data_reference_excp THEN
+    -- revert to the non seed data test step details
+    restore_globals();
+
+    handle_exception( SQLCODE, l_exception_message);
+
+  WHEN missing_seed_data_backout_excp THEN
+    -- revert to the non seed data test step details
+    restore_globals();
+
+    handle_exception( SQLCODE, l_exception_message);
+
+END load_seed_data;
+
+
+-- =============================================================================
+-- Name: post_test_cleanup
+-- =======================
+--
+-- Summary
+-- =======
+-- Creates a new transaction consisting of test steps provided by the user to
+-- backout any data that has been committed. These test steps start at 901
+--
+-- Creates a new transaction for each of the seed data scripts that were loaded
+-- in order to backout any data that has been committed. These test steps, as part
+-- of the seed data scripts, also start at 901
+--
+-- =============================================================================
+PROCEDURE post_test_cleanup
+IS
+  CURSOR backout_test_steps IS
+  SELECT *
+    FROM server_tests
+   WHERE functional_area = g_current_functional_area
+     AND test_suite = g_current_test_suite
+     AND test_number = g_current_test_number
+     AND test_step > LAST_TEST_STEP_BEFORE_BACKOUT
+   ORDER BY test_step;
+
+  l_current_functional_area server_tests.functional_area%TYPE;
+  l_current_test_suite      server_tests.test_suite%TYPE;
+  l_current_test_number     server_tests.test_number%TYPE;
+  l_current_test_step       server_tests%ROWTYPE;
+  l_backout_steps           TEST_STEPS;
+  l_backout_key             VARCHAR2(10);
+  l_test_steps              BOOLEAN := false;
+
+  -- small internal routine to restore global values
+  PROCEDURE restore_globals
+  IS
+  BEGIN
+    g_current_functional_area := l_current_functional_area;
+    g_current_test_suite      := l_current_test_suite;
+    g_current_test_number     := l_current_test_number;
+    g_current_test_step       := l_current_test_step;
+  END restore_globals;
+
+BEGIN
+  -- note details of current (non seed data) test step so we can revert to this after seed data has been applied
+  l_current_functional_area := g_current_functional_area;
+  l_current_test_suite      := g_current_test_suite;
+  l_current_test_number     := g_current_test_number;
+  l_current_test_step       := g_current_test_step;
+
+  ------------------------------------------------
+  -- BEGIN TRANSACTION FOR BACKOUT OF TEST DATA --
+  ------------------------------------------------
+  FOR test_step IN backout_test_steps 
+  LOOP
+    BEGIN  
+      -- We have at least 1 backout step indicating that the test number has issued a commit
+      -- This triggers the backout of both test step data and seed data
+
+      -- note the test number currently being processed for future reference
+      g_current_test_step := test_step;
+      IF l_test_steps = FALSE THEN
+        l_test_steps := TRUE;
+        add_procedure_to_pkg( BACKOUT_TEST_DATA_PROCEDURE );
+      END IF;
+
+      execute_test_step();
+
+    EXCEPTION
+      WHEN fatal_test_error_excp THEN
+        -- ensure the procedure code is completed correctly
+        finalise_proc_code;
+        ROLLBACK;
+
+    END;  
+  END LOOP;
+
+  -- ensure the procedure code is completed correctly if it exists
+  IF l_test_steps = TRUE THEN
+    finalise_proc_code;
+  END IF;
+
+  COMMIT;
+  ----------------------------------------------
+  -- END TRANSACTION FOR BACKOUT OF TEST DATA --
+  ----------------------------------------------
+
+
+  IF l_test_steps = TRUE  -- we have at least 1 backout step indicating that the test has issued a commit so backout the seed data
+  THEN  
+    g_current_functional_area := 'BACKOUT';  
+
+    -- backout the seed data in reverse order
+    FOR i IN REVERSE 0..g_seed_data_backout.get_size()-1
+    LOOP
+      ------------------------------------------------
+      -- BEGIN TRANSACTION FOR BACKOUT OF SEED DATA --
+      ------------------------------------------------
+      BEGIN  
+        l_backout_key := g_seed_data_backout.get_String(i);
+
+        -- extract the suite number
+        g_current_test_suite := TO_NUMBER( SUBSTR(l_backout_key, 1, ( INSTR(l_backout_key,'.')-1)) );
+
+        -- extract the test number
+        g_current_test_number := TO_NUMBER( SUBSTR(l_backout_key,( INSTR(l_backout_key,'.')+1)));
+
+        -- add procedure that will execute all assertions for this test (multiple test steps) to package
+        add_procedure_to_pkg( BACKOUT_SEED_DATA_PROCEDURE, l_current_test_number, l_backout_key);
+
+        -- retrieve the backout steps
+        l_backout_steps := g_all_seed_data_backout(l_backout_key);
+
+        FOR j IN l_backout_steps.FIRST..l_backout_steps.LAST
+        LOOP
+          g_current_test_step := l_backout_steps(j);
+          execute_test_step();
+        END LOOP;
+
+        -- ensure the procedure code is completed correctly
+        finalise_proc_code;
+
+        COMMIT;
+
+      EXCEPTION
+        WHEN fatal_test_error_excp THEN
+          -- ensure the procedure code is completed correctly
+          finalise_proc_code;
+          ROLLBACK;
+
+      END;
+
+      ----------------------------------------------
+      -- END TRANSACTION FOR BACKOUT OF SEED DATA --
+      ----------------------------------------------
+    END LOOP;
 
   END IF;
 
+  -- revert to the non seed data test step details
+  restore_globals();
+
 EXCEPTION
-  WHEN fatal_seed_data_error_excp THEN
+  WHEN fatal_test_error_excp THEN
 
-    -- ensure the package code is finalised
+    -- revert to the non seed data test step details
+    restore_globals();
+
+    -- ensure the procedure code is completed correctly
     finalise_proc_code;
-    finalise_pkg_code;
-    create_pkg;
 
-    RAISE;
-END load_seed_data;
+    -- fatal error so rollback transaction
+    ROLLBACK;
+
+END post_test_cleanup;
 
 
 -- =============================================================================
@@ -2539,6 +2830,7 @@ END load_seed_data;
 -- A new package procedure is created dynamically for this test number
 -- The assertions generated for this procedure execute within their own
 -- transaction when the utplsql package is invoked.
+-- Any unwanted commits are then backed out
 --
 -- Parameters
 -- ==========
@@ -2557,9 +2849,11 @@ IS
    WHERE functional_area = p_functional_area
      AND test_suite = p_test_suite
      AND test_number = p_test_number
+     AND test_step <= LAST_TEST_STEP_BEFORE_BACKOUT
    ORDER BY test_step;
 
   l_first_step BOOLEAN := TRUE;
+
 BEGIN
 
   -----------------------
@@ -2572,23 +2866,34 @@ BEGIN
   g_current_test_number := p_test_number;
 
   -- initialise object used to store test step outputs for future reference
-  g_outputs := new JSON_OBJECT_T;
+  g_framework_values := new JSON_OBJECT_T;
+
+  g_seed_data_backout := new JSON_ARRAY_T;
 
   -- add procedure that will execute all assertions for this test (multiple test steps) to package
-  add_procedure_to_pkg();
+  add_procedure_to_pkg( NORMAL_TEST_PROCEDURE );  
 
   -- execute all test steps within this test
   FOR test_step IN test_steps LOOP
 
+    g_bypass_operation := FALSE;
+    g_expectation_index := -1;  -- todo - clarify implementation
+
     -- note the test number currently being processed for future reference
     g_current_test_step := test_step;
 
-    -- first entry defines if seed data is to be loaded
-    IF l_first_step THEN
+    -- only the first test step is considered in determining if seed data is to be loaded
+    IF l_first_step 
+    THEN
       l_first_step := FALSE;
-      IF NVL(test_step.load_seed_data,'Y') = 'Y' THEN
-        log(DIAG, '-----loading seed data ' || p_test_number, HIGH_DETAIL);
-        load_seed_data();
+      IF test_step.seed_data IS NOT NULL 
+      THEN
+        BEGIN
+          load_seed_data( test_step.seed_data );
+        EXCEPTION
+          WHEN expected_seed_data_error_excp THEN
+            g_bypass_operation := TRUE;  -- bypass operation and process expectations
+        END;
       END IF;
     END IF;
 
@@ -2604,6 +2909,9 @@ BEGIN
   ---------------------
   -- TRANSACTION END --
   ---------------------
+ 
+  -- backout any unwanted commits
+  post_test_cleanup();  
 
   log(DIAG, '-----Executed test number ' || p_test_number, HIGH_DETAIL);
 EXCEPTION
@@ -2613,7 +2921,10 @@ EXCEPTION
     finalise_proc_code;
 
     -- fatal error so rollback transaction
-    ROLLBACK; 
+    ROLLBACK;
+
+    -- backout any unwanted commits
+    post_test_cleanup();  
 
 END execute_test_number;
 
@@ -2638,7 +2949,7 @@ PROCEDURE test_functional_area_suite( p_functional_area IN server_tests.function
                                       p_test_suite      IN server_tests.test_suite%TYPE )
 IS
   l_num_tests         SMALLINT;
-  l_exception_message VARCHAR2(200);
+  l_exception_message VARCHAR2(500);
 
   CURSOR test_numbers IS
   SELECT DISTINCT test_number tn
@@ -2665,10 +2976,11 @@ BEGIN
   END LOOP;
 
   -- handle possibility of no tests being defined for specified functional area and suite
-  IF l_num_tests = 0 THEN
+  -- rework to report cleanly
+  /*IF l_num_tests = 0 THEN
     l_exception_message := 'No tests defined for specified functional area and suite: ' || p_functional_area || ':' || p_test_suite;
     RAISE_APPLICATION_ERROR(invalid_suite, l_exception_message);
-  END IF;
+  END IF;*/
 
   -- finalise the code for the package that will be created to execute this test suite
   finalise_pkg_code;
@@ -2711,7 +3023,7 @@ END test_functional_area_suite;
 PROCEDURE test_functional_area( p_functional_area IN server_tests.functional_area%TYPE )
 IS
   l_num_suites        SMALLINT;
-  l_exception_message VARCHAR2(200);
+  l_exception_message VARCHAR2(500);
 
   CURSOR functional_area_suites( p_functional_area IN server_tests.functional_area%TYPE ) IS
   SELECT DISTINCT test_suite ts
@@ -2733,10 +3045,11 @@ BEGIN
   END LOOP;
 
   -- handle possibility of no tests suites being defined for specified functional area
-  IF l_num_suites = 0 THEN
+  -- rework to report cleanly
+  /*IF l_num_suites = 0 THEN
     l_exception_message := 'No tests suites defined for specified functional area : ' || p_functional_area;
     RAISE_APPLICATION_ERROR(invalid_functional_area, l_exception_message);
-  END IF;
+  END IF;*/
 
   log(DIAG,'--Tested functional area ' || p_functional_area, HIGH_DETAIL);
 
@@ -2759,7 +3072,6 @@ END test_functional_area;
 PROCEDURE test_all_functional_areas
 IS
   l_num_fas           SMALLINT;
-  l_exception_message VARCHAR2(200);
 
   CURSOR functional_areas IS
   SELECT DISTINCT functional_area fa
@@ -2777,16 +3089,10 @@ BEGIN
   END LOOP;
 
   -- handle possibility of no tests being defined
-  IF l_num_fas = 0 THEN
-    l_exception_message := 'No tests defined!';
-    RAISE_APPLICATION_ERROR(invalid_test_run, l_exception_message);
-  END IF;
+  -- rework to report cleanly
 
   log(DIAG, '-Tested all functional areas', HIGH_DETAIL);
 
-EXCEPTION
-  WHEN invalid_test_run_excp THEN
-    handle_exception( SQLCODE, l_exception_message );
 END test_all_functional_areas;
 
 
@@ -2796,21 +3102,120 @@ END test_all_functional_areas;
 --
 -- Summary
 -- =======
--- Retrieves any seed data setup steps i.e. functional_area = SEED_DATA.
--- These steps are stored in memory and executed prior to all test cases
--- to ensure prerequisite data is present in the database
+-- Retrieves all seed data from the database.
+-- Stored in memory such that a sequence of test steps can be indexed by <suite#>.<test#>
+-- e.g.
+-- FUNCTIONAL_AREA = SEED_DATA
+--
+-- Suite:1, Test Number:1
+-- 1.1 -> step1 -> step2 -> step3 ...
+--
+-- Suite:95, Test Number:3
+-- 95.3 -> step1 -> step2 -> step3 ...
 --
 -- =============================================================================
 PROCEDURE retrieve_seed_data
 IS
-BEGIN
+  TYPE                       SEED_DATA_TABLE IS TABLE OF server_tests%ROWTYPE INDEX BY PLS_INTEGER;
+  l_seed_data                SEED_DATA_TABLE;
+  l_test_steps               TEST_STEPS;
+  l_seed_data_index          VARCHAR2(10);
+  l_selected_seed_data_index VARCHAR2(10);
+  l_test_step                server_tests%ROWTYPE;
+  i                          VARCHAR2(10);
 
-  SELECT * BULK COLLECT INTO g_seed_data
+BEGIN
+  -- retrieve all seed data from database
+  SELECT * BULK COLLECT INTO l_seed_data
     FROM server_tests
    WHERE functional_area = 'SEED_DATA'
+     AND test_step <= LAST_TEST_STEP_BEFORE_BACKOUT
    ORDER BY test_suite, test_number, test_step;
 
+  -- transform this so it can be easily indexed
+  l_seed_data_index := '0.0';
+
+  IF l_seed_data.FIRST IS NOT NULL
+  THEN
+    FOR i IN l_seed_data.FIRST..l_seed_data.LAST
+    LOOP
+      l_test_step := l_seed_data(i);
+
+      -- create g_all_seed_data entry if suite or test number has changed
+      l_selected_seed_data_index := l_test_step.test_suite || '.' || l_test_step.test_number;
+      IF l_selected_seed_data_index != l_seed_data_index THEN
+        l_seed_data_index := l_selected_seed_data_index;
+        g_all_seed_data(l_seed_data_index) := l_test_steps;
+      END IF;
+
+      -- add new test step to g_all_seed_data
+      g_all_seed_data (l_seed_data_index) (l_test_step.test_step) := l_test_step;
+    END LOOP;
+  END IF;
+
 END retrieve_seed_data;
+
+
+-- =============================================================================
+-- Name: retrieve_seed_data_backout
+-- ================================
+--
+-- Summary
+-- =======
+-- Retrieves all seed data backout from the database.
+-- Stored in memory such that a sequence of test steps can be indexed by <suite#>.<test#>
+-- e.g.
+-- FUNCTIONAL_AREA = SEED_DATA
+--
+-- Suite:1, Test Number:1
+-- 1.1 -> step901 -> step902 -> step903 ...
+--
+-- Suite:95, Test Number:3
+-- 95.3 -> step901 -> step902 -> step903 ...
+--
+-- =============================================================================
+PROCEDURE retrieve_seed_data_backout
+IS
+  TYPE SEED_DATA_TABLE IS TABLE OF server_tests%ROWTYPE INDEX BY PLS_INTEGER;
+  l_backout    SEED_DATA_TABLE;
+  l_test_steps TEST_STEPS;
+
+  l_backout_index          VARCHAR2(10);
+  l_selected_backout_index VARCHAR2(10);
+  l_test_step              server_tests%ROWTYPE;
+  i                        VARCHAR2(10);
+
+BEGIN
+  -- retrieve all seed data from database
+  SELECT * BULK COLLECT INTO l_backout
+    FROM server_tests
+   WHERE functional_area = 'SEED_DATA'
+     AND test_step > LAST_TEST_STEP_BEFORE_BACKOUT
+   ORDER BY test_suite, test_number, test_step;
+
+  -- transform this so it can be easily indexed
+  l_backout_index := '0.0';
+
+  IF l_backout.FIRST IS NOT NULL
+  THEN
+    FOR i IN l_backout.FIRST..l_backout.LAST
+    LOOP
+      l_test_step := l_backout(i);
+
+      -- create g_all_seed_data entry if suite or test number has changed
+      l_selected_backout_index := l_test_step.test_suite || '.' || l_test_step.test_number;
+      IF l_selected_backout_index != l_backout_index THEN
+        l_backout_index := l_selected_backout_index;
+        g_all_seed_data_backout(l_backout_index) := l_test_steps;
+      END IF;
+
+      -- add new test step to g_all_seed_data
+      g_all_seed_data_backout (l_backout_index) (l_test_step.test_step) := l_test_step;
+ 
+    END LOOP;
+  END IF;
+
+END retrieve_seed_data_backout;
 
 
 -- =============================================================================
@@ -2821,7 +3226,7 @@ END retrieve_seed_data;
 -- =======
 -- Ensure no test logs are present before performing tests
 -- Initialise miscellaneous global variables
---
+-- Retrieve all seed data information from the database
 -- =============================================================================
 PROCEDURE initialisation( p_site_id IN VARCHAR2 )
 IS
@@ -2829,9 +3234,10 @@ BEGIN
 
   -- ensure no logs exist before performing testing
   DELETE FROM server_test_logs;
-  DELETE FROM server_test_results;
+  DELETE FROM server_test_run_statuses;
   COMMIT;
 
+  -- initialise globals
   g_log_number              := 0;
   g_log_detail              := HIGH_DETAIL;
   g_primary_keys            := new JSON_OBJECT_T;
@@ -2841,9 +3247,11 @@ BEGIN
   g_current_test_number     := NULL;
   g_current_test_step       := NULL;
   g_site_id                 := p_site_id;
-  g_seed_data.DELETE;
+  g_all_seed_data.DELETE;
 
+  -- retrieve seed data and backout information from DB
   retrieve_seed_data();
+  retrieve_seed_data_backout();
 
 END initialisation;
 

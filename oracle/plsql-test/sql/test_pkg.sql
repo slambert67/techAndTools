@@ -22,9 +22,13 @@
 -- AIMS-3460 - Steve Lambert - 27/05/20 - Handle Booleans
 -- AIMS-3884 - Steve Lambert - 22/09/20 - Implement today and now plus offsets as options 
 --                                        for specifiying dates
+-- AIMS-4467 - Steve Lambert - 11/01/21 - Handle procedures with no parameters
 -- -----------------------------------------------------------------------------
 
-CREATE OR REPLACE PACKAGE BODY auto_test_pkg IS
+CREATE OR REPLACE PACKAGE BODY 
+-- Identifier: AIMS-4467
+
+auto_test_pkg IS
 
 PROCEDURE pkgProc(pIn1  IN NUMBER,  pIn2 IN VARCHAR2,   pIn3 IN DATE, pIn4 IN BOOLEAN,
                   pOut1 OUT NUMBER, pOut2 OUT VARCHAR2, pOut3 OUT DATE, pOut4 OUT BOOLEAN)
@@ -178,6 +182,12 @@ FUNCTION pkgNoParamsFunc RETURN VARCHAR2
 IS
 BEGIN
   RETURN 'No parameters';
+END;
+
+PROCEDURE pkgNoParamsProc
+IS
+BEGIN
+  NULL;
 END;
 
 BEGIN

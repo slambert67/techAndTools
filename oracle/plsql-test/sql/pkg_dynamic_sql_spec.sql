@@ -47,7 +47,7 @@ PROCEDURE delete_row( p_table_name     IN VARCHAR2,
 
 PROCEDURE select_row( p_table_name           IN     VARCHAR2,
                       p_select_column_names  IN     JSON_ARRAY_T,
-                      p_where_column_details IN     JSON_OBJECT_T,
+                      p_where_clause         IN     JSON_OBJECT_T,
                       p_results              IN OUT JSON_ARRAY_T );
 
 PROCEDURE call_routine( p_package_name IN  VARCHAR2,
