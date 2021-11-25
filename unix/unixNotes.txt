@@ -10,3 +10,37 @@ lsnrctl status | start | stop
 recursive dos2unix
 ==================
 find . -type f -print0 | xargs -0 dos2unix
+
+
+  for FILE_NAME in `ls ${V_TRIGGER_HOME_DIR}/${TABLE_NAME}* 2>/dev/null`
+  do
+   if [ `grep -c $'\\r' ${FILE_NAME}` -gt 0 ] 
+   then
+
+      echo ERROR: File ${FILE_NAME} is in DOS format.
+      echo Triggers for table ${TABLE_NAME} cannot be created
+      echo Convert trigger files to Unix format and re-try
+      exit 1      
+   fi
+  done
+
+
+      3 echo $# parameters
+      4
+      5 if [ $# != 2 ]
+      6 then
+      7   echo num params not equal to 2
+      8 fi
+
+
+
+    449 FASL_LIBS=""
+    450 for DIRECTORY in `cd ${APPN_HOME} >/dev/null 2>&1;\ls -1 2>/dev/null`
+    451 do
+    452   if [ -d ${APPN_HOME}/${dir} ]
+    453   then
+    454     PATH=${PATH}:${APPN_HOME}/${DIRECTORY}
+    455     FASL_LIBS=${FASL_LIBS}:${APPN_HOME}/${DIRECTORY}
+    456     LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${APPN_HOME}/${DIRECTORY}
+    457   fi
+    458 done

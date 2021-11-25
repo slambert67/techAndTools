@@ -1,0 +1,41 @@
+DROP TABLE tab1 PURGE;
+
+CREATE TABLE tab1 (
+  id        NUMBER,
+  parent_id NUMBER,
+  CONSTRAINT tab1_pk PRIMARY KEY (id),
+  CONSTRAINT tab1_tab1_fk FOREIGN KEY (parent_id) REFERENCES tab1(id)
+);
+
+CREATE INDEX tab1_parent_id_idx ON tab1(parent_id);
+
+INSERT INTO tab1 VALUES (1, NULL);
+INSERT INTO tab1 VALUES (2, 1);
+INSERT INTO tab1 VALUES (3, 2);
+INSERT INTO tab1 VALUES (4, 2);
+INSERT INTO tab1 VALUES (5, 4);
+INSERT INTO tab1 VALUES (6, 4);
+INSERT INTO tab1 VALUES (7, 1);
+INSERT INTO tab1 VALUES (8, 7);
+INSERT INTO tab1 VALUES (9, 1);
+INSERT INTO tab1 VALUES (10, 9);
+INSERT INTO tab1 VALUES (11, 10);
+INSERT INTO tab1 VALUES (12, 9);
+COMMIT;
+
+CONNECT BY .. PRIOR clause, which defines how the current row (child) relates to a prior row (parent)
+LEVEL : The position in the hierarchy of the current row in relation to the root node.
+
+
+select * from tab1 order by id;
+
+select id, parent_id, level
+from tab1
+start with parent_id is null
+connect by parent_id = prior id;
+
+select id, parent_id, level, LTRIM(SYS_CONNECT_BY_PATH(id, '-'), '-') AS path, CONNECT_BY_ROOT id AS root_id
+from tab1
+start with parent_id is null
+connect by parent_id = prior id
+ORDER SIBLINGS BY id;

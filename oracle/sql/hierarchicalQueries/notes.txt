@@ -1,0 +1,1 @@
+CONNECT BY .. PRIOR clause, which defines how the current row (child) relates to a prior row (parent)

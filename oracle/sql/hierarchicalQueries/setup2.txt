@@ -1,0 +1,104 @@
+CREATE TABLE ENTITIES(PARENT_ENTITY VARCHAR2(20 BYTE),CHILD_ENTITY VARCHAR2(20 BYTE),VAL Number);
+
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values (NULL,'a',100);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('a', 'af',50);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('a', 'ab',50);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('a', 'ax',50);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('ab', 'abc',10);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('ab', 'abd',10);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('ab', 'abe',10);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('abe', 'abes',1);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('abe', 'abet',1);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values (NULL,'b',100);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('b', 'bg',50);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('b', 'bh',50);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('b', 'bi',50);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('bi', 'biq',10);
+Insert into ENTITIES (PARENT_ENTITY, CHILD_ENTITY,VAL) Values ('bi', 'biv',10);
+COMMIT;
+
+
+1   2    3    4
+a
+|
+-> af
+|
+-> ab
+    |
+    -> abc
+    |
+    -> abd
+    |
+    -> abe
+        |
+        -> abes
+        |
+        -> abet
+|
+-> ax
+
+
+b
+|
+-> bg
+|
+-> bh
+|
+-> bi
+    |
+    -> biq
+    |
+    -> biv
+
+SELECT parent_entity,child_entity
+FROM entities
+START WITH parent_entity is NULL     -- specifies the root rows of the hierarchy i.e where to start the ‘walk’ from.
+CONNECT BY                           -- specifies the relationship between parent rows and child rows of the hierarchy.
+PRIOR child_entity = parent_entity;  -- a unary operator and it is used to achieve the recursive condition i.e the actual walking.
+
+execution method
+
+START WITH gives
+	parent		child
+	null		a
+	null		b
+
+child entities become parents
+
+SELECT parent_entity,child_entity
+FROM entities
+START WITH parent_entity is NULL 
+CONNECT BY PRIOR child_entity = parent_entity;
+
+-- reverses traversal direction
+SELECT parent_entity,child_entity
+FROM entities
+START WITH parent_entity is NULL 
+CONNECT BY child_entity = PRIOR parent_entity ;
+
+SELECT parent_entity,child_entity
+FROM entities
+START WITH child_entity = 'abet' 
+CONNECT BY child_entity = PRIOR parent_entity ;
+
+
+LEVEL - pseudo column showing depth
+=====
+SELECT level, parent_entity,child_entity
+FROM entities
+START WITH parent_entity is NULL 
+CONNECT BY PRIOR child_entity = parent_entity;
+
+Using function LPAD and LEVEL, we can return a tree-like structure in the result set as follows:
+SELECT LPAD(child_entity,Length(child_entity) + LEVEL * 10-10,'-') tree
+FROM entities
+START WITH parent_entity is NULL
+CONNECT BY PRIOR child_entity= parent_entity;
+
+
+SYS_CONNECT_BY_PATH
+===================
+SELECT parent_entity,child_entity,SYS_CONNECT_BY_PATH(child_entity,'\') PATH
+FROM entities
+START WITH parent_entity is NULL 
+CONNECT BY PRIOR child_entity = parent_entity;
