@@ -1,0 +1,47 @@
+-- user1
+declare
+  l_col1 conctest.col1%type;
+  l_col2 conctest.col2%type;
+begin
+  -- step 1. User1 retrieves row of data
+  select col1, col2
+    into l_col1, l_col2
+    from conctest
+   where myrowid = 1;
+
+  -- step 3. User1 modifies col1
+  l_col1 := 'updated by user1';
+
+  update conctest
+     set col1 = l_col1,
+         col2 = l_col2;
+end;
+
+declare
+  l_col1 conctest.col1%type;
+  l_col2 conctest.col2%type;
+begin
+  -- step 2. User2 retrieves same row of data
+  select col1, col2
+    into l_col1, l_col2
+    from conctest
+   where myrowid = 1;
+
+  -- step 4. User2 modifies col2
+  l_col2 := 'updated by user2';
+
+  update conctest
+     set col1 = l_col1,
+         col2 = l_col2;
+end;
+
+update to col1 is lost
+
+
+Pessimistic Locking
+===================
+
+
+
+Optimistic Locking
+==================
