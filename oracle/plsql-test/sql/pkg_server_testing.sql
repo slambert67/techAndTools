@@ -41,14 +41,24 @@
 -- AIMS-4446 - Steve Lambert - 24/12/20 - Miscellaneous naming changes
 -- AIMS-4650 - Steve Lambert - 12/02/21 - Add sequence to SERVER_TEST_RUN_STATUSES table
 -- AIMS-5022 - Steve Lambert - 03/08/21 - Rework of seed data functionality. Added backout functionality
--- AIMS-5475  20/08/21  Steve Lambert     Support an action of (C)ommit
+-- AIMS-5475 - Steve Lambert - 20/08/21 - Support an action of (C)ommit
+-- AIMS-5957 - Steve Lambert - 21/01/22 - Support new 'exists' and '!exists' matchers
+-- AIMS-6201 - Steve Lambert - 17/05/22 - Improve Logging
 -- -----------------------------------------------------------------------------
 
 CREATE OR REPLACE PACKAGE BODY 
--- Identifier: AIMS-5022
+-- Identifier: AIMS-6201
 
 pkg_server_testing
 IS
+
+-- =============================================================================
+--
+--                          Global declarations
+--
+-- =============================================================================
+
+
   TYPE TEST_STEPS IS TABLE OF server_tests%ROWTYPE INDEX BY PLS_INTEGER;  -- steps for a suite and test number
   TYPE SEED_DATA IS TABLE OF TEST_STEPS INDEX BY VARCHAR2(10);
 
@@ -302,6 +312,982 @@ IS
   PROCEDURE flatten_json_object(p_key IN VARCHAR2, p_object IN JSON_OBJECT_T);
   PROCEDURE flatten_json_array(p_key IN VARCHAR2, p_array IN JSON_ARRAY_T);
 
+
+
+
+-- =============================================================================
+--
+--                          Logging
+--
+-- =============================================================================
+
+
+
+
+-- =============================================================================
+-- Name: get_returned_json_value
+-- =============================
+--
+-- Summary
+-- =======
+-- Values retrieved from the DB by the framework have the form:
+-- name:{'data_type':dbms_types.TYPECODE_VARCHAR2, 'data_value':value}
+--
+-- This routine retrieves the value for logging purposes
+--
+-- Parameters
+-- ==========
+-- p_obj : JSON object representing value details
+-- =============================================================================
+FUNCTION get_returned_json_value( p_obj IN JSON_OBJECT_T ) RETURN CLOB
+IS
+  l_data_type SMALLINT;
+  l_string    VARCHAR2(4000);
+  l_value     CLOB;
+  l_boolean   BOOLEAN;
+BEGIN
+  IF p_obj.get('data_value').is_Null() THEN
+    RETURN 'null';
+  END IF;
+
+  l_data_type := p_obj.get_Number('data_type');
+  CASE
+    -- Process strings
+    WHEN l_data_type IN ( dbms_types.TYPECODE_VARCHAR2, 
+                          dbms_types.TYPECODE_VARCHAR, 
+                          dbms_types.TYPECODE_CHAR )
+    THEN
+      l_value := '"' || p_obj.get_String('data_value') || '"';
+
+    -- Process numbers
+    WHEN l_data_type = dbms_types.TYPECODE_NUMBER
+    THEN
+      l_value := to_char( p_obj.get_Number('data_value') );
+
+    -- Process dates
+    WHEN l_data_type = dbms_types.TYPECODE_DATE
+    THEN
+      l_value := '"' || to_char(p_obj.get_Date('data_value'),DATE_FORMAT) || '"';
+
+    -- Process booleans
+    WHEN l_data_type = DBMS_TYPES_BOOLEAN
+    THEN
+      IF p_obj.get_Boolean('data_value') THEN
+        l_value := 'true';
+      ELSE
+        l_value := 'false';
+      END IF;
+
+    -- Process clobs
+    WHEN l_data_type = dbms_types.TYPECODE_CLOB THEN
+      l_value := '"' || p_obj.get_Clob('data_value') || '"';
+    ELSE
+      -- unsupported data type 
+      RAISE_APPLICATION_ERROR(invalid_data_type, 'Data type not supported: ' || l_data_type); 
+  END CASE;
+
+  RETURN l_value;
+END get_returned_json_value;
+
+
+-- =============================================================================
+-- Name: get_defined_json_value
+-- =============================
+--
+-- Summary
+-- =======
+-- Retrieves the value of user supplied JSON for logging purposes
+--
+-- Parameters
+-- ==========
+-- p_obj : JSON object
+-- p_key : JSON key
+-- =============================================================================
+FUNCTION get_defined_json_value( p_obj IN JSON_OBJECT_T, p_key IN VARCHAR2 ) RETURN VARCHAR2
+IS
+  l_element             JSON_ELEMENT_T;
+  l_value VARCHAR2(4000);
+BEGIN
+  l_element := p_obj.get(p_key);
+  IF l_element.is_Null() THEN
+    l_value := 'null';
+  ELSIF l_element.is_String() THEN
+    l_value := '"' || p_obj.get_String(p_key) || '"';
+  ELSIF l_element.is_Number() THEN
+    l_value := p_obj.get_Number(p_key);
+  ELSIF l_element.is_True() THEN
+    l_value := 'true';
+  ELSIF l_element.is_False() THEN
+    l_value := 'false';
+  END IF;
+
+  RETURN l_value;
+END get_defined_json_value;
+
+
+-- =============================================================================
+-- Name: log
+-- =========
+--
+-- Summary
+-- =======
+-- If global variable v_debug_log = 'DBMS' then logs to STDOUT
+-- If global variable v_debug_log = 'TRACE' then logs to TRACE_LOGS
+--
+-- Parameters
+-- ==========
+-- p_message : the message to be logged
+-- =============================================================================
+PROCEDURE log(p_message IN CLOB)
+IS
+  l_length  INTEGER;
+  l_start   INTEGER := 1;
+  l_recsize CONSTANT INTEGER := 4000;
+BEGIN
+
+  IF v_debug_log = 'DBMS' THEN
+    dbms_output.put_line(p_message);
+  ELSE
+    IF v_debug_log = 'TRACE' THEN    
+      l_length   := DBMS_LOB.getlength (p_message);
+      WHILE l_start <= l_length
+      LOOP
+        p73_insert_trace( DBMS_LOB.SUBSTR(p_message, l_recsize, l_start) );
+        l_start   := l_start + l_recsize;
+      END LOOP;
+    END IF;
+  END IF;
+
+EXCEPTION
+   WHEN OTHERS THEN
+     --A failure to write output logs should not affect the main transaction
+     dbms_output.put_line('****ERROR in log: '|| SUBSTR(SQLERRM,1,200));
+END;
+
+
+-- =============================================================================
+-- Name: log_call_routine
+-- ======================
+--
+-- Summary
+-- =======
+-- Logs the details of a routine call
+--
+-- =============================================================================
+PROCEDURE log_call_routine( p_package_name IN VARCHAR2,
+                            p_routine_name IN VARCHAR2,
+                            p_parameters   IN JSON_OBJECT_T )
+IS
+  l_param_names JSON_KEY_LIST;
+  l_param_name  VARCHAR2(200);
+  l_log_msg     VARCHAR2(4000);
+BEGIN
+  IF p_parameters IS NULL THEN
+    l_log_msg := 'Calling ' || p_package_name || '.' || p_routine_name || ' with no parameters';
+  ELSE
+    l_log_msg := 'Calling ' || p_package_name || '.' || p_routine_name || ' with the following parameters - ' || chr(10);
+
+    l_param_names := p_parameters.get_keys;
+    FOR i IN 1..l_param_names.COUNT() 
+    LOOP
+      l_param_name := l_param_names(i);
+      l_log_msg := l_log_msg || l_param_name || ':' || get_defined_json_value(p_parameters, l_param_name) || ', ';
+    END LOOP;
+    l_log_msg := substr(l_log_msg,1, instr(l_log_msg, ', ', -1)-1);
+    log( l_log_msg );
+  END IF;
+END log_call_routine;
+
+
+-- =============================================================================
+-- Name: log_call_routine_results
+-- ==============================
+--
+-- Summary
+-- =======
+-- Logs the results of a routine call
+--
+-- =============================================================================
+PROCEDURE log_call_routine_results( p_results IN JSON_OBJECT_T )
+IS
+  l_param_names     JSON_KEY_LIST;
+  l_param_name      VARCHAR2(200);
+  l_param_details   JSON_OBJECT_T;
+  l_log_msg         CLOB;
+BEGIN
+  IF p_results IS NULL THEN
+    log('No results from calling routine');
+  ELSE
+    l_log_msg := 'Results from calling routine - ';
+
+    l_param_names := p_results.get_keys;
+    FOR i IN 1..l_param_names.COUNT() 
+    LOOP
+      l_param_name := l_param_names(i);
+      l_param_details := p_results.get_Object(l_param_name);
+      l_log_msg := l_log_msg || l_param_name || ':' || get_returned_json_value(l_param_details) || ', ';
+    END LOOP;
+    l_log_msg := substr(l_log_msg,1, instr(l_log_msg, ', ', -1)-1);
+    log( l_log_msg );
+  END IF;
+END log_call_routine_results;
+
+
+-- =============================================================================
+-- Name: log_insert_row
+-- ====================
+--
+-- Summary
+-- =======
+-- Logs the details of an Insert
+--
+-- =============================================================================
+PROCEDURE log_insert_row( p_table_name IN VARCHAR2,
+                          p_columns    IN JSON_OBJECT_T )
+IS
+  l_column_names JSON_KEY_LIST;
+  l_column_name  VARCHAR2(200);
+  l_log_msg      VARCHAR2(4000);
+BEGIN
+  l_log_msg := 'INSERTING ';
+
+  l_column_names := p_columns.get_keys;
+  FOR i IN 1..l_column_names.COUNT() 
+  LOOP
+    l_column_name := l_column_names(i);
+    l_log_msg := l_log_msg || l_column_name || ':' || get_defined_json_value(p_columns, l_column_name) || ', ';
+  END LOOP;
+  l_log_msg := substr(l_log_msg,1, instr(l_log_msg, ', ', -1)-1);
+  l_log_msg := l_log_msg || ' INTO ' || p_table_name;
+  log(l_log_msg);
+END log_insert_row;
+
+
+-- =============================================================================
+-- Name: log_insert_row_results
+-- ============================
+--
+-- Summary
+-- =======
+-- Logs the results of an Insert
+--
+-- =============================================================================
+PROCEDURE log_insert_row_results( p_table_name IN VARCHAR2,
+                                  p_ari        IN JSON_OBJECT_T )
+IS
+BEGIN
+
+  IF p_ari IS NOT NULL THEN
+    log('Generated appn_row_id: ' || p_ari.get_Number('data_value'));
+  ELSE
+    log('No appn_row_id generated for the ' || p_table_name || ' table');
+  END IF;
+
+END log_insert_row_results;
+
+
+-- =============================================================================
+-- Name: log_delete_row
+-- ====================
+--
+-- Summary
+-- =======
+-- Logs the details of a Delete
+--
+-- =============================================================================
+PROCEDURE log_delete_row( p_table_name IN VARCHAR2,
+                          p_where      IN JSON_OBJECT_T )
+IS
+  l_where_names JSON_KEY_LIST;
+  l_where_name  VARCHAR2(200);
+  l_where_value VARCHAR2(500);
+  l_log_msg     VARCHAR2(4000);
+BEGIN
+
+  IF p_where IS NOT NULL 
+  THEN
+    l_log_msg := 'DELETING FROM ' || p_table_name || ' WHERE ';
+    l_where_names := p_where.get_keys;
+    FOR i IN 1..l_where_names.COUNT() 
+    LOOP
+      l_where_name := l_where_names(i);
+      l_log_msg := l_log_msg || l_where_name || ':' || get_defined_json_value(p_where, l_where_name) || ' AND ';
+    END LOOP;
+    l_log_msg := substr(l_log_msg,1, instr(l_log_msg, ' AND ', -1)-1);
+    log( l_log_msg );
+  ELSE
+    log('DELETING all rows FROM ' || p_table_name);
+  END IF;
+END log_delete_row;
+
+
+-- =============================================================================
+-- Name: log_delete_row_results
+-- ============================
+--
+-- Summary
+-- =======
+-- Logs the results of a Delete
+--
+-- =============================================================================
+PROCEDURE log_delete_row_results( p_rows_deleted IN INTEGER )
+IS
+BEGIN
+  log(p_rows_deleted || ' rows deleted');
+END log_delete_row_results;
+
+
+-- =============================================================================
+-- Name: log_update_row
+-- ====================
+--
+-- Summary
+-- =======
+-- Logs the details of an Update
+--
+-- =============================================================================
+PROCEDURE log_update_row( p_table_name IN VARCHAR2,
+                          p_columns    IN JSON_OBJECT_T,
+                          p_where      IN JSON_OBJECT_T )
+IS
+  l_column_names JSON_KEY_LIST;
+  l_column_name  VARCHAR2(200);
+  l_column_value VARCHAR2(500);
+  l_where_names  JSON_KEY_LIST;
+  l_where_name   VARCHAR2(200);
+  l_where_value  VARCHAR2(500);
+  l_log_msg      VARCHAR2(4000);
+BEGIN
+  l_log_msg := 'UPDATING ' || p_table_name || ' with the following values - ';
+
+  l_column_names := p_columns.get_keys;
+  FOR i IN 1..l_column_names.COUNT() 
+  LOOP
+    l_column_name := l_column_names(i);
+    l_column_value := p_columns.get_String(l_column_name);
+    l_log_msg := l_log_msg || l_column_name || ':' || get_defined_json_value(p_columns, l_column_name) || ', ';
+  END LOOP;
+
+  IF p_where IS NOT NULL THEN
+    l_log_msg := l_log_msg || ' WHERE ';
+
+    l_where_names := p_where.get_keys;
+    FOR i IN 1..l_where_names.COUNT() 
+    LOOP
+      l_where_name := l_where_names(i);
+      l_log_msg := l_log_msg || l_where_name || '=' || get_defined_json_value(p_where, l_where_name) || ' AND ';
+    END LOOP;
+    l_log_msg := substr(l_log_msg,1, instr(l_log_msg, ' AND ', -1)-1);
+  END IF;
+  log( l_log_msg );
+
+END log_update_row;
+
+
+-- =============================================================================
+-- Name: log_update_row_results
+-- ============================
+--
+-- Summary
+-- =======
+-- Logs the results of an Update
+--
+-- =============================================================================
+PROCEDURE log_update_row_results( p_rows_updated IN INTEGER )
+IS
+BEGIN
+  log(p_rows_updated || ' rows updated');
+END log_update_row_results;
+
+
+-- =============================================================================
+-- Name: log_select_row
+-- ====================
+--
+-- Summary
+-- =======
+-- Logs the details of a Select
+--
+-- =============================================================================
+PROCEDURE log_select_row( p_table_name IN VARCHAR2,
+                          p_columns    IN JSON_ARRAY_T,
+                          p_where      IN JSON_OBJECT_T )
+IS
+  l_where_names JSON_KEY_LIST;
+  l_where_name  VARCHAR2(200);
+  l_where_value VARCHAR2(500);
+  l_columns     VARCHAR2(500) := NULL;
+  l_log_msg     VARCHAR2(4000);
+BEGIN
+  FOR i IN 0..p_columns.get_size()-1 LOOP
+    l_columns := l_columns || p_columns.get_String(i) || ', ';
+  END LOOP;
+
+  IF p_where IS NULL THEN
+    log('SELECTING ' || substr(l_columns,1, instr(l_columns, ', ', -1)-1) || ' FROM ' || p_table_name);
+  ELSE
+    l_log_msg := 'SELECTING ' || substr(l_columns,1, instr(l_columns, ', ', -1)-1) || ' FROM ' || p_table_name || ' WHERE ';
+    l_where_names := p_where.get_keys;
+    FOR i IN 1..l_where_names.COUNT() 
+    LOOP
+      l_where_name := l_where_names(i);
+      l_log_msg := l_log_msg || l_where_name || '=' || get_defined_json_value(p_where, l_where_name) || ' AND ';
+    END LOOP;
+    l_log_msg := substr(l_log_msg,1, instr(l_log_msg, ' AND ', -1)-1);
+    log( l_log_msg );
+  END IF;
+
+END log_select_row;
+
+
+-- =============================================================================
+-- Name: log_select_row_results
+-- ============================
+--
+-- Summary
+-- =======
+-- Logs the results of a Select
+--
+-- =============================================================================
+PROCEDURE log_select_row_results( p_results IN JSON_ARRAY_T, p_rows_selected IN INTEGER )
+IS
+  l_row          JSON_OBJECT_T;
+  l_column       JSON_OBJECT_T;
+  l_column_names JSON_KEY_LIST;
+  l_column_name  VARCHAR2(200);
+  l_column_value VARCHAR2(200);
+  l_log_msg      VARCHAR2(4000);
+BEGIN
+  log( p_rows_selected || ' rows selected');
+  -- iterate over each row
+  FOR i IN 0..p_results.get_size()-1 
+  LOOP
+    l_log_msg := 'Row ' || (i+1) || ' - ';
+    l_row := treat(p_results.get(i) AS JSON_OBJECT_T);
+
+    l_column_names := l_row.get_keys;
+    FOR i IN 1..l_column_names.COUNT() 
+    LOOP
+      l_column_name := l_column_names(i);
+      l_column := l_row.get_Object(l_column_name);
+      l_log_msg := l_log_msg || l_column_name || ':' || get_returned_json_value(l_column) || ', ';
+    END LOOP;
+    l_log_msg := substr(l_log_msg,1, instr(l_log_msg, ', ', -1)-1);
+    log( l_log_msg );
+  END LOOP;
+
+END log_select_row_results;
+
+
+-- =============================================================================
+-- Name: update_test_status
+-- ========================
+--
+-- Summary
+-- =======
+-- This routine updates the server_test_run_statuses entry for the currently executed 
+-- test step within an autonomous transaction
+--
+-- Parameters
+-- ==========
+-- p_test_status       : COMPLETED or FAIL
+-- p_exception_code    : The exception code responsible for the FAIL status
+-- p_exception_message : The exception message associated with p_exception_code
+-- p_compilation_excp  : Flags the special case when a dynamically generated suite 
+--                       package fails compilation.
+--
+-- =============================================================================
+PROCEDURE update_test_status(p_test_status       IN server_test_run_statuses.test_status%TYPE,
+                             p_exception_code    IN server_test_run_statuses.exception_code%TYPE,
+                             p_exception_message IN server_test_run_statuses.exception_message%TYPE,
+                             p_compilation_excp  IN BOOLEAN DEFAULT FALSE)
+IS
+  PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+
+  IF p_compilation_excp
+  THEN
+
+    INSERT INTO server_test_run_statuses VALUES
+    (server_test_run_statuses_seq.nextval, g_current_functional_area, g_current_test_suite, -1, -1,
+     'FAILED', p_exception_code, SUBSTR(p_exception_message,1,4000));
+
+  ELSE
+
+    INSERT INTO server_test_run_statuses VALUES
+    (server_test_run_statuses_seq.nextval, g_current_functional_area, g_current_test_suite, g_current_test_number, g_current_test_step.test_step,
+     p_test_status, p_exception_code, SUBSTR(p_exception_message,1,4000));
+
+  END IF;
+
+  COMMIT;
+
+END update_test_status;
+
+
+
+
+-- =============================================================================
+--
+--                          Exception Handling
+--
+-- =============================================================================
+
+
+
+
+-- =============================================================================
+-- Name: is_exception_expected
+-- ===========================
+--
+-- Summary
+-- =======
+-- Determines if an encountered exception is expected
+-- This will be the case if we are actually testing for this exception
+-- As such, an appropriate assertion should be present within the 
+-- defined expectations for the current test step
+--
+-- Parameters
+-- ==========
+-- p_exception_code     : The code of the raised exception
+-- p_exception_expected : Output parameter set to TRUE or FALSE
+--
+-- =============================================================================
+PROCEDURE is_exception_expected(p_exception_code      IN  server_test_run_statuses.exception_code%TYPE,
+                                p_exception_msg       IN  server_test_run_statuses.exception_message%TYPE,
+                                p_exception_expected  OUT BOOLEAN)
+IS
+  l_source            VARCHAR2(9);
+  l_exception_message VARCHAR2(500);
+  l_expectations      JSON_ARRAY_T;
+  l_expectation       JSON_OBJECT_T;
+  l_assertion         JSON_OBJECT_T;
+
+BEGIN
+  -- assume initially the exception is unexpected
+  p_exception_expected := FALSE;
+
+  IF g_current_test_step.expectations IS NOT NULL THEN
+
+    -- retrieve the defined expectations and search for an assertion testing for this exception
+    l_expectations := JSON_ARRAY_T.parse(g_current_test_step.expectations);
+
+    -- examine each expectation in turn
+    FOR i IN 0..l_expectations.get_size()-1 
+    LOOP
+
+      -- ignore the expectation that raised the original exception if this is the case
+      IF i = g_expectation_index THEN
+        CONTINUE;
+      END IF;
+
+      l_expectation := treat(l_expectations.get(i) AS JSON_OBJECT_T);
+
+      -- this search still requires the validation of the defined expectations
+      -- abort if expectation fails validation
+
+      -- retrieve and validate source
+      l_source := l_expectation.get_String('source');  
+      IF l_source IS NULL THEN
+        l_exception_message := 'Unspecified or misspelled source key for expectation';
+        RAISE_APPLICATION_ERROR(missing_e_source, l_exception_message); -- careful - recursion!
+      END IF;
+
+      IF l_source = 'framework' THEN
+
+        -- retrieve and validate assertions
+        IF NOT l_expectation.has('assertions') THEN
+          l_exception_message := 'Missing assertions in expectation';
+          RAISE_APPLICATION_ERROR(missing_e_assertions, l_exception_message);  -- careful - recursion!
+        END IF;
+
+        IF l_expectation.get_Object('assertions').has('step' || g_current_test_step.test_step || '.exception_code') 
+        THEN
+          -- an assertion is present - checking for an exception from this current test step
+          l_assertion := l_expectation.get_Object('assertions').get_Object('step' || g_current_test_step.test_step || '.exception_code');
+
+          -- validate the utPLSQL matcher
+          IF NOT l_assertion.has('matcher') THEN
+            l_exception_message := 'utPLSQL matcher not specified in assertion';
+            RAISE_APPLICATION_ERROR(missing_matcher, l_exception_message);
+          END IF;
+          
+          IF l_assertion.get_String('matcher') = '=' THEN
+
+            IF NOT l_assertion.has('value') THEN
+              l_exception_message := 'utPLSQL matcher has no expected value';
+              RAISE_APPLICATION_ERROR(missing_matcher_value, l_exception_message);
+            END IF;
+
+            IF l_assertion.get_Type('value') != 'OBJECT' THEN
+
+              IF l_assertion.get_Number('value') = p_exception_code THEN
+                -- the raised exception has the same code as that expected
+                l_assertion := l_expectation.get_Object('assertions').get_Object('step' || g_current_test_step.test_step || '.exception_msg');
+
+                IF l_expectation.get_Object('assertions').has('step' || g_current_test_step.test_step || '.exception_msg') THEN
+                  -- message raised must match expected message
+
+                  -- validate the utPLSQL matcher
+                  IF NOT l_assertion.has('matcher') THEN
+                    l_exception_message := 'utPLSQL matcher not specified in assertion';
+                    RAISE_APPLICATION_ERROR(missing_matcher, l_exception_message);
+                  END IF;
+
+                  IF l_assertion.get_String('matcher') != 'like' THEN
+                    l_exception_message := 'Invalid utPLSQL matcher specified in assertion'; 
+                    RAISE_APPLICATION_ERROR(invalid_matcher, l_exception_message);
+                  END IF;
+
+                  IF NOT l_assertion.has('value') THEN
+                    l_exception_message := 'utPLSQL matcher has no expected value';
+                    RAISE_APPLICATION_ERROR(missing_matcher_value, l_exception_message);
+                  END IF;
+
+                  IF l_assertion.get_Type('value') != 'OBJECT' THEN
+                    IF p_exception_msg LIKE l_assertion.get_String('value') THEN
+                      p_exception_expected := TRUE;
+                    END IF;
+                  END IF;
+
+                ELSE
+                  p_exception_expected := TRUE;
+                END IF;
+
+                EXIT;
+              END IF;
+            END IF;
+          END IF;
+        END IF;
+      END IF;
+    END LOOP;
+  END IF;
+END is_exception_expected;
+
+
+-- =============================================================================
+-- Name: handle_exception
+-- ======================
+--
+-- Summary
+-- =======
+-- Processes any raised exceptions. There are 2 main scenarios:
+--
+-- Scenario 1 : Exception not expected
+--              This is the typical, standard scenario
+--              We just need to cleanup and end the current test number (transaction)
+--              and then move onto the next test number (transaction)
+--              - update server_test_run_statuses with a status of FAILED
+--              - raise fatal_test_error exception which ensures:
+--                - the expectations for this step are not executed (exception may have come from here)
+--                - further steps for this test number (transaction) are ignored
+--                - the transaction is rolled back
+--                - we move onto the next test
+--
+-- Scenario 2 : An exception that we are actually testing for.
+--              We will know this by the presence of an appropriate assertion
+--              for the current test step
+--              If exception expected
+--              - If in operation phase of test step then abort and begin processing
+--                the defined expectations 
+--              - If in expectation phase of test step then abort and move onto 
+--                the next expectation
+-- Parameters
+-- ==========
+-- p_exception_code   : The code of the raised exception
+-- p_exception_msg    : Associated exception message
+-- p_raise_excp       : Determines if fatal exception should be raised
+-- p_compilation_excp : Flags the special case when a dynamically generated suite 
+--                      package fails compilation.
+--
+-- =============================================================================
+PROCEDURE handle_exception(p_exception_code   IN server_test_run_statuses.exception_code%TYPE,
+                           p_exception_msg    IN server_test_run_statuses.exception_message%TYPE,
+                           p_raise_excp       IN BOOLEAN DEFAULT TRUE,
+                           p_compilation_excp IN BOOLEAN DEFAULT FALSE)
+IS
+  l_exception_expected BOOLEAN;
+  l_output             JSON_OBJECT_T;
+  l_exception_msg      VARCHAR2(1000);
+  l_assertion_string   VARCHAR2(2000);
+
+BEGIN
+
+  IF p_compilation_excp THEN
+    log(p_exception_code || ' - ' || p_exception_msg);
+    update_test_status('FAILED', p_exception_code, p_exception_msg, TRUE);
+    -- move on to the next functional area test suite
+    RETURN;
+  END IF;
+
+  -- populate g_framework_values with exception code
+  l_output := new JSON_OBJECT_T;
+  l_output.put('data_type', dbms_types.TYPECODE_NUMBER);
+  l_output.put('data_value',p_exception_code);
+  g_framework_values.put('step' || g_current_test_step.test_step || '.exception_code', l_output );
+
+  -- populate g_framework_values with exception message
+  l_output := new JSON_OBJECT_T;
+  l_output.put('data_type', dbms_types.TYPECODE_VARCHAR2);
+  l_output.put('data_value',p_exception_msg);
+  g_framework_values.put('step' || g_current_test_step.test_step || '.exception_msg', l_output );
+
+  BEGIN
+    is_exception_expected(p_exception_code, p_exception_msg, l_exception_expected);
+  EXCEPTION
+    WHEN missing_e_source_excp OR
+         missing_e_assertions_excp OR
+         missing_matcher_excp OR
+         missing_matcher_value_excp
+    THEN
+      -- If here then we have a malformed expectation
+      -- do nothing. this malformed expectation will be encountered after the
+      -- current exception has been reported and corrected
+      null;
+  END;
+
+  IF l_exception_expected  -- not a problem - continue processing
+  THEN
+    log('Successfully caught expected exception');
+    CASE g_test_stage
+
+      WHEN SEED_DATA_STAGE THEN
+        -- exit and move onto expectations (bypassing operation)
+        RAISE_APPLICATION_ERROR(expected_seed_data_error, 'SEED DATA ERROR - but expected');
+
+      WHEN OPERATION_STAGE THEN
+        -- exit and move onto expectations
+        RAISE_APPLICATION_ERROR(expected_operation_error, 'OPERATION ERROR - but expected');
+
+      WHEN EXPECTATION_STAGE THEN
+        -- move on to the next expectation
+        RAISE_APPLICATION_ERROR(expected_expectation_error, 'EXPECTATION ERROR - but expected');
+
+    END CASE;
+
+  ELSE
+    -- unanticipated exception
+    log('UNANTICIPATED EXCEPTION RAISED!!! - ' || p_exception_code || ': ' || p_exception_msg);
+    update_test_status('FAILED', p_exception_code, p_exception_msg);
+
+    -- create assertion to highlight test failure
+    l_exception_msg := g_current_functional_area || ' : ' || 'Suite ' || g_current_test_suite || ' : ' ||
+                       'Test ' || g_current_test_number || ' : ' || 'Step ' || g_current_test_step.test_step || ' : ' ||
+                       p_exception_msg;
+
+    l_assertion_string := 'ut.expect(' || '''' || p_exception_code || ':' || p_exception_msg || '''' || ',' || '''' || l_exception_msg || '''' || ')' ||
+                          '.to_equal(' || '''' || 'Success' || '''' || ');' || CHR(10);
+    dbms_lob.writeappend(g_package_body, length(l_assertion_string), l_assertion_string);
+
+    IF g_current_functional_area = 'BACKOUT'
+    THEN
+      log('*** IMPORTANT - FIX ASAP!!! The backout script has failed and so unwanted data may still reside in the DB. As such, all subsequent test cases may be compromised!');
+      update_test_status('FAILED', -1, '*** IMPORTANT - FIX ASAP!!! The backout script has failed and so unwanted data may still reside in the DB. As such, all subsequent test cases may be compromised!');
+    END IF;
+
+    IF p_raise_excp = TRUE THEN
+      log('FATAL TEST ERROR - Test cannot be completed');
+      RAISE_APPLICATION_ERROR(fatal_test_error, 'FATAL TEST ERROR - Test cannot be completed');
+    END IF;
+
+  END IF;
+END handle_exception;
+
+
+
+
+-- =============================================================================
+--
+--                Dynamically created package handling
+--
+-- =============================================================================
+
+
+
+
+-- =============================================================================
+-- Name: create_pkg
+-- ================
+--
+-- Summary
+-- =======
+-- A package is created and executed for each specified test suite
+-- This routine simply applies the dynamically created package to the database
+--
+-- =============================================================================
+PROCEDURE create_pkg
+IS
+  PRAGMA AUTONOMOUS_TRANSACTION;
+BEGIN
+
+  EXECUTE IMMEDIATE g_package_spec;
+  EXECUTE IMMEDIATE g_package_body;
+
+EXCEPTION 
+  WHEN OTHERS THEN
+    RAISE_APPLICATION_ERROR(suite_failed_compilation, sqlerrm);
+
+END create_pkg;
+
+
+-- =============================================================================
+-- Name: create_pkg_code
+-- =====================
+--
+-- Summary
+-- =======
+-- Begins the creation of the dynamically created utPLSQL package
+-- This package will contain all the procedures for a particular test suite.
+-- These procedures will in turn contain all the assertions for a particular test number
+--
+-- =============================================================================
+PROCEDURE create_pkg_code( p_functional_area IN server_tests.functional_area%TYPE,
+                           p_test_suite      IN server_tests.test_suite%TYPE )
+IS
+  l_package_description server_tests.test_suite_desc%TYPE;
+  l_package_declaration VARCHAR2(200);
+BEGIN
+  -- determine suite description for reporting purposes
+  SELECT test_suite_desc
+    INTO l_package_description
+    FROM server_tests
+   WHERE functional_area = g_current_functional_area
+     AND test_suite = g_current_test_suite
+     and rownum = 1;
+
+  g_current_package_name := 'AST_' || p_functional_area || '_Suite' || p_test_suite;
+
+  g_package_spec := 'CREATE OR REPLACE PACKAGE ' || g_current_package_name || ' IS' || chr(10) ||
+                    '--%suite(' || p_functional_area || ' - suite:' || p_test_suite || ' - ' || l_package_description  || ')' || chr(10) || chr(10);
+
+  l_package_declaration := g_current_package_name || ' IS' || chr(10);
+  g_package_body := 'CREATE OR REPLACE PACKAGE BODY ';
+  dbms_lob.writeappend(g_package_body, length(l_package_declaration), l_package_declaration);
+
+END create_pkg_code;
+
+
+-- =============================================================================
+-- Name: add_procedure_to_pkg
+-- ==========================
+--
+-- Summary
+-- =======
+-- Begins the addition of a procedure to the dynamically created utPLSQL package
+-- This procedure will contain all the assertions for a particular test number
+--
+-- =============================================================================
+PROCEDURE add_procedure_to_pkg( p_procedure_type        IN SMALLINT,
+                                p_main_test_number      IN SMALLINT DEFAULT NULL,
+                                p_seed_data_backout_key IN VARCHAR2 DEFAULT NULL )
+IS
+  l_procedure_name        VARCHAR2(128);
+  l_procedure_description server_tests.test_number_desc%TYPE := NULL;
+  l_procedure_declaration VARCHAR2(200);
+  l_backout_key           VARCHAR2(10);
+BEGIN
+  -- replace . with _ in key
+  l_backout_key := p_seed_data_backout_key;
+  select REPLACE(l_backout_key,'.','_') into l_backout_key from dual;
+
+  -- structure of procedure names is dependant on context
+  CASE p_procedure_type
+
+    WHEN NORMAL_TEST_PROCEDURE THEN
+      l_procedure_name := 'test_' || g_current_test_number;
+
+      SELECT test_number_desc
+        INTO l_procedure_description
+        FROM server_tests
+       WHERE functional_area = g_current_functional_area
+         AND test_suite = g_current_test_suite
+         AND test_number = g_current_test_number
+         AND ROWNUM = 1;
+
+    WHEN BACKOUT_SEED_DATA_PROCEDURE THEN
+      l_procedure_name := 'test_' || p_main_test_number || '_backout_SEED_DATA_' || l_backout_key;
+
+    WHEN BACKOUT_TEST_DATA_PROCEDURE THEN
+      l_procedure_name := 'test_' || g_current_test_number || '_backout_TEST_DATA';
+
+  END CASE;
+
+  g_package_spec := g_package_spec ||
+                    '--%test(Test number: ' || l_procedure_name || ' : ' || l_procedure_description || ')' || chr(10) ||
+                    'PROCEDURE ' || l_procedure_name || ';' || chr(10);
+
+  l_procedure_declaration := 'PROCEDURE ' || l_procedure_name || ' IS BEGIN' || chr(10);
+  dbms_lob.writeappend(g_package_body, length(l_procedure_declaration), l_procedure_declaration);
+
+END add_procedure_to_pkg;
+
+
+-- =============================================================================
+-- Name: finalise_pkg_code
+-- =======================
+--
+-- Summary
+-- =======
+-- Ensures a package procedure is ended correctly
+--
+-- =============================================================================
+PROCEDURE finalise_pkg_code
+IS
+  l_finalise VARCHAR2(20);
+BEGIN
+  g_package_spec := g_package_spec || chr(10) || 'END;';
+  l_finalise := chr(10) || 'BEGIN NULL; END;';
+  dbms_lob.writeappend(g_package_body, length(l_finalise), l_finalise); 
+
+  --log(DIAG, null, HIGH_DETAIL, g_package_body);
+END finalise_pkg_code;
+
+
+-- =============================================================================
+-- Name: finalise_proc_code
+-- ========================
+--
+-- Summary
+-- =======
+-- Ensures a package procedure is ended correctly
+--
+-- =============================================================================
+PROCEDURE finalise_proc_code
+IS
+  l_finalise VARCHAR2(20);
+BEGIN
+  l_finalise := 'NULL; END;' || chr(10);
+  dbms_lob.writeappend(g_package_body, length(l_finalise), l_finalise);
+END finalise_proc_code;
+
+
+-- =============================================================================
+-- Name: invoke_test_pkg
+-- =====================
+--
+-- Summary
+-- =======
+-- Execute the dynamically created package to evaluate all the assertions for a test suite
+--
+-- =============================================================================
+PROCEDURE invoke_test_pkg
+IS
+BEGIN
+  EXECUTE IMMEDIATE 'BEGIN ut.run(' || '''' || g_current_package_name || '''' || '); END;';
+END invoke_test_pkg;
+
+
+
+
+-- =============================================================================
+--
+--                          CLOB Result Processing
+--
+-- =============================================================================
+
+
+
+
 -- =============================================================================
 -- Name: store_json_scalar
 -- =======================
@@ -509,6 +1495,7 @@ BEGIN
 
 END flatten_json_array;
 
+
 -- =============================================================================
 -- Name: process_clob_as_json
 -- ==========================
@@ -560,1052 +1547,15 @@ BEGIN
 END process_clob_as_json;
 
 
--- =============================================================================
--- Name: log
--- =========
---
--- Summary
--- =======
--- Inserts a log entry for development/debug purposes
--- To be reworked so logs are directed more to a user
---
--- =============================================================================
-PROCEDURE log( p_type        IN SMALLINT,
-               p_log_details IN server_test_logs.log_details%TYPE,
-               p_log_detail  IN SMALLINT DEFAULT NO_DETAIL,
-               p_pkg_body    IN LONG DEFAULT NULL )
-IS
-  PRAGMA AUTONOMOUS_TRANSACTION;
-BEGIN
-
-  CASE p_type
-    WHEN DIAG THEN
-
-      IF p_log_detail <= g_log_detail THEN
-        --g_log_number := g_log_number + 1;
-
-        IF p_pkg_body IS NULL THEN
-          INSERT INTO server_test_logs VALUES
-          ( testing_log_id_seq.nextval, p_log_details, null );
-        ELSE
-          INSERT INTO server_test_logs VALUES
-          ( testing_log_id_seq.nextval, null, p_pkg_body );
-        END IF;
-      END IF; 
-
-  END CASE;
-  COMMIT;
-END log;
 
 
 -- =============================================================================
--- Name: update_test_status
--- ========================
 --
--- Summary
--- =======
--- This routine updates the server_test_run_statuses entry for the currently executed 
--- test step within an autonomous transaction
---
--- Parameters
--- ==========
--- p_test_status       : COMPLETED or FAIL
--- p_exception_code    : The exception code responsible for the FAIL status
--- p_exception_message : The exception message associated with p_exception_code
--- p_compilation_excp  : Flags the special case when a dynamically generated suite 
---                       package fails compilation.
+--                      Framework Value Reference Processing
 --
 -- =============================================================================
-PROCEDURE update_test_status(p_test_status       IN server_test_run_statuses.test_status%TYPE,
-                             p_exception_code    IN server_test_run_statuses.exception_code%TYPE,
-                             p_exception_message IN server_test_run_statuses.exception_message%TYPE,
-                             p_compilation_excp  IN BOOLEAN DEFAULT FALSE)
-IS
-  PRAGMA AUTONOMOUS_TRANSACTION;
-BEGIN
 
-  IF p_compilation_excp
-  THEN
 
-    INSERT INTO server_test_run_statuses VALUES
-    (server_test_run_statuses_seq.nextval, g_current_functional_area, g_current_test_suite, -1, -1,
-     'FAILED', p_exception_code, SUBSTR(p_exception_message,1,4000));
-
-  ELSE
-
-    INSERT INTO server_test_run_statuses VALUES
-    (server_test_run_statuses_seq.nextval, g_current_functional_area, g_current_test_suite, g_current_test_number, g_current_test_step.test_step,
-     p_test_status, p_exception_code, SUBSTR(p_exception_message,1,4000));
-
-  END IF;
-
-  COMMIT;
-
-END update_test_status;
-
-
--- =============================================================================
--- Name: is_exception_expected
--- ===========================
---
--- Summary
--- =======
--- Determines if an encountered exception is expected
--- This will be the case if we are actually testing for this exception
--- As such, an appropriate assertion should be present within the 
--- defined expectations for the current test step
---
--- Parameters
--- ==========
--- p_exception_code     : The code of the raised exception
--- p_exception_expected : Output parameter set to TRUE or FALSE
---
--- =============================================================================
-PROCEDURE is_exception_expected(p_exception_code      IN  server_test_run_statuses.exception_code%TYPE,
-                                p_exception_msg       IN  server_test_run_statuses.exception_message%TYPE,
-                                p_exception_expected  OUT BOOLEAN)
-IS
-  l_source            VARCHAR2(9);
-  l_exception_message VARCHAR2(500);
-  l_expectations      JSON_ARRAY_T;
-  l_expectation       JSON_OBJECT_T;
-  l_assertion         JSON_OBJECT_T;
-
-BEGIN
-
-  -- assume initially the exception is unexpected
-  p_exception_expected := FALSE;
-
-  IF g_current_test_step.expectations IS NOT NULL THEN
-
-    -- retrieve the defined expectations and search for an assertion testing for this exception
-    l_expectations := JSON_ARRAY_T.parse(g_current_test_step.expectations);
-
-    -- examine each expectation in turn
-    FOR i IN 0..l_expectations.get_size()-1 
-    LOOP
-
-      -- ignore the expectation that raised the original exception if this is the case
-      IF i = g_expectation_index THEN
-        CONTINUE;
-      END IF;
-
-      l_expectation := treat(l_expectations.get(i) AS JSON_OBJECT_T);
-
-      -- this search still requires the validation of the defined expectations
-      -- abort if expectation fails validation
-
-      -- retrieve and validate source
-      l_source := l_expectation.get_String('source');  
-      IF l_source IS NULL THEN
-        l_exception_message := 'Unspecified or misspelled source key for expectation';
-        RAISE_APPLICATION_ERROR(missing_e_source, l_exception_message); -- careful - recursion!
-      END IF;
-
-      IF l_source = 'framework' THEN
-
-        -- retrieve and validate assertions
-        IF NOT l_expectation.has('assertions') THEN
-          l_exception_message := 'Missing assertions in expectation';
-          RAISE_APPLICATION_ERROR(missing_e_assertions, l_exception_message);  -- careful - recursion!
-        END IF;
-
-        IF l_expectation.get_Object('assertions').has('step' || g_current_test_step.test_step || '.exception_code') 
-        THEN
-          -- an assertion is present - checking for an exception from this current test step
-          l_assertion := l_expectation.get_Object('assertions').get_Object('step' || g_current_test_step.test_step || '.exception_code');
-
-          -- validate the utPLSQL matcher
-          IF NOT l_assertion.has('matcher') THEN
-            l_exception_message := 'utPLSQL matcher not specified in assertion';
-            RAISE_APPLICATION_ERROR(missing_matcher, l_exception_message);
-          END IF;
-          
-          IF l_assertion.get_String('matcher') = '=' THEN
-
-            IF NOT l_assertion.has('value') THEN
-              l_exception_message := 'utPLSQL matcher has no expected value';
-              RAISE_APPLICATION_ERROR(missing_matcher_value, l_exception_message);
-            END IF;
-
-            IF l_assertion.get_Type('value') != 'OBJECT' THEN
-
-              IF l_assertion.get_Number('value') = p_exception_code THEN
-                -- the raised exception has the same code as that expected
-                l_assertion := l_expectation.get_Object('assertions').get_Object('step' || g_current_test_step.test_step || '.exception_msg');
-
-                IF l_expectation.get_Object('assertions').has('step' || g_current_test_step.test_step || '.exception_msg') THEN
-                  -- message raised must match expected message
-
-                  -- validate the utPLSQL matcher
-                  IF NOT l_assertion.has('matcher') THEN
-                    l_exception_message := 'utPLSQL matcher not specified in assertion';
-                    RAISE_APPLICATION_ERROR(missing_matcher, l_exception_message);
-                  END IF;
-
-                  IF l_assertion.get_String('matcher') != 'like' THEN
-                    l_exception_message := 'Invalid utPLSQL matcher specified in assertion'; 
-                    RAISE_APPLICATION_ERROR(invalid_matcher, l_exception_message);
-                  END IF;
-
-                  IF NOT l_assertion.has('value') THEN
-                    l_exception_message := 'utPLSQL matcher has no expected value';
-                    RAISE_APPLICATION_ERROR(missing_matcher_value, l_exception_message);
-                  END IF;
-
-                  IF l_assertion.get_Type('value') != 'OBJECT' THEN
-                    IF p_exception_msg LIKE l_assertion.get_String('value') THEN
-                      p_exception_expected := TRUE;
-                    END IF;
-                  END IF;
-
-                ELSE
-                  p_exception_expected := TRUE;
-                END IF;
-
-                EXIT;
-              END IF;
-            END IF;
-          END IF;
-        END IF;
-      END IF;
-    END LOOP;
-  END IF;
-END is_exception_expected;
-
-
--- =============================================================================
--- Name: handle_exception
--- ======================
---
--- Summary
--- =======
--- Processes any raised exceptions. There are 2 main scenarios:
---
--- Scenario 1 : Exception not expected
---              This is the typical, standard scenario
---              We just need to cleanup and end the current test number (transaction)
---              and then move onto the next test number (transaction)
---              - update server_test_run_statuses with a status of FAILED
---              - raise fatal_test_error exception which ensures:
---                - the expectations for this step are not executed (exception may have come from here)
---                - further steps for this test number (transaction) are ignored
---                - the transaction is rolled back
---                - we move onto the next test
---
--- Scenario 2 : An exception that we are actually testing for.
---              We will know this by the presence of an appropriate assertion
---              for the current test step
---              If exception expected
---              - If in operation phase of test step then abort and begin processing
---                the defined expectations 
---              - If in expectation phase of test step then abort and move onto 
---                the next expectation
--- Parameters
--- ==========
--- p_exception_code   : The code of the raised exception
--- p_exception_msg    : Associated exception message
--- p_raise_excp       : Determines if fatal exception should be raised
--- p_compilation_excp : Flags the special case when a dynamically generated suite 
---                      package fails compilation.
---
--- =============================================================================
-PROCEDURE handle_exception(p_exception_code   IN server_test_run_statuses.exception_code%TYPE,
-                           p_exception_msg    IN server_test_run_statuses.exception_message%TYPE,
-                           p_raise_excp       IN BOOLEAN DEFAULT TRUE,
-                           p_compilation_excp IN BOOLEAN DEFAULT FALSE)
-IS
-  l_exception_expected BOOLEAN;
-  l_output             JSON_OBJECT_T;
-  l_exception_msg      VARCHAR2(1000);
-  l_assertion_string   VARCHAR2(2000);
-
-BEGIN
-
-  IF p_compilation_excp THEN
-    update_test_status('FAILED', p_exception_code, p_exception_msg, TRUE);
-    -- move on to the next functional area test suite
-    RETURN;
-  END IF;
-
-  -- populate g_framework_values with exception code
-  l_output := new JSON_OBJECT_T;
-  l_output.put('data_type', dbms_types.TYPECODE_NUMBER);
-  l_output.put('data_value',p_exception_code);
-  g_framework_values.put('step' || g_current_test_step.test_step || '.exception_code', l_output );
-
-  -- populate g_framework_values with exception message
-  l_output := new JSON_OBJECT_T;
-  l_output.put('data_type', dbms_types.TYPECODE_VARCHAR2);
-  l_output.put('data_value',p_exception_msg);
-  g_framework_values.put('step' || g_current_test_step.test_step || '.exception_msg', l_output );
-
-  BEGIN
-    is_exception_expected(p_exception_code, p_exception_msg, l_exception_expected);
-  EXCEPTION
-    WHEN missing_e_source_excp OR
-         missing_e_assertions_excp OR
-         missing_matcher_excp OR
-         missing_matcher_value_excp
-    THEN
-      -- If here then we have a malformed expectation
-      -- do nothing. this malformed expectation will be encountered after the
-      -- current exception has been reported and corrected
-      null;
-  END;
-
-  IF l_exception_expected  -- not a problem - continue processing
-  THEN
-
-    CASE g_test_stage
-
-      WHEN SEED_DATA_STAGE THEN
-        -- exit and move onto expectations (bypassing operation)
-        RAISE_APPLICATION_ERROR(expected_seed_data_error, 'SEED DATA ERROR - but expected');
-
-      WHEN OPERATION_STAGE THEN
-        -- exit and move onto expectations
-        RAISE_APPLICATION_ERROR(expected_operation_error, 'OPERATION ERROR - but expected');
-
-      WHEN EXPECTATION_STAGE THEN
-        -- move on to the next expectation
-        RAISE_APPLICATION_ERROR(expected_expectation_error, 'EXPECTATION ERROR - but expected');
-
-    END CASE;
-
-  ELSE
-    -- unanticipated exception
-    update_test_status('FAILED', p_exception_code, p_exception_msg);
-
-    -- create assertion to highlight test failure
-    l_exception_msg := g_current_functional_area || ' : ' || 'Suite ' || g_current_test_suite || ' : ' ||
-                       'Test ' || g_current_test_number || ' : ' || 'Step ' || g_current_test_step.test_step || ' : ' ||
-                       p_exception_msg;
-
-    l_assertion_string := 'ut.expect(' || '''' || p_exception_code || ':' || p_exception_msg || '''' || ',' || '''' || l_exception_msg || '''' || ')' ||
-                          '.to_equal(' || '''' || 'Success' || '''' || ');' || CHR(10);
-    dbms_lob.writeappend(g_package_body, length(l_assertion_string), l_assertion_string);
-
-    IF g_current_functional_area = 'BACKOUT'
-    THEN
-      update_test_status('FAILED', -1, '*** IMPORTANT - FIX ASAP!!! The backout script has failed and so unwanted data may still reside in the DB. As such, all subsequent test cases may be compromised!');
-    END IF;
-
-    IF p_raise_excp = TRUE THEN
-      RAISE_APPLICATION_ERROR(fatal_test_error, 'FATAL TEST ERROR - Test cannot be completed');
-    END IF;
-
-  END IF;
-END handle_exception;
-
-
--- =============================================================================
--- Name: create_pkg
--- ================
---
--- Summary
--- =======
--- A package is created and executed for each specified test suite
--- This routine simply applies the dynamically created package to the database
---
--- =============================================================================
-PROCEDURE create_pkg
-IS
-  PRAGMA AUTONOMOUS_TRANSACTION;
-BEGIN
-
-  EXECUTE IMMEDIATE g_package_spec;
-  EXECUTE IMMEDIATE g_package_body;
-
-EXCEPTION 
-  WHEN OTHERS THEN
-    RAISE_APPLICATION_ERROR(suite_failed_compilation, sqlerrm);
-
-END create_pkg;
-
-
--- =============================================================================
--- Name: create_pkg_code
--- =====================
---
--- Summary
--- =======
--- Begins the creation of the dynamically created utPLSQL package
--- This package will contain all the procedures for a particular test suite.
--- These procedures will in turn contain all the assertions for a particular test number
---
--- =============================================================================
-PROCEDURE create_pkg_code( p_functional_area IN server_tests.functional_area%TYPE,
-                           p_test_suite      IN server_tests.test_suite%TYPE )
-IS
-  l_package_description server_tests.test_suite_desc%TYPE;
-  l_package_declaration VARCHAR2(200);
-BEGIN
-
-  -- determine suite description for reporting purposes
-  SELECT test_suite_desc
-    INTO l_package_description
-    FROM server_tests
-   WHERE functional_area = g_current_functional_area
-     AND test_suite = g_current_test_suite
-     and rownum = 1;
-
-  g_current_package_name := 'AST_' || p_functional_area || '_Suite' || p_test_suite;
-
-  g_package_spec := 'CREATE OR REPLACE PACKAGE ' || g_current_package_name || ' IS' || chr(10) ||
-                    '--%suite(' || p_functional_area || ' - suite:' || p_test_suite || ' - ' || l_package_description  || ')' || chr(10) || chr(10);
-
-  l_package_declaration := g_current_package_name || ' IS' || chr(10);
-  g_package_body := 'CREATE OR REPLACE PACKAGE BODY ';
-  dbms_lob.writeappend(g_package_body, length(l_package_declaration), l_package_declaration);
-
-END create_pkg_code;
-
-
--- =============================================================================
--- Name: add_procedure_to_pkg
--- ==========================
---
--- Summary
--- =======
--- Begins the addition of a procedure to the dynamically created utPLSQL package
--- This procedure will contain all the assertions for a particular test number
---
--- =============================================================================
-PROCEDURE add_procedure_to_pkg( p_procedure_type        IN SMALLINT,
-                                p_main_test_number      IN SMALLINT DEFAULT NULL,
-                                p_seed_data_backout_key IN VARCHAR2 DEFAULT NULL )
-IS
-  l_procedure_name        VARCHAR2(128);
-  l_procedure_description server_tests.test_number_desc%TYPE := NULL;
-  l_procedure_declaration VARCHAR2(200);
-  l_backout_key           VARCHAR2(10);
-BEGIN
-
-  -- replace . with _ in key
-  l_backout_key := p_seed_data_backout_key;
-  select REPLACE(l_backout_key,'.','_') into l_backout_key from dual;
-
-  -- structure of procedure names is dependant on context
-  CASE p_procedure_type
-
-    WHEN NORMAL_TEST_PROCEDURE THEN
-      l_procedure_name := 'test_' || g_current_test_number;
-
-      SELECT test_number_desc
-        INTO l_procedure_description
-        FROM server_tests
-       WHERE functional_area = g_current_functional_area
-         AND test_suite = g_current_test_suite
-         AND test_number = g_current_test_number
-         AND ROWNUM = 1;
-
-    WHEN BACKOUT_SEED_DATA_PROCEDURE THEN
-      l_procedure_name := 'test_' || p_main_test_number || '_backout_SEED_DATA_' || l_backout_key;
-
-    WHEN BACKOUT_TEST_DATA_PROCEDURE THEN
-      l_procedure_name := 'test_' || g_current_test_number || '_backout_TEST_DATA';
-
-  END CASE;
-
-  g_package_spec := g_package_spec ||
-                    '--%test(Test number: ' || l_procedure_name || ' : ' || l_procedure_description || ')' || chr(10) ||
-                    'PROCEDURE ' || l_procedure_name || ';' || chr(10);
-
-  l_procedure_declaration := 'PROCEDURE ' || l_procedure_name || ' IS BEGIN' || chr(10);
-  dbms_lob.writeappend(g_package_body, length(l_procedure_declaration), l_procedure_declaration);
-
-END add_procedure_to_pkg;
-
-
--- =============================================================================
--- Name: finalise_pkg_code
--- =======================
---
--- Summary
--- =======
--- Ensures a package procedure is ended correctly
---
--- =============================================================================
-PROCEDURE finalise_pkg_code
-IS
-  l_finalise VARCHAR2(20);
-BEGIN
-  g_package_spec := g_package_spec || chr(10) || 'END;';
-  l_finalise := chr(10) || 'BEGIN NULL; END;';
-  dbms_lob.writeappend(g_package_body, length(l_finalise), l_finalise); 
-
-  --log(DIAG, null, HIGH_DETAIL, g_package_body);
-END finalise_pkg_code;
-
-
--- =============================================================================
--- Name: finalise_proc_code
--- ========================
---
--- Summary
--- =======
--- Ensures a package procedure is ended correctly
---
--- =============================================================================
-PROCEDURE finalise_proc_code
-IS
-  l_finalise VARCHAR2(20);
-BEGIN
-  l_finalise := 'NULL; END;' || chr(10);
-  dbms_lob.writeappend(g_package_body, length(l_finalise), l_finalise);
-END finalise_proc_code;
-
-
--- =============================================================================
--- Name: invoke_test_pkg
--- =====================
---
--- Summary
--- =======
--- Execute the dynamically created package to evaluate all the assertions for a test suite
---
--- =============================================================================
-PROCEDURE invoke_test_pkg
-IS
-BEGIN
-  EXECUTE IMMEDIATE 'BEGIN ut.run(' || '''' || g_current_package_name || '''' || '); END;';
-END invoke_test_pkg;
-
-
--- =============================================================================
--- Name: get_matcher
--- =================
---
--- Summary
--- =======
--- expand the short form user defined matcher in the JSON to the utPLSQL equivalent
-
--- Parameters
--- ==========
--- p_matcher: The user specified matcher in the JSON
---
--- =============================================================================
-FUNCTION get_matcher( p_matcher IN VARCHAR2 ) RETURN VARCHAR2
-IS
-  l_matcher VARCHAR2(30);
-BEGIN
-
-  CASE p_matcher
-    WHEN '=' THEN
-      l_matcher := 'to_equal';
-    WHEN '!=' THEN
-      l_matcher := 'not_to_equal';
-    WHEN '>' THEN
-      l_matcher := 'to_be_greater_than';
-    WHEN '!>' THEN
-      l_matcher := 'not_to_be_greater_than';
-    WHEN '>=' THEN
-      l_matcher := 'to_be_greater_or_equal';
-    WHEN '!>=' THEN
-      l_matcher := 'not_to_be_greater_or_equal';
-    WHEN '<' THEN
-      l_matcher := 'to_be_less_than';
-    WHEN '!<' THEN
-      l_matcher := 'not_to_be_less_than';
-    WHEN '<=' THEN
-      l_matcher := 'to_be_less_or_equal';
-    WHEN '!<=' THEN
-      l_matcher := 'not_to_be_less_or_equal';
-    WHEN 'like' THEN
-      l_matcher := 'to_be_like';
-    WHEN '!like' THEN
-      l_matcher := 'not_to_be_like';
-  END CASE;
- 
-  RETURN l_matcher;
-
-END;
-
-
--- =============================================================================
--- Name: add_assertion_to_pkg
--- ==========================
---
--- Summary
--- =======
--- add the assertion to the dynamically created utPLSQL package
-
--- Parameters
--- ==========
--- p_assertion     : a single assertion
--- p_data_type     : the data type of the assertion values                   
--- p_actual_date   : actual DATE value to be assessed against expected value in assertion
--- p_actual_number : actual NUMBER value to be assessed against expected value in assertion
--- p_actual_string : actual STRING value to be assessed against expected value in assertion
---
--- left(result) = right(expected)
--- =============================================================================
-PROCEDURE add_assertion_to_pkg( p_assertion IN JSON_OBJECT_T,
-                                p_result    IN JSON_OBJECT_T)
-IS
-  l_matcher                       VARCHAR2(30);
-  l_result_data_type              PLS_INTEGER;
-  l_expected_data_type            PLS_INTEGER;
-  l_result_string                 VARCHAR2(4000);
-  l_result_number                 NUMBER;
-  l_result_date                   DATE;
-  l_result_boolean                BOOLEAN;
-  l_result_json_object_or_array   VARCHAR2(10); -- chosen arbitrarily
-  l_expected_string               VARCHAR2(4000);
-  l_expected_number               NUMBER;
-  l_expected_date                 DATE;
-  l_expected_boolean              BOOLEAN;
-  l_expected_json_object_or_array VARCHAR2(10); -- chosen arbitrarily
-  l_expected_date_string          VARCHAR2(30);
-  l_assertion                     VARCHAR2(4000);
-  l_exception_message             VARCHAR2(500);
-  l_expected_key                  VARCHAR2(1000);
-  l_expected_object               JSON_OBJECT_T;
-  l_assertion_msg                 VARCHAR2(200);
-
-BEGIN
-  g_current_assertion := g_current_assertion + 1;
-
-  l_assertion_msg := g_current_functional_area || ' : ' || 'Suite ' || g_current_test_suite || ' : ' ||
-                     'Test ' || g_current_test_number || ' : ' || 'Step ' || g_current_test_step.test_step || ' : ' ||
-                     'Assertion ' || g_current_assertion;
-
-  -- construct the actual result part of the assertion (left hand side of expression)
-  l_result_data_type := p_result.get_Number('data_type');
-  CASE
-    -- Process strings
-    WHEN l_result_data_type IN ( dbms_types.TYPECODE_VARCHAR2, 
-                                 dbms_types.TYPECODE_VARCHAR, 
-                                 dbms_types.TYPECODE_CHAR ) 
-    THEN
-      IF p_assertion.get_String('matcher') IN ('>', '!>', '<', '!<', '>=', '!>=', '<=', '!<=') THEN
-        l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support Strings';
-        RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
-      END IF;
-
-      l_result_string := p_result.get_String('data_value');
-      IF l_result_string IS NULL THEN
-        l_assertion := 'ut.expect( cast(null as varchar2),' || '''' || l_assertion_msg || '''' || ').';
-      ELSE
-        l_assertion := 'ut.expect(' || '''' || l_result_string || '''' || ',' || '''' || l_assertion_msg || '''' || ').';
-      END IF;
-
-    -- Process numbers
-    WHEN l_result_data_type = dbms_types.TYPECODE_NUMBER
-    THEN
-      IF p_assertion.get_String('matcher') IN ('like', '!like') THEN
-        l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support Numbers';
-        RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
-      END IF;
-
-      l_result_number := p_result.get_Number('data_value');
-      IF l_result_number IS NULL THEN
-        l_assertion := 'ut.expect( cast(null as number),' || '''' || l_assertion_msg || '''' || ').';
-      ELSE
-        l_assertion := 'ut.expect(' || l_result_number || ',' || '''' || l_assertion_msg || '''' || ').';
-      END IF;
-
-    -- Process dates
-    WHEN l_result_data_type = dbms_types.TYPECODE_DATE
-    THEN
-      IF p_assertion.get_String('matcher') IN ('like', '!like') THEN
-        l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support Dates';
-        RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
-      END IF;
-
-      l_result_date := p_result.get_Date('data_value');
-      IF l_result_date IS NULL THEN
-        l_assertion := 'ut.expect( cast(null as date),' || '''' || l_assertion_msg || '''' || ').';
-      ELSE   
-        l_assertion := 'ut.expect( ' ||
-                       'to_date(' || '''' || to_char(l_result_date,DATE_FORMAT) || '''' || ', ' || '''' || DATE_FORMAT || '''' || ')' || ',' || '''' || l_assertion_msg || '''' || ').';
-      END IF;
-
-    -- Process booleans
-    WHEN l_result_data_type = DBMS_TYPES_BOOLEAN
-    THEN
-      IF p_assertion.get_String('matcher') NOT IN ('=', '!=') THEN
-        l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support Boolens';
-        RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
-      END IF;
-
-      l_result_boolean := p_result.get_Boolean('data_value');
-      IF l_result_boolean IS NULL THEN
-        l_assertion := 'ut.expect( cast(null as boolean),' || '''' || l_assertion_msg || '''' || ').';
-      ELSE
-        IF l_result_boolean = TRUE THEN
-          l_assertion := 'ut.expect(true,' || '''' || l_assertion_msg || '''' || ').';
-        ELSE
-          l_assertion := 'ut.expect(false,' || '''' || l_assertion_msg || '''' || ').';
-        END IF;
-      END IF;
-
-    -- Process JSON objects and arrays
-    WHEN l_result_data_type IN ( DBMS_TYPES_JSON_OBJECT, 
-                                 DBMS_TYPES_JSON_ARRAY ) 
-    THEN
-      IF p_assertion.get_String('matcher') NOT IN ('=', '!=') THEN
-        l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support JSON objects or arrays';
-        RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
-      END IF;
-
-      IF p_result.get('data_value').is_Null() THEN
-        l_assertion := 'ut.expect( cast(null as varchar2),' || '''' || l_assertion_msg || '''' || ').';  -- arbitrarily chosen
-      ELSE
-        l_result_json_object_or_array := p_result.get_String('data_value');
-        l_assertion := 'ut.expect(' || '''' || l_result_json_object_or_array || '''' || ',' || '''' || l_assertion_msg || '''' || ').';
-      END IF;
-
-    -- Process unknown
-    WHEN l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-      -- cannot cast appropriately. Base the cast on expected data type
-      NULL;
-
-    ELSE
-      -- unsupported data type 
-      RAISE_APPLICATION_ERROR(invalid_data_type, 'Data type not supported: ' || l_result_data_type);
-
-  END CASE;
-
-  -- determine the expected value as specified by assertion (right hand side of expression)
-  IF p_assertion.get_Type('value') = 'OBJECT' 
-  THEN
-    -- retrieve value from referenced test step (g_framework_values)
-    l_expected_key := p_assertion.get_Object('value').get_String('ref');
-    l_expected_object := g_framework_values.get_Object(l_expected_key);
-    l_expected_data_type := l_expected_object.get_Number('data_type');
-
-    IF l_expected_object.get('data_value').is_null() THEN
-      l_expected_string      := NULL; l_expected_number               := NULL; l_expected_date      := NULL; 
-      l_expected_date_string := NULL; l_expected_json_object_or_array := NULL;
-
-      IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-        l_assertion := 'ut.expect( cast(null as varchar2) ).';  -- expand for clarity
-      END IF;
-
-    ELSE
-      CASE
-        WHEN l_expected_data_type IN ( dbms_types.TYPECODE_VARCHAR2, 
-                                       dbms_types.TYPECODE_VARCHAR, 
-                                       dbms_types.TYPECODE_CHAR ) 
-        THEN
-
-          l_expected_string := l_expected_object.get_String('data_value');
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as varchar2) ).';
-          END IF;
-       
-        WHEN l_expected_data_type = dbms_types.TYPECODE_NUMBER THEN
-
-          l_expected_number := l_expected_object.get_Number('data_value');
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as number) ).';
-          END IF;
-
-        WHEN l_expected_data_type = dbms_types.TYPECODE_DATE THEN
-
-          l_expected_date := l_expected_object.get_Date('data_value');
-          l_expected_date_string := to_char(l_expected_date, DATE_FORMAT);
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as date) ).';
-          END IF;
-
-        WHEN l_expected_data_type = DBMS_TYPES_BOOLEAN THEN
-
-          l_expected_boolean := l_expected_object.get_Boolean('data_value');
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as boolean) ).';
-          END IF;
-
-        WHEN l_expected_data_type IN ( DBMS_TYPES_JSON_OBJECT, 
-                                       DBMS_TYPES_JSON_ARRAY ) 
-        THEN
-
-          l_expected_json_object_or_array := l_expected_object.get_String('data_value');
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as varchar2) ).'; 
-          END IF;
-
-        WHEN l_expected_data_type = DBMS_TYPES_NULL_JSON THEN
-          -- done above in null check
-          null;
-
-        ELSE
-          -- unsupported data type 
-          RAISE_APPLICATION_ERROR(invalid_data_type, 'Data type not supported: ' || l_expected_data_type);
-      END CASE;
-    END IF;
-
-  ELSE
-    -- determine scalar value - cannot differentiate string from date here. Use actual data type as a guide
-    IF p_assertion.get('value').is_null() THEN
-      l_expected_string      := NULL; l_expected_number               := NULL; l_expected_boolean := NULL;
-      l_expected_date_string := NULL; l_expected_json_object_or_array := NULL;
-
-      IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-        l_assertion := 'ut.expect( cast(null as varchar2) ).';  -- expand for clarity
-      END IF;
-
-    ELSE
-      -- use actual data type as a guide to expected data type
-      CASE
-        WHEN l_result_data_type IN ( dbms_types.TYPECODE_VARCHAR2, 
-                                     dbms_types.TYPECODE_VARCHAR, 
-                                     dbms_types.TYPECODE_CHAR ) 
-        THEN
-          l_expected_string := p_assertion.get_String('value');
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as varchar2) ).';
-          END IF;
-       
-        WHEN l_result_data_type = dbms_types.TYPECODE_NUMBER THEN
-          l_expected_number := p_assertion.get_Number('value');
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as number) ).';
-          END IF;
-
-        WHEN l_result_data_type = dbms_types.TYPECODE_DATE THEN
-          l_expected_date_string := p_assertion.get_String('value');
-
-          BEGIN
-            l_expected_date := pkg_dynamic_sql.determine_date_from_json(l_expected_date_string);
-          EXCEPTION
-            WHEN OTHERS THEN
-              handle_exception( SQLCODE, 'Error determining_date: ' || SQLERRM );
-          END;
-
-          l_expected_date_string := TO_CHAR(l_expected_date,DATE_FORMAT);
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as date) ).';
-          END IF;
-
-        WHEN l_result_data_type = DBMS_TYPES_BOOLEAN THEN
-          l_expected_boolean := p_assertion.get_Boolean('value');
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as boolean) ).';
-          END IF;
-
-        WHEN l_result_data_type IN ( DBMS_TYPES_JSON_OBJECT, 
-                                     DBMS_TYPES_JSON_ARRAY ) 
-        THEN
-          l_expected_json_object_or_array := l_expected_object.get_String('data_value');
-          IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-            l_assertion := 'ut.expect( cast(null as varchar2) ).'; 
-          END IF;
-
-        WHEN l_result_data_type = DBMS_TYPES_NULL_JSON THEN
-          -- done above in null test
-          IF p_assertion.get('value').is_String() THEN
-            l_expected_string := p_assertion.get_String('value');
-            l_assertion := 'ut.expect( cast(null as varchar2) ).'; 
-          ELSIF p_assertion.get('value').is_Number() THEN
-            l_expected_number := p_assertion.get_Number('value');
-            l_assertion := 'ut.expect( cast(null as number) ).'; 
-          ELSIF p_assertion.get('value').is_Boolean() THEN
-            l_expected_boolean := p_assertion.get_Boolean('value');
-            l_assertion := 'ut.expect( cast(null as boolean) ).'; 
-          END IF;
-
-        ELSE
-          -- unsupported data type 
-          RAISE_APPLICATION_ERROR(invalid_data_type, 'Data type not supported: ' || l_result_data_type);
-      END CASE;
-    END IF;
-  END IF;
-
-  -- finalise construction of assertion
-
-  -- expand the short form user defined matcher in the JSON to the utPLSQL equivalent
-  l_matcher := get_matcher(p_assertion.get_String('matcher'));
-
-  CASE
-    -- process string
-    WHEN l_result_data_type IN ( dbms_types.TYPECODE_VARCHAR2, 
-                                 dbms_types.TYPECODE_VARCHAR, 
-                                 dbms_types.TYPECODE_CHAR ) 
-    THEN
-      IF l_expected_string IS NULL THEN
-        IF l_matcher = 'to_equal' THEN
-          l_assertion := l_assertion || 'to_be_null();';
-        ELSE
-          l_assertion := l_assertion || 'to_be_not_null();';
-        END IF;
-      ELSE
-        l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_string || '''' || ');';
-      END IF;
-   
-    -- process number
-    WHEN l_result_data_type = dbms_types.TYPECODE_NUMBER THEN
-      IF l_expected_number IS NULL THEN
-        IF l_matcher = 'to_equal' THEN
-          l_assertion := l_assertion || 'to_be_null();';
-        ELSE
-          l_assertion := l_assertion || 'to_be_not_null();';
-        END IF;
-      ELSE
-        l_assertion := l_assertion || l_matcher || '(' || l_expected_number || ');';
-      END IF;
-
-    -- process date
-    WHEN l_result_data_type = dbms_types.TYPECODE_DATE THEN
-      IF l_expected_date_string IS NULL THEN
-        IF l_matcher = 'to_equal' THEN
-          l_assertion := l_assertion || 'to_be_null();';
-        ELSE
-          l_assertion := l_assertion || 'to_be_not_null();';
-        END IF;
-      ELSE
-        l_assertion := l_assertion || l_matcher || '( ' ||
-                       'to_date(' || '''' || l_expected_date_string || '''' || ',' || '''' || DATE_FORMAT || '''' || ') );';      
-      END IF;
-
-    -- process boolean
-    WHEN l_result_data_type = DBMS_TYPES_BOOLEAN THEN
-      IF l_expected_boolean IS NULL THEN
-        IF l_matcher = 'to_equal' THEN
-          l_assertion := l_assertion || 'to_be_null();';
-        ELSE
-          l_assertion := l_assertion || 'to_be_not_null();';
-        END IF;
-
-      ELSE
-        IF l_matcher = 'to_equal' THEN
-          IF l_expected_boolean = TRUE THEN
-            l_assertion := l_assertion || 'to_be_true();';
-          ELSE
-            l_assertion := l_assertion || 'to_be_false();';
-          END IF;
-        ELSE  -- reverse boolean test for '!=' matcher
-          IF l_expected_boolean = TRUE THEN
-            l_assertion := l_assertion || 'to_be_false();';
-          ELSE
-            l_assertion := l_assertion || 'to_be_true();';
-          END IF;
-        END IF;
-      END IF;
-
-    -- Process JSON objects and arrays
-    WHEN l_result_data_type IN ( DBMS_TYPES_JSON_OBJECT, 
-                                 DBMS_TYPES_JSON_ARRAY ) 
-    THEN
-      IF l_expected_json_object_or_array IS NULL THEN
-        IF l_matcher = 'to_equal' THEN
-          l_assertion := l_assertion || 'to_be_null();';
-        ELSE
-          l_assertion := l_assertion || 'to_be_not_null();';
-        END IF;
-      ELSE
-        l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_json_object_or_array || '''' || ');';
-      END IF;
-
-    WHEN l_result_data_type = DBMS_TYPES_NULL_JSON 
-    THEN
-      -- l_assertion not yet set if result = DBMS_TYPES_NULL_JSON 
-      IF l_expected_data_type = DBMS_TYPES_NULL_JSON THEN
-        l_assertion := 'ut.expect( cast(null as varchar2) ).' || l_matcher || '(cast(null as varchar2));';
-      ELSE
-
-        IF l_expected_string IS NOT NULL THEN
-          l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_string || '''' || ');';
-        ELSIF l_expected_number IS NOT NULL THEN
-          l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_number || '''' || ');';
-        ELSIF l_expected_boolean IS NOT NULL THEN
-
-          IF l_matcher = 'to_equal' THEN
-            IF l_expected_boolean = TRUE THEN
-              l_assertion := l_assertion || 'to_be_true();';
-            ELSE
-              l_assertion := l_assertion || 'to_be_false();';
-            END IF;
-          ELSE  -- reverse boolean test for '!=' matcher
-            IF l_expected_boolean = TRUE THEN
-              l_assertion := l_assertion || 'to_be_false();';
-            ELSE
-              l_assertion := l_assertion || 'to_be_true();';
-            END IF;
-          END IF;  
-
-        ELSIF l_expected_date_string IS NOT NULL THEN
-          l_assertion := l_assertion || l_matcher || '( ' ||
-                         'to_date(' || '''' || l_expected_date_string || '''' || ',' || '''' || DATE_FORMAT || '''' || ') );'; 
-        ELSIF l_expected_json_object_or_array IS NOT NULL THEN
-          l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_json_object_or_array || '''' || ');';
-
-        ELSIF l_matcher = 'to_equal' THEN
-          l_assertion := l_assertion || 'to_be_null();';
-        ELSIF l_matcher = 'to_not_equal' THEN
-          l_assertion := l_assertion || 'to_be_not_null();';
-        END IF;
-
-      END IF;
-      
-    ELSE
-      -- unsupported data type 
-      RAISE_APPLICATION_ERROR(invalid_data_type, 'Data type not supported: ' || l_result_data_type);
-  END CASE;
-
-  -- add assertion to package
-  l_assertion := l_assertion || chr(10);
-  dbms_lob.writeappend(g_package_body, length(l_assertion), l_assertion);
-
-EXCEPTION
-  WHEN invalid_matcher_data_type_excp THEN
-    handle_exception( SQLCODE, l_exception_message ); 
-END add_assertion_to_pkg;
-
-
--- =============================================================================
--- Name: add_assertions_to_pkg
--- ===========================
---
--- Summary
--- =======
--- Adds utPLSQL assertions to dynamically created package procedure
-
--- Parameters
--- ==========
--- p_assertions : the set of assertions specified for an expectation                   
--- p_results    : the result set against which the assertions are to be evaluated
---                the same assertions will be replicated for each row of a result set
---                result set format: 
---               [{ colname1: {data_type:n, value:666}, colname2: {data_type:m, value:"ABC"} }]
---
--- =============================================================================
-PROCEDURE add_assertions_to_pkg( p_assertions IN JSON_OBJECT_T,
-                                 p_results    IN JSON_ARRAY_T )
-IS
-  l_result_column_name VARCHAR2(200);
-  l_exception_message  VARCHAR2(500);
-  l_result             JSON_OBJECT_T;
-  l_result_key_names   JSON_KEY_LIST;
-  l_assertion_result   JSON_OBJECT_T;
-
-BEGIN
-  -- process each set of assertions.
-  FOR i IN 0..p_results.get_size()-1 LOOP
-    l_result := treat(p_results.get(i) AS JSON_OBJECT_T); -- { col1:{}, col2:{}, {} }
-
-    -- initialise individual result for each data type
-    --l_date_result := NULL; l_number_result := NULL; l_string_result := NULL; --todo
-
-    -- process each assertion in turn
-    l_result_key_names := l_result.get_keys;
-    FOR j IN 1..l_result_key_names.COUNT() LOOP
-
-      l_result_column_name := l_result_key_names(j); 
-      l_assertion_result := l_result.get_Object(l_result_column_name);
-
-      add_assertion_to_pkg( p_assertions.get_Object(l_result_column_name),
-                            l_assertion_result );
-
-    END LOOP;
-  END LOOP;
-
-EXCEPTION
-  WHEN invalid_data_type_excp THEN
-    handle_exception( SQLCODE, l_exception_message );
-END add_assertions_to_pkg;
 
 
 -- =============================================================================
@@ -1693,101 +1643,6 @@ END;
 
 
 -- =============================================================================
--- Name: validate_assertions
--- =========================
---
--- Summary
--- =======
--- Validates the user defined assertions for an expectation
-
--- Parameters
--- ==========
--- p_expectation: the user defined expectation
--- p_source     : database table or test_step output
---
--- =============================================================================
-PROCEDURE validate_assertions(p_expectation IN JSON_OBJECT_T,
-                              p_source      IN VARCHAR2) -- table or outputs
-IS
-  l_matcher           VARCHAR2(30);
-  l_dummy             SMALLINT;
-  l_exception_message VARCHAR2(500);
-  l_assertion_key     VARCHAR2(200);
-  l_assertion_columns JSON_KEY_LIST;
-  l_assertion         JSON_OBJECT_T;
-
-BEGIN
-log(DIAG, '------validating assertions', HIGH_DETAIL);
-
-  IF NOT p_expectation.has('assertions') THEN
-    l_exception_message := 'Missing assertions in expectation';
-    RAISE_APPLICATION_ERROR(missing_e_assertions, l_exception_message);
-  END IF;
-
-  l_assertion_columns := p_expectation.get_Object('assertions').get_keys;
-  FOR i IN 1..l_assertion_columns.COUNT() LOOP
-
-    l_assertion_key := l_assertion_columns(i);
-    IF p_source = 'framework' THEN
-      -- check entry exists in g_framework_values
-      IF NOT g_framework_values.has(l_assertion_key) THEN
-        l_exception_message := 'Value reference specified incorrectly for column (' || l_assertion_key || '). Check previous test steps have actually generated the required value';
-        RAISE_APPLICATION_ERROR(invalid_a_ref, l_exception_message);
-      END IF;
-    END IF;
-
-    l_assertion := p_expectation.get_Object('assertions').get_Object(l_assertion_key);
-
-    IF NOT l_assertion.has('matcher') THEN
-      l_exception_message := 'utPLSQL matcher not specified in assertion';
-      RAISE_APPLICATION_ERROR(missing_matcher, l_exception_message);
-    END IF;
-    l_matcher := l_assertion.get_String('matcher');
-
-    -- ensure the specified matcher is supported
-    BEGIN
-      SELECT 1 INTO l_dummy FROM dual 
-       WHERE l_matcher IN ( '=', '!=', '>', '!>', '<', '!<',
-                            '>=', '!>=', '<=', '!<=',
-                            'like', '!like',
-                            'be_false', 'be_true' , 
-                            'be_null', 'be_not_null' );
-    EXCEPTION
-      WHEN NO_DATA_FOUND THEN
-        l_exception_message := 'Invalid utPLSQL matcher specified in assertion';
-        RAISE_APPLICATION_ERROR(invalid_matcher, l_exception_message);
-    END;
-
-    -- ensure a value is specified where appropriate
-    IF l_matcher IN ( '=', '!=', '>', '!>', '<', '!<',
-                      '>=', '!>=', '<=', '!<=', 'like', '!like' )
-    THEN
-      IF NOT l_assertion.has('value') THEN
-        l_exception_message := 'utPLSQL matcher has no expected value';
-        RAISE_APPLICATION_ERROR(missing_matcher_value, l_exception_message);
-      END IF;
-
-      -- validate the value if it is a reference to a test step output
-      IF l_assertion.get_Type('value') = 'OBJECT' THEN
-        validate_reference_object('A', 'ref', l_assertion.get_Object('value'));
-      END IF;
-    END IF;
-
-  END LOOP;
-log(DIAG, '------validated assertions', HIGH_DETAIL);
-EXCEPTION
-  WHEN missing_e_assertions_excp OR
-       invalid_a_ref_excp OR
-       missing_matcher_excp OR
-       invalid_matcher_excp OR
-       missing_matcher_value_excp OR
-       invalid_assertion_column_excp
-  THEN
-    handle_exception( SQLCODE, l_exception_message );
-END validate_assertions;
-
-
--- =============================================================================
 -- Name: process_sql_inputs
 -- ========================
 --
@@ -1810,7 +1665,6 @@ IS
   l_sql_inputs_keys JSON_KEY_LIST;
 
 BEGIN
-  log(DIAG,'Processing column values',HIGH_DETAIL);
 
   IF p_sql_inputs IS NOT NULL THEN
 
@@ -1865,9 +1719,720 @@ BEGIN
       END IF;
     END LOOP;
   END IF;
-  log(DIAG,'Processed column values',HIGH_DETAIL);
 
 END process_sql_inputs;
+
+
+
+
+-- =============================================================================
+--
+--                          Assertion Processing
+--
+-- =============================================================================
+
+
+
+-- =============================================================================
+-- Name: get_matcher
+-- =================
+--
+-- Summary
+-- =======
+-- expand the short form user defined matcher in the JSON to the utPLSQL equivalent
+
+-- Parameters
+-- ==========
+-- p_matcher: The user specified matcher in the JSON
+--
+-- =============================================================================
+FUNCTION get_matcher( p_matcher IN VARCHAR2 ) RETURN VARCHAR2
+IS
+  l_matcher VARCHAR2(30);
+BEGIN
+
+  CASE p_matcher
+    WHEN '=' THEN
+      l_matcher := 'to_equal';
+    WHEN '!=' THEN
+      l_matcher := 'not_to_equal';
+    WHEN '>' THEN
+      l_matcher := 'to_be_greater_than';
+    WHEN '!>' THEN
+      l_matcher := 'not_to_be_greater_than';
+    WHEN '>=' THEN
+      l_matcher := 'to_be_greater_or_equal';
+    WHEN '!>=' THEN
+      l_matcher := 'not_to_be_greater_or_equal';
+    WHEN '<' THEN
+      l_matcher := 'to_be_less_than';
+    WHEN '!<' THEN
+      l_matcher := 'not_to_be_less_than';
+    WHEN '<=' THEN
+      l_matcher := 'to_be_less_or_equal';
+    WHEN '!<=' THEN
+      l_matcher := 'not_to_be_less_or_equal';
+    WHEN 'like' THEN
+      l_matcher := 'to_be_like';
+    WHEN '!like' THEN
+      l_matcher := 'not_to_be_like';
+  END CASE;
+ 
+  RETURN l_matcher;
+
+END;
+
+
+-- =============================================================================
+-- Name: new_existence_assertion
+-- =============================
+--
+-- Summary
+-- =======
+-- Constructs an existence assertion to be added to the dynamically created utPLSQL package
+--
+-- Parameters
+-- ==========
+-- p_result_column_name : name of value stored in framework e.g. step1.CLOBasJSON.elementName
+-- p_matcher            : exists or !exists
+-- p_assertion_msg      : message included in assertion for ease of identifying any failed assertions
+--
+-- =============================================================================
+FUNCTION new_existence_assertion( p_result_column_name IN VARCHAR2,
+                                  p_matcher            IN VARCHAR2,
+                                  p_assertion_msg      IN VARCHAR2 ) RETURN VARCHAR2
+IS
+  l_assertion VARCHAR2(1000);
+BEGIN
+
+  l_assertion := 'ut.expect(';
+
+  CASE p_matcher
+    WHEN 'exists' THEN   
+
+      IF g_framework_values.has(p_result_column_name) THEN
+        -- element has been retrieved and stored by the framework
+        l_assertion := l_assertion || '''' || p_result_column_name || ' exists' || '''' || ',' || '''' || p_assertion_msg || '''' || ').to_equal(' || '''' || p_result_column_name || ' exists' || '''' || ');';
+      ELSE   
+        -- element has NOT been retrieved and stored by the framework                                          
+        l_assertion := l_assertion || '''' || p_result_column_name || ' does not exist' || '''' || ',' || '''' || p_assertion_msg || '''' || ').to_equal(' || '''' || p_result_column_name || ' exists' || '''' || ');';
+      END IF;
+      
+    WHEN '!exists' THEN   
+
+      IF g_framework_values.has(p_result_column_name) THEN
+         -- element has been retrieved and stored by the framework
+        l_assertion := l_assertion || '''' || p_result_column_name || ' exists' || '''' || ',' || '''' || p_assertion_msg || '''' || ').to_equal(' || '''' || p_result_column_name || ' does not exist' || '''' || ');';
+      ELSE
+         -- element has NOT been retrieved and stored by the framework
+        l_assertion := l_assertion || '''' || p_result_column_name || ' does not exist' || '''' || ',' || '''' || p_assertion_msg || '''' || ').to_equal(' || '''' || p_result_column_name || ' does not exist' || '''' || ');';
+      END IF;
+
+  END CASE;
+
+  RETURN l_assertion;
+END new_existence_assertion;
+
+
+-- =============================================================================
+-- Name: add_assertion_to_pkg
+-- ==========================
+--
+-- Summary
+-- =======
+-- add the assertion to the dynamically created utPLSQL package
+
+-- Parameters
+-- ==========
+-- p_assertion     : a single assertion
+-- p_data_type     : the data type of the assertion values                   
+-- p_actual_date   : actual DATE value to be assessed against expected value in assertion
+-- p_actual_number : actual NUMBER value to be assessed against expected value in assertion
+-- p_actual_string : actual STRING value to be assessed against expected value in assertion
+--
+-- left(result) = right(expected)
+-- =============================================================================
+PROCEDURE add_assertion_to_pkg( p_result_column_name IN VARCHAR2,
+                                p_assertion          IN JSON_OBJECT_T,
+                                p_result             IN JSON_OBJECT_T)
+IS
+  l_matcher                       VARCHAR2(30);
+  l_result_data_type              PLS_INTEGER;
+  l_expected_data_type            PLS_INTEGER;
+  l_result_string                 VARCHAR2(4000);
+  l_result_number                 NUMBER;
+  l_result_date                   DATE;
+  l_result_boolean                BOOLEAN;
+  l_result_json_object_or_array   VARCHAR2(10); -- chosen arbitrarily
+  l_expected_string               VARCHAR2(4000);
+  l_expected_number               NUMBER;
+  l_expected_date                 DATE;
+  l_expected_boolean              BOOLEAN;
+  l_expected_json_object_or_array VARCHAR2(10); -- chosen arbitrarily
+  l_expected_date_string          VARCHAR2(30);
+  l_assertion                     VARCHAR2(4000);
+  l_exception_message             VARCHAR2(500);
+  l_expected_key                  VARCHAR2(1000);
+  l_expected_object               JSON_OBJECT_T;
+  l_assertion_msg                 VARCHAR2(200);
+
+BEGIN
+  g_current_assertion := g_current_assertion + 1;
+
+  l_assertion_msg := g_current_functional_area || ' : ' || 'Suite ' || g_current_test_suite || ' : ' ||
+                     'Test ' || g_current_test_number || ' : ' || 'Step ' || g_current_test_step.test_step || ' : ' ||
+                     'Assertion ' || g_current_assertion;
+
+  IF p_assertion.get_String('matcher') IN ('exists', '!exists') 
+  THEN
+    -- exists and !exists do not need a value to match against so create in a different form to the other assertions 
+    l_assertion := new_existence_assertion( p_result_column_name, p_assertion.get_String('matcher'), l_assertion_msg );
+  ELSE
+    -- construct the actual result part of the assertion (left hand side of expression)
+    l_result_data_type := p_result.get_Number('data_type');
+    CASE
+      -- Process strings
+      WHEN l_result_data_type IN ( dbms_types.TYPECODE_VARCHAR2, 
+                                   dbms_types.TYPECODE_VARCHAR, 
+                                   dbms_types.TYPECODE_CHAR ) 
+      THEN
+        IF p_assertion.get_String('matcher') IN ('>', '!>', '<', '!<', '>=', '!>=', '<=', '!<=') THEN
+          l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support Strings';
+          RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
+        END IF;
+
+        l_result_string := p_result.get_String('data_value');
+        IF l_result_string IS NULL THEN
+          l_assertion := 'ut.expect( cast(null as varchar2),' || '''' || l_assertion_msg || '''' || ').';
+        ELSE
+          l_assertion := 'ut.expect(' || '''' || l_result_string || '''' || ',' || '''' || l_assertion_msg || '''' || ').';
+        END IF;
+
+      -- Process numbers
+      WHEN l_result_data_type = dbms_types.TYPECODE_NUMBER
+      THEN
+        IF p_assertion.get_String('matcher') IN ('like', '!like') THEN
+          l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support Numbers';
+          RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
+        END IF;
+
+        l_result_number := p_result.get_Number('data_value');
+        IF l_result_number IS NULL THEN
+          l_assertion := 'ut.expect( cast(null as number),' || '''' || l_assertion_msg || '''' || ').';
+        ELSE
+          l_assertion := 'ut.expect(' || l_result_number || ',' || '''' || l_assertion_msg || '''' || ').';
+        END IF;
+
+      -- Process dates
+      WHEN l_result_data_type = dbms_types.TYPECODE_DATE
+      THEN
+        IF p_assertion.get_String('matcher') IN ('like', '!like') THEN
+          l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support Dates';
+          RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
+        END IF;
+
+        l_result_date := p_result.get_Date('data_value');
+        IF l_result_date IS NULL THEN
+          l_assertion := 'ut.expect( cast(null as date),' || '''' || l_assertion_msg || '''' || ').';
+        ELSE   
+          l_assertion := 'ut.expect( ' ||
+                         'to_date(' || '''' || to_char(l_result_date,DATE_FORMAT) || '''' || ', ' || '''' || DATE_FORMAT || '''' || ')' || ',' || '''' || l_assertion_msg || '''' || ').';
+        END IF;
+
+      -- Process booleans
+      WHEN l_result_data_type = DBMS_TYPES_BOOLEAN
+      THEN
+        IF p_assertion.get_String('matcher') NOT IN ('=', '!=') THEN
+          l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support Boolens';
+          RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
+        END IF;
+
+        l_result_boolean := p_result.get_Boolean('data_value');
+        IF l_result_boolean IS NULL THEN
+          l_assertion := 'ut.expect( cast(null as boolean),' || '''' || l_assertion_msg || '''' || ').';
+        ELSE
+          IF l_result_boolean = TRUE THEN
+            l_assertion := 'ut.expect(true,' || '''' || l_assertion_msg || '''' || ').';
+          ELSE
+            l_assertion := 'ut.expect(false,' || '''' || l_assertion_msg || '''' || ').';
+          END IF;
+        END IF;
+
+      -- Process JSON objects and arrays
+      WHEN l_result_data_type IN ( DBMS_TYPES_JSON_OBJECT, 
+                                   DBMS_TYPES_JSON_ARRAY ) 
+      THEN
+        IF p_assertion.get_String('matcher') NOT IN ('=', '!=') THEN
+          l_exception_message := p_assertion.get_String('matcher') || ' utplsql matcher does not support JSON objects or arrays';
+          RAISE_APPLICATION_ERROR(invalid_matcher_data_type, l_exception_message);
+        END IF;
+
+        IF p_result.get('data_value').is_Null() THEN
+          l_assertion := 'ut.expect( cast(null as varchar2),' || '''' || l_assertion_msg || '''' || ').';  -- arbitrarily chosen
+        ELSE
+          l_result_json_object_or_array := p_result.get_String('data_value');
+          l_assertion := 'ut.expect(' || '''' || l_result_json_object_or_array || '''' || ',' || '''' || l_assertion_msg || '''' || ').';
+        END IF;
+
+      -- Process unknown
+      WHEN l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+        -- cannot cast appropriately. Base the cast on expected data type
+        NULL;
+
+      ELSE
+        -- unsupported data type 
+        RAISE_APPLICATION_ERROR(invalid_data_type, 'Data type not supported: ' || l_result_data_type);
+
+    END CASE;
+
+    -- determine the expected value as specified by assertion (right hand side of expression)
+    IF p_assertion.get_Type('value') = 'OBJECT' 
+    THEN
+      -- retrieve value from referenced test step (g_framework_values)
+      l_expected_key := p_assertion.get_Object('value').get_String('ref');
+      l_expected_object := g_framework_values.get_Object(l_expected_key);
+      l_expected_data_type := l_expected_object.get_Number('data_type');
+
+      IF l_expected_object.get('data_value').is_null() THEN
+        l_expected_string      := NULL; l_expected_number               := NULL; l_expected_date      := NULL; 
+        l_expected_date_string := NULL; l_expected_json_object_or_array := NULL;
+
+        IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+          l_assertion := 'ut.expect( cast(null as varchar2) ).';  -- expand for clarity
+        END IF;
+
+      ELSE
+        CASE
+          WHEN l_expected_data_type IN ( dbms_types.TYPECODE_VARCHAR2, 
+                                         dbms_types.TYPECODE_VARCHAR, 
+                                         dbms_types.TYPECODE_CHAR ) 
+          THEN
+
+            l_expected_string := l_expected_object.get_String('data_value');
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as varchar2) ).';
+            END IF;
+       
+          WHEN l_expected_data_type = dbms_types.TYPECODE_NUMBER THEN
+
+            l_expected_number := l_expected_object.get_Number('data_value');
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as number) ).';
+            END IF;
+
+          WHEN l_expected_data_type = dbms_types.TYPECODE_DATE THEN
+
+            l_expected_date := l_expected_object.get_Date('data_value');
+            l_expected_date_string := to_char(l_expected_date, DATE_FORMAT);
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as date) ).';
+            END IF;
+
+          WHEN l_expected_data_type = DBMS_TYPES_BOOLEAN THEN
+
+            l_expected_boolean := l_expected_object.get_Boolean('data_value');
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as boolean) ).';
+            END IF;
+
+          WHEN l_expected_data_type IN ( DBMS_TYPES_JSON_OBJECT, 
+                                         DBMS_TYPES_JSON_ARRAY ) 
+          THEN
+
+            l_expected_json_object_or_array := l_expected_object.get_String('data_value');
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as varchar2) ).'; 
+            END IF;
+
+          WHEN l_expected_data_type = DBMS_TYPES_NULL_JSON THEN
+            -- done above in null check
+            null;
+
+          ELSE
+            -- unsupported data type 
+            RAISE_APPLICATION_ERROR(invalid_data_type, 'Data type not supported: ' || l_expected_data_type);
+        END CASE;
+      END IF;
+
+    ELSE
+      -- determine scalar value - cannot differentiate string from date here. Use actual data type as a guide
+      IF p_assertion.get('value').is_null() THEN
+        l_expected_string      := NULL; l_expected_number               := NULL; l_expected_boolean := NULL;
+        l_expected_date_string := NULL; l_expected_json_object_or_array := NULL;
+
+        IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+          l_assertion := 'ut.expect( cast(null as varchar2) ).';  -- expand for clarity
+        END IF;
+
+      ELSE
+        -- use actual data type as a guide to expected data type
+        CASE
+          WHEN l_result_data_type IN ( dbms_types.TYPECODE_VARCHAR2, 
+                                       dbms_types.TYPECODE_VARCHAR, 
+                                       dbms_types.TYPECODE_CHAR ) 
+          THEN
+            l_expected_string := p_assertion.get_String('value');
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as varchar2) ).';
+            END IF;
+       
+          WHEN l_result_data_type = dbms_types.TYPECODE_NUMBER THEN
+            l_expected_number := p_assertion.get_Number('value');
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as number) ).';
+            END IF;
+
+          WHEN l_result_data_type = dbms_types.TYPECODE_DATE THEN
+            l_expected_date_string := p_assertion.get_String('value');
+
+            BEGIN
+              l_expected_date := pkg_dynamic_sql.determine_date_from_json(l_expected_date_string);
+            EXCEPTION
+              WHEN OTHERS THEN
+                handle_exception( SQLCODE, 'Error determining_date: ' || SQLERRM );
+            END;
+
+            l_expected_date_string := TO_CHAR(l_expected_date,DATE_FORMAT);
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as date) ).';
+            END IF;
+
+          WHEN l_result_data_type = DBMS_TYPES_BOOLEAN THEN
+            l_expected_boolean := p_assertion.get_Boolean('value');
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as boolean) ).';
+            END IF;
+
+          WHEN l_result_data_type IN ( DBMS_TYPES_JSON_OBJECT, 
+                                       DBMS_TYPES_JSON_ARRAY ) 
+          THEN
+            l_expected_json_object_or_array := l_expected_object.get_String('data_value');
+            IF l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+              l_assertion := 'ut.expect( cast(null as varchar2) ).'; 
+            END IF;
+
+          WHEN l_result_data_type = DBMS_TYPES_NULL_JSON THEN
+            -- done above in null test
+            IF p_assertion.get('value').is_String() THEN
+              l_expected_string := p_assertion.get_String('value');
+              l_assertion := 'ut.expect( cast(null as varchar2) ).'; 
+            ELSIF p_assertion.get('value').is_Number() THEN
+              l_expected_number := p_assertion.get_Number('value');
+              l_assertion := 'ut.expect( cast(null as number) ).'; 
+            ELSIF p_assertion.get('value').is_Boolean() THEN
+              l_expected_boolean := p_assertion.get_Boolean('value');
+              l_assertion := 'ut.expect( cast(null as boolean) ).'; 
+            END IF;
+  
+          ELSE
+            -- unsupported data type 
+            RAISE_APPLICATION_ERROR(invalid_data_type, 'Data type not supported: ' || l_result_data_type);
+        END CASE;
+      END IF;
+    END IF;
+
+    -- finalise construction of assertion
+
+    -- expand the short form user defined matcher in the JSON to the utPLSQL equivalent
+    l_matcher := get_matcher(p_assertion.get_String('matcher'));
+
+    CASE
+      -- process string
+      WHEN l_result_data_type IN ( dbms_types.TYPECODE_VARCHAR2, 
+                                   dbms_types.TYPECODE_VARCHAR, 
+                                   dbms_types.TYPECODE_CHAR ) 
+      THEN
+        IF l_expected_string IS NULL THEN
+          IF l_matcher = 'to_equal' THEN
+            l_assertion := l_assertion || 'to_be_null();';
+          ELSE
+            l_assertion := l_assertion || 'to_be_not_null();';
+          END IF;
+        ELSE
+          l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_string || '''' || ');';
+        END IF;
+   
+      -- process number
+      WHEN l_result_data_type = dbms_types.TYPECODE_NUMBER THEN
+        IF l_expected_number IS NULL THEN
+          IF l_matcher = 'to_equal' THEN
+            l_assertion := l_assertion || 'to_be_null();';
+          ELSE
+            l_assertion := l_assertion || 'to_be_not_null();';
+          END IF;
+        ELSE
+          l_assertion := l_assertion || l_matcher || '(' || l_expected_number || ');';
+        END IF;
+
+      -- process date
+      WHEN l_result_data_type = dbms_types.TYPECODE_DATE THEN
+        IF l_expected_date_string IS NULL THEN
+          IF l_matcher = 'to_equal' THEN
+            l_assertion := l_assertion || 'to_be_null();';
+          ELSE
+            l_assertion := l_assertion || 'to_be_not_null();';
+          END IF;
+        ELSE
+          l_assertion := l_assertion || l_matcher || '( ' ||
+                         'to_date(' || '''' || l_expected_date_string || '''' || ',' || '''' || DATE_FORMAT || '''' || ') );';      
+        END IF;
+
+      -- process boolean
+      WHEN l_result_data_type = DBMS_TYPES_BOOLEAN THEN
+        IF l_expected_boolean IS NULL THEN
+          IF l_matcher = 'to_equal' THEN
+            l_assertion := l_assertion || 'to_be_null();';
+          ELSE
+            l_assertion := l_assertion || 'to_be_not_null();';
+          END IF;
+
+        ELSE
+          IF l_matcher = 'to_equal' THEN
+            IF l_expected_boolean = TRUE THEN
+              l_assertion := l_assertion || 'to_be_true();';
+            ELSE
+              l_assertion := l_assertion || 'to_be_false();';
+            END IF;
+          ELSE  -- reverse boolean test for '!=' matcher
+            IF l_expected_boolean = TRUE THEN
+              l_assertion := l_assertion || 'to_be_false();';
+            ELSE
+              l_assertion := l_assertion || 'to_be_true();';
+            END IF;
+          END IF;
+        END IF;
+
+      -- Process JSON objects and arrays
+      WHEN l_result_data_type IN ( DBMS_TYPES_JSON_OBJECT, 
+                                   DBMS_TYPES_JSON_ARRAY ) 
+      THEN
+        IF l_expected_json_object_or_array IS NULL THEN
+          IF l_matcher = 'to_equal' THEN
+            l_assertion := l_assertion || 'to_be_null();';
+          ELSE
+            l_assertion := l_assertion || 'to_be_not_null();';
+          END IF;
+        ELSE
+          l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_json_object_or_array || '''' || ');';
+        END IF;
+
+      WHEN l_result_data_type = DBMS_TYPES_NULL_JSON 
+      THEN
+        -- l_assertion not yet set if result = DBMS_TYPES_NULL_JSON 
+        IF l_expected_data_type = DBMS_TYPES_NULL_JSON THEN
+          l_assertion := 'ut.expect( cast(null as varchar2) ).' || l_matcher || '(cast(null as varchar2));';
+        ELSE
+
+          IF l_expected_string IS NOT NULL THEN
+            l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_string || '''' || ');';
+          ELSIF l_expected_number IS NOT NULL THEN
+            l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_number || '''' || ');';
+          ELSIF l_expected_boolean IS NOT NULL THEN
+
+            IF l_matcher = 'to_equal' THEN
+              IF l_expected_boolean = TRUE THEN
+                l_assertion := l_assertion || 'to_be_true();';
+              ELSE
+                l_assertion := l_assertion || 'to_be_false();';
+              END IF;
+            ELSE  -- reverse boolean test for '!=' matcher
+              IF l_expected_boolean = TRUE THEN
+                l_assertion := l_assertion || 'to_be_false();';
+              ELSE
+                l_assertion := l_assertion || 'to_be_true();';
+              END IF;
+            END IF;  
+
+          ELSIF l_expected_date_string IS NOT NULL THEN
+            l_assertion := l_assertion || l_matcher || '( ' ||
+                           'to_date(' || '''' || l_expected_date_string || '''' || ',' || '''' || DATE_FORMAT || '''' || ') );'; 
+          ELSIF l_expected_json_object_or_array IS NOT NULL THEN
+            l_assertion := l_assertion || l_matcher || '(' || '''' || l_expected_json_object_or_array || '''' || ');';
+  
+          ELSIF l_matcher = 'to_equal' THEN
+            l_assertion := l_assertion || 'to_be_null();';
+          ELSIF l_matcher = 'to_not_equal' THEN
+            l_assertion := l_assertion || 'to_be_not_null();';
+          END IF;
+
+        END IF;
+      
+      ELSE
+        -- unsupported data type 
+        RAISE_APPLICATION_ERROR(invalid_data_type, 'Data type not supported: ' || l_result_data_type);
+    END CASE;
+
+  END IF;
+
+  -- add assertion to package
+  l_assertion := l_assertion || chr(10);
+  dbms_lob.writeappend(g_package_body, length(l_assertion), l_assertion);
+
+EXCEPTION
+  WHEN invalid_matcher_data_type_excp THEN
+    handle_exception( SQLCODE, l_exception_message ); 
+END add_assertion_to_pkg;
+
+
+-- =============================================================================
+-- Name: add_assertions_to_pkg
+-- ===========================
+--
+-- Summary
+-- =======
+-- Adds utPLSQL assertions to dynamically created package procedure
+
+-- Parameters
+-- ==========
+-- p_assertions : the set of assertions specified for an expectation                   
+-- p_results    : the result set against which the assertions are to be evaluated
+--                the same assertions will be replicated for each row of a result set
+--                result set format: 
+--               [{ colname1: {data_type:n, value:666}, colname2: {data_type:m, value:"ABC"} }]
+--
+-- =============================================================================
+PROCEDURE add_assertions_to_pkg( p_assertions IN JSON_OBJECT_T,
+                                 p_results    IN JSON_ARRAY_T )
+IS
+  l_result_column_name VARCHAR2(200);
+  l_exception_message  VARCHAR2(500);
+  l_result             JSON_OBJECT_T;
+  l_result_key_names   JSON_KEY_LIST;
+  l_assertion_result   JSON_OBJECT_T;
+
+BEGIN
+  -- process each set of assertions.
+  FOR i IN 0..p_results.get_size()-1 LOOP
+    l_result := treat(p_results.get(i) AS JSON_OBJECT_T); -- { col1:{}, col2:{}, {} }
+
+    -- initialise individual result for each data type
+    --l_date_result := NULL; l_number_result := NULL; l_string_result := NULL; --todo
+
+    -- process each assertion in turn
+    l_result_key_names := l_result.get_keys;
+    FOR j IN 1..l_result_key_names.COUNT() LOOP
+
+      l_result_column_name := l_result_key_names(j); 
+      l_assertion_result := l_result.get_Object(l_result_column_name);
+
+      add_assertion_to_pkg( l_result_column_name,
+                            p_assertions.get_Object(l_result_column_name),
+                            l_assertion_result );
+
+    END LOOP;
+  END LOOP;
+
+EXCEPTION
+  WHEN invalid_data_type_excp THEN
+    handle_exception( SQLCODE, l_exception_message );
+END add_assertions_to_pkg;
+
+
+
+
+-- =============================================================================
+-- Name: validate_assertions
+-- =========================
+--
+-- Summary
+-- =======
+-- Validates the user defined assertions for an expectation
+
+-- Parameters
+-- ==========
+-- p_expectation: the user defined expectation
+-- p_source     : database table or test_step output
+--
+-- =============================================================================
+PROCEDURE validate_assertions(p_expectation IN JSON_OBJECT_T,
+                              p_source      IN VARCHAR2) -- table or outputs
+IS
+  l_matcher           VARCHAR2(30);
+  l_dummy             SMALLINT;
+  l_exception_message VARCHAR2(500);
+  l_assertion_key     VARCHAR2(200);
+  l_assertion_columns JSON_KEY_LIST;
+  l_assertion         JSON_OBJECT_T;
+
+BEGIN
+
+  IF NOT p_expectation.has('assertions') THEN
+    l_exception_message := 'Missing assertions in expectation';
+    RAISE_APPLICATION_ERROR(missing_e_assertions, l_exception_message);
+  END IF;
+
+  l_assertion_columns := p_expectation.get_Object('assertions').get_keys;
+  FOR i IN 1..l_assertion_columns.COUNT() LOOP
+
+    l_assertion_key := l_assertion_columns(i);
+    l_assertion := p_expectation.get_Object('assertions').get_Object(l_assertion_key);
+
+    IF NOT l_assertion.has('matcher') THEN
+      l_exception_message := 'utPLSQL matcher not specified in assertion';
+      RAISE_APPLICATION_ERROR(missing_matcher, l_exception_message);
+    END IF;
+    l_matcher := l_assertion.get_String('matcher');
+
+    -- ensure the specified matcher is supported
+    BEGIN
+      SELECT 1 INTO l_dummy FROM dual 
+       WHERE l_matcher IN ( '=', '!=', '>', '!>', '<', '!<',
+                            '>=', '!>=', '<=', '!<=',
+                            'like', '!like',
+                            'be_false', 'be_true' , 
+                            'be_null', 'be_not_null', 'exists', '!exists' );
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        l_exception_message := 'Invalid utPLSQL matcher specified in assertion';
+        RAISE_APPLICATION_ERROR(invalid_matcher, l_exception_message);
+    END;
+
+    IF p_source = 'framework' AND l_matcher NOT IN ('exists', '!exists') THEN
+      -- check entry exists in g_framework_values. Only applicable for assertions not testing for the existence of an element
+      IF NOT g_framework_values.has(l_assertion_key) THEN
+        l_exception_message := 'Value reference specified incorrectly for column (' || l_assertion_key || '). Check previous test steps have actually generated the required value';
+        RAISE_APPLICATION_ERROR(invalid_a_ref, l_exception_message);
+      END IF;
+    END IF;
+
+    -- ensure a value is specified where appropriate
+    IF l_matcher IN ( '=', '!=', '>', '!>', '<', '!<',
+                      '>=', '!>=', '<=', '!<=', 'like', '!like' )
+    THEN
+      IF NOT l_assertion.has('value') THEN
+        l_exception_message := 'utPLSQL matcher has no expected value';
+        RAISE_APPLICATION_ERROR(missing_matcher_value, l_exception_message);
+      END IF;
+
+      -- validate the value if it is a reference to a test step output
+      IF l_assertion.get_Type('value') = 'OBJECT' THEN
+        validate_reference_object('A', 'ref', l_assertion.get_Object('value'));
+      END IF;
+    END IF;
+
+  END LOOP;
+
+EXCEPTION
+  WHEN missing_e_assertions_excp OR
+       invalid_a_ref_excp OR
+       missing_matcher_excp OR
+       invalid_matcher_excp OR
+       missing_matcher_value_excp OR
+       invalid_assertion_column_excp
+  THEN
+    handle_exception( SQLCODE, l_exception_message );
+END validate_assertions;
+
+
+
+
+-- =============================================================================
+--
+--                          Expectation Processing
+--
+-- =============================================================================
+
+
 
 
 -- =============================================================================
@@ -1894,15 +2459,15 @@ IS
   l_exception_message VARCHAR2(500);
   l_result            JSON_OBJECT_T;
   l_output            JSON_ELEMENT_T;
+  l_null_output       JSON_OBJECT_T;
   l_where             JSON_OBJECT_T;
   l_results           JSON_ARRAY_T;   
   l_assertion_keys    JSON_KEY_LIST;
   l_column_names      JSON_ARRAY_T;
   l_expectation_keys  JSON_KEY_LIST;
+  l_rows_selected     INTEGER;
   
 BEGIN
-  log(DIAG, '------Processing expectation', HIGH_DETAIL);
-
   -- retrieve and validate source
   l_source := p_expectation.get_String('source');  
   IF l_source IS NULL THEN
@@ -1934,7 +2499,7 @@ BEGIN
   -- retrieve and validate assertions
   validate_assertions(p_expectation, l_source);
 
-  -- construct array of required column names
+  -- construct array of required column names - do within source = table?
   l_column_names := new JSON_ARRAY_T;
   l_expectation_keys := p_expectation.get_Object('assertions').get_keys;
   FOR i IN 1..l_expectation_keys.COUNT() LOOP
@@ -1945,10 +2510,16 @@ BEGIN
   IF l_source = 'table' THEN
  
     BEGIN
+      log('SELECTING from DB to evaluate assertions');
+      log_select_row( l_table_name, l_column_names, l_where );
+
       pkg_dynamic_sql.select_row( l_table_name, 
                                   l_column_names,
                                   l_where,
-                                  l_results);
+                                  l_results,
+                                  l_rows_selected );
+
+      log_select_row_results( l_results, l_rows_selected );
     EXCEPTION
       WHEN OTHERS THEN
 
@@ -1964,8 +2535,20 @@ BEGIN
     l_assertion_keys := p_expectation.get_Object('assertions').get_keys;
     l_result := new JSON_OBJECT_T;
     FOR i IN 1..l_assertion_keys.COUNT LOOP
-      l_output := g_framework_values.get(l_assertion_keys(i));
-      l_result.put(l_assertion_keys(i),l_output);
+
+      IF g_framework_values.has(l_assertion_keys(i)) THEN
+        -- an assertion has been specified against an element that has been successfully retrieved
+        l_output := g_framework_values.get(l_assertion_keys(i));  
+        l_result.put(l_assertion_keys(i),l_output);
+      ELSE
+        -- an assertion has been specified against an element that the framework has not retrieved
+        -- this is still needed to facilitate existence assertions 
+        l_null_output := new JSON_OBJECT_T;
+        l_null_output.put('data_type', DBMS_TYPES_NULL_JSON);  
+        l_null_output.put_Null('data_value');  -- dummy value as not needed for existence assertions
+        l_result.put(l_assertion_keys(i),l_null_output);
+      END IF;
+
     END LOOP;
     l_results.append(l_result);
 
@@ -1973,8 +2556,6 @@ BEGIN
 
   add_assertions_to_pkg( p_expectation.get_Object('assertions'),
                          l_results );
-
-  log(DIAG, '------Processed expectation', HIGH_DETAIL);
 
 EXCEPTION
   WHEN missing_e_source_excp OR
@@ -2001,8 +2582,6 @@ IS
   l_expectation  JSON_OBJECT_T;
 
 BEGIN
-  log(DIAG, '------Processing expectations', HIGH_DETAIL);
-
   -- note the stage of processing for future reference
   g_test_stage := EXPECTATION_STAGE;
 
@@ -2032,8 +2611,18 @@ BEGIN
     END LOOP;
   END IF;
 
-  log(DIAG, '------Processed expectations', HIGH_DETAIL);
 END process_expectations;
+
+
+
+
+-- =============================================================================
+--
+--                          Operation Processing
+--
+-- =============================================================================
+
+
 
 
 -- =============================================================================
@@ -2054,10 +2643,9 @@ IS
   l_table_name        VARCHAR2(128);
   l_exception_message VARCHAR2(500);
   l_where             JSON_OBJECT_T;
+  l_rows_deleted      INTEGER;
 
 BEGIN
-  log(DIAG,'Deleting row',HIGH_DETAIL);
-
   -- retrieve and validate table_name
   l_table_name := p_operation.get_String('table_name');
   IF l_table_name IS NULL THEN
@@ -2073,14 +2661,17 @@ BEGIN
 
   -- delete the rows
   BEGIN
+    log_delete_row( l_table_name, l_where );
+
     pkg_dynamic_sql.delete_row( l_table_name,
-                                l_where );
+                                l_where,
+                                l_rows_deleted );
+
+    log_delete_row_results( l_rows_deleted );
   EXCEPTION
     WHEN OTHERS THEN
       handle_exception( SQLCODE, 'Error deleting row: ' || SQLERRM );
   END;
-
-  log(DIAG,'Deleted row',HIGH_DETAIL);
 
 EXCEPTION
   WHEN missing_crud_table_name_excp 
@@ -2108,10 +2699,9 @@ IS
   l_exception_message VARCHAR2(500);
   l_where             JSON_OBJECT_T;
   l_columns           JSON_OBJECT_T;
+  l_rows_updated     INTEGER;
 
 BEGIN
-  log(DIAG,'Updating row',HIGH_DETAIL);
-
   -- retrieve and validate table_name
   l_table_name := p_operation.get_String('table_name');
   IF l_table_name IS NULL THEN
@@ -2137,16 +2727,19 @@ BEGIN
 
   -- update the rows
   BEGIN
+    log_update_row( l_table_name, l_columns, l_where );
+
     pkg_dynamic_sql.update_row( l_table_name,
                                 l_columns,
                                 l_where,
-                                g_site_id );
+                                g_site_id,
+                                l_rows_updated );
+
+    log_update_row_results( l_rows_updated );	
   EXCEPTION
     WHEN OTHERS THEN
       handle_exception( SQLCODE, 'Error updating row: ' || SQLERRM );
   END;
-
-  log(DIAG,'Updated row',HIGH_DETAIL);
 
 EXCEPTION
   WHEN missing_crud_table_name_excp OR
@@ -2180,8 +2773,6 @@ IS
   l_new_ari           JSON_OBJECT_T;
 
 BEGIN
-  log(DIAG,'Inserting row',HIGH_DETAIL);
-
   -- retrieve and validate table_name
   IF NOT p_operation.has('table_name') THEN
     l_exception_message := 'Unspecified or misspelled table_name key for INSERT operation';
@@ -2201,11 +2792,15 @@ BEGIN
 
   -- insert the new row
   BEGIN
+    log_insert_row( l_table_name, l_columns );
+
     l_new_ari := NULL;
     pkg_dynamic_sql.insert_row( l_table_name,
                                 l_columns,
                                 g_site_id,
                                 l_new_ari );  -- returned if insert generates new appn_row_id
+
+    log_insert_row_results( l_table_name, l_new_ari );
   EXCEPTION
     WHEN OTHERS THEN
       handle_exception( SQLCODE, 'Error inserting row: ' || SQLERRM );
@@ -2224,8 +2819,6 @@ BEGIN
       g_framework_values.put('step' || g_current_test_step.test_step || '.' || 'appn_row_id', l_new_ari );
     END IF;
   END IF;
-
-  log(DIAG,'Inserted row',HIGH_DETAIL);
 
 EXCEPTION
   WHEN missing_crud_table_name_excp OR 
@@ -2266,8 +2859,6 @@ IS
   l_result            JSON_OBJECT_T;
 
 BEGIN
-  log(DIAG,'Calling routine',HIGH_DETAIL);
-
   -- retrieve package name if present
   l_package_name := p_operation.get_String('package_name');
 
@@ -2286,10 +2877,13 @@ BEGIN
 
   -- invoke the specified routine
   BEGIN
+    log_call_routine( l_package_name, l_routine_name, l_parameters );
+
     pkg_dynamic_sql.call_routine( l_package_name,
                                   l_routine_name,
                                   l_parameters, 
                                   l_results );  
+    log_call_routine_results( l_results );
   EXCEPTION
     WHEN OTHERS THEN
       handle_exception( SQLCODE, 'Error calling routine: ' || SQLERRM );
@@ -2314,7 +2908,6 @@ BEGIN
     END LOOP;
   END IF;
 
-  log(DIAG,'Called routine',HIGH_DETAIL);
 EXCEPTION
   WHEN missing_package_name_excp OR
        missing_routine_name_excp OR 
@@ -2349,9 +2942,9 @@ IS
   l_col_names         JSON_KEY_LIST;
   l_result            JSON_OBJECT_T;
   l_results           JSON_ARRAY_T;
+  l_rows_selected     INTEGER;
 
 BEGIN
-
   -- retrieve and validate table_name
   l_table_name := p_operation.get_String('table_name');
   IF l_table_name IS NULL THEN
@@ -2375,10 +2968,15 @@ BEGIN
   -- select the row
   l_results := new JSON_ARRAY_T;
   BEGIN
+    log_select_row( l_table_name, l_columns, l_where );
+
     pkg_dynamic_sql.select_row( l_table_name, 
                                 l_columns,
                                 l_where,
-                                l_results);
+                                l_results,
+                                l_rows_selected );
+
+    log_select_row_results( l_results, l_rows_selected );
   EXCEPTION
     WHEN OTHERS THEN
 
@@ -2444,8 +3042,6 @@ IS
   l_test_operation    JSON_OBJECT_T;
 
 BEGIN
-  log(DIAG, '------Performing operation', HIGH_DETAIL);
-
   -- note the stage of processing for future reference
   g_test_stage := OPERATION_STAGE;
 
@@ -2479,8 +3075,6 @@ BEGIN
     END CASE;
   END IF;
 
-  log(DIAG, '------Performed operation', HIGH_DETAIL);
-
 EXCEPTION
   WHEN missing_operation_excp OR
        invalid_operation_excp
@@ -2488,6 +3082,17 @@ EXCEPTION
     handle_exception( SQLCODE, l_exception_message );
 
 END process_operation;
+
+
+
+
+-- =============================================================================
+--
+--                      Test StepIdentification and Processing
+--
+-- =============================================================================
+
+
 
 
 -- =============================================================================
@@ -2505,7 +3110,7 @@ END process_operation;
 PROCEDURE execute_test_step
 IS
 BEGIN
-  log(DIAG, '-----Executing test ' || g_current_test_step.test_number || ' step ' || g_current_test_step.test_step, HIGH_DETAIL);
+  log('*** Executing ' || g_current_functional_area || ' Suite ' || g_current_test_suite || ' Test ' || g_current_test_step.test_number || ' Step ' || g_current_test_step.test_step);
 
   g_expectation_index := -1;
 
@@ -2526,7 +3131,7 @@ BEGIN
   -- test step has run to completion without exceptions
   update_test_status('COMPLETED',null,null);
 
-  log(DIAG, '-----Executed test ' || g_current_test_step.test_number || ' step ' || g_current_test_step.test_step, HIGH_DETAIL);
+  log('***Successfully executed ' || g_current_functional_area || ' Suite ' || g_current_test_suite || ' Test ' || g_current_test_step.test_number || ' Step ' || g_current_test_step.test_step);
 
 EXCEPTION
   WHEN uninitialized_collection_excp THEN
@@ -2863,8 +3468,6 @@ BEGIN
   -- TRANSACTION START --
   -----------------------
 
-  log(DIAG, '-----Executing test number ' || p_test_number, HIGH_DETAIL);
-
   -- note the test number currently being processed for future reference
   g_current_test_number := p_test_number;
 
@@ -2916,7 +3519,6 @@ BEGIN
   -- backout any unwanted commits
   post_test_cleanup();  
 
-  log(DIAG, '-----Executed test number ' || p_test_number, HIGH_DETAIL);
 EXCEPTION
 
   WHEN fatal_test_error_excp THEN
@@ -2962,39 +3564,40 @@ IS
    ORDER BY test_number;
 
 BEGIN
-  log(DIAG,'---Testing functional area suite' || p_test_suite, HIGH_DETAIL);
-
   -- note the functional area and test suite currently being processed for future reference
   g_current_functional_area := p_functional_area;
   g_current_test_suite := p_test_suite;
 
-  -- create the initial code for the package that will be created to execute this test suite
-  create_pkg_code( p_functional_area, p_test_suite );
-
   -- execute all tests within this suite
   l_num_tests := 0;
   FOR test_number IN test_numbers LOOP
+
+    IF l_num_tests = 0 THEN
+      -- create the initial code for the package that will be created to execute this test suite
+      create_pkg_code( p_functional_area, p_test_suite );
+    END IF;
+
     l_num_tests := l_num_tests + 1;
     execute_test_number( p_functional_area, p_test_suite, test_number.tn);
   END LOOP;
 
-  -- handle possibility of no tests being defined for specified functional area and suite
-  -- rework to report cleanly
-  /*IF l_num_tests = 0 THEN
-    l_exception_message := 'No tests defined for specified functional area and suite: ' || p_functional_area || ':' || p_test_suite;
-    RAISE_APPLICATION_ERROR(invalid_suite, l_exception_message);
-  END IF;*/
+  IF l_num_tests > 0 THEN
+    -- finalise the code for the package that will be created to execute this test suite
+    finalise_pkg_code;
 
-  -- finalise the code for the package that will be created to execute this test suite
-  finalise_pkg_code;
+    -- apply package to database
+    create_pkg;
 
-  -- apply package to database
-  create_pkg;
+    -- invoke the package to execute the functional area test suite
+    invoke_test_pkg;
+  ELSE
+    log('No tests defined in the database for ' || p_functional_area || ' Suite ' || p_test_suite);
 
-  -- invoke the package to execute the functional area test suite
-  invoke_test_pkg;
-
-  log(DIAG,'---Tested functional area suite ' || p_test_suite, HIGH_DETAIL);
+    INSERT INTO server_test_run_statuses VALUES
+    (server_test_run_statuses_seq.nextval, 'NONE', -1, -1, -1,
+     'FAILED', -1, 'No tests defined in the database for ' || p_functional_area || ' Suite ' || p_test_suite);
+    COMMIT;
+  END IF;
 
 EXCEPTION
   WHEN invalid_suite_excp THEN
@@ -3035,8 +3638,6 @@ IS
    ORDER BY test_suite;
 
 BEGIN
-  log(DIAG,'--Testing functional area ' || p_functional_area, HIGH_DETAIL);
-
   -- note the functional area currently being processed for future reference
   g_current_functional_area := p_functional_area;
 
@@ -3047,14 +3648,14 @@ BEGIN
     test_functional_area_suite( p_functional_area, functional_area_suite.ts );
   END LOOP;
 
-  -- handle possibility of no tests suites being defined for specified functional area
-  -- rework to report cleanly
-  /*IF l_num_suites = 0 THEN
-    l_exception_message := 'No tests suites defined for specified functional area : ' || p_functional_area;
-    RAISE_APPLICATION_ERROR(invalid_functional_area, l_exception_message);
-  END IF;*/
+  IF l_num_suites = 0 THEN
+    log('No test suites defined in the database for ' || p_functional_area);
 
-  log(DIAG,'--Tested functional area ' || p_functional_area, HIGH_DETAIL);
+    INSERT INTO server_test_run_statuses VALUES
+    (server_test_run_statuses_seq.nextval, 'NONE', -1, -1, -1,
+     'FAILED', -1, 'No test suites defined in the database for ' || p_functional_area);
+    COMMIT;
+  END IF;
 
 EXCEPTION
   WHEN invalid_functional_area_excp THEN
@@ -3082,8 +3683,6 @@ IS
    WHERE functional_area != 'SEED_DATA';
 
 BEGIN
-  log(DIAG, '-Testing all functional areas', HIGH_DETAIL);
-
   -- test all functional areas
   l_num_fas := 0;
   FOR functional_area IN functional_areas LOOP
@@ -3091,12 +3690,27 @@ BEGIN
     test_functional_area( functional_area.fa );
   END LOOP;
 
-  -- handle possibility of no tests being defined
-  -- rework to report cleanly
+  IF l_num_fas = 0 THEN
+    log('No tests defined in the database');
 
-  log(DIAG, '-Tested all functional areas', HIGH_DETAIL);
+    INSERT INTO server_test_run_statuses VALUES
+    (server_test_run_statuses_seq.nextval, 'NONE', -1, -1, -1,
+     'FAILED', -1, 'No tests defined in the database');
+    COMMIT;
+  END IF;
 
 END test_all_functional_areas;
+
+
+
+
+-- =============================================================================
+--
+--                          Initialisation
+--
+-- =============================================================================
+
+
 
 
 -- =============================================================================
@@ -3234,7 +3848,6 @@ END retrieve_seed_data_backout;
 PROCEDURE initialisation( p_site_id IN VARCHAR2 )
 IS
 BEGIN
-
   -- ensure no logs exist before performing testing
   DELETE FROM server_test_logs;
   DELETE FROM server_test_run_statuses;
@@ -3257,6 +3870,17 @@ BEGIN
   retrieve_seed_data_backout();
 
 END initialisation;
+
+
+
+
+-- =============================================================================
+--
+--                          Top Level Processing
+--
+-- =============================================================================
+
+
 
 
 -- =============================================================================
