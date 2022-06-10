@@ -1,47 +1,83 @@
--- user1
 declare
-  l_col1 conctest.col1%type;
-  l_col2 conctest.col2%type;
+  l_total conctest.total%type;
 begin
-  -- step 1. User1 retrieves row of data
-  select col1, col2
-    into l_col1, l_col2
+
+  select nvl(total,0)
+    into l_total
     from conctest
    where myrowid = 1;
 
-  -- step 3. User1 modifies col1
-  l_col1 := 'updated by user1';
+  l_total := l_total + 1;
+
+  dbms_session.sleep(10);
 
   update conctest
-     set col1 = l_col1,
-         col2 = l_col2;
+     set total = l_total;
 end;
 
-declare
-  l_col1 conctest.col1%type;
-  l_col2 conctest.col2%type;
-begin
-  -- step 2. User2 retrieves same row of data
-  select col1, col2
-    into l_col1, l_col2
-    from conctest
-   where myrowid = 1;
+session 1 executes block
+session 2 executes block - hangs as session 1 is updating same row
+session 1 commits        - session 2 stops hanging. total = 1
+session 2 commits        - total = 1. Lost update
 
-  -- step 4. User2 modifies col2
-  l_col2 := 'updated by user2';
+HANGS AND COMPLETES BUT GET LOST UPDATE
 
-  update conctest
-     set col1 = l_col1,
-         col2 = l_col2;
-end;
-
-update to col1 is lost
+Some tools (e.g. Forms) protect against this by ensuring:
+- row unchanged from when I queried it (no updates from other sessions)
+- locked before I make changes
 
 
 Pessimistic Locking
 ===================
+query data without locking
+pick a row to update
+before changes made : SELECT blah FOR UPDATE NOWAIT
+re queries same row but locking against updates
 
+declare
+  l_total conctest.total%type;
+begin
+
+  select nvl(total,0)
+    into l_total
+    from conctest
+   where myrowid = 1 FOR UPDATE NOWAIT;
+
+  l_total := l_total + 1;
+
+  dbms_session.sleep(10);
+
+  update conctest
+     set total = l_total;
+end;
+
+
+RAISES LOCK ERROR, COMPLETES BUT DON'T GET LOST UPDATE
+Catch exception and retry
+
+Pessimistic as we're expecting someone to try and change the row
 
 
 Optimistic Locking
 ==================
+Keep old and new values in system
+
+
+Pessimistic locking preferred
+
+
+Blocking
+========
+INSERT, UPDATE, DELETE & SELECT FOR UPDATE all block
+
+SELECT FOR UPDATE
+-----------------
+Add NOWAIT and no longer blocks
+
+Blocked INSERTS
+---------------
+Only occurs if >1 session trying to create row with same primary key. Use sequences
+
+Blocked UPDATES & DELETES
+-------------------------
+Attempting to manipulate a row someone has already locked
