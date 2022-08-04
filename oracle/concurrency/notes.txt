@@ -81,3 +81,11 @@ Only occurs if >1 session trying to create row with same primary key. Use sequen
 Blocked UPDATES & DELETES
 -------------------------
 Attempting to manipulate a row someone has already locked
+
+
+Deadlock
+--------
+99% of time due to non indexed foreign keys
+See Expert one-on-one to resolve
+
+

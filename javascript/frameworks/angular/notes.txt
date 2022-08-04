@@ -1,70 +1,94 @@
-questions
-=========
+Setup
+=====
+1. Install Node
+---------------
+uninstall npm - npm uninstall -g npm
 
-=========
-browser
-^
-|
-bootstrap file(main.ts)
-^
-|
-root module (app.module.ts)
-^
-|
-root component (app.component.ts)  <- cf. grails controller
-^                       ^
-|                       |
-model (model.ts)        template (app.component.html)
+nodejs.org
+node -v shows currently installed version
+npm -v (node package manager)
+installed to C:/Program Files/nodejs
+added to PATH
 
+2. Install IDE
+--------------
+VS Code or Webstorm
 
-main.ts (bootstrap file)
-=======
-imports top level module and bootstraps from this
-ie. starts the application
+3. Angular CLI
+--------------
+cli.angular.io
 
-eg.
-import { AppModule } from './app/app.module';
-platformBrowserDynamic().bootstrapModule(AppModule)
+ngis command to run cli
+ng -v gives version
 
+npm install @angular/cli (scoped package name - @group/package)
+npm install @angular/cli    -> installs in current directory
+npm install @angular/cli -g -> installs globally
 
-app.module.ts (bootstrap module)
-=============
-specifies top level module:
-bootstrap: [AppComponent]
-
-imports required modules (also import files in which these modules are defined):
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ]
-
-declare imported components:
-  declarations: [
-    AppComponent
-  ]
-
-export the module:
-export class AppModule { }
+npm root -g
+C:\Users\steve.lambert\AppData\Roaming\npm\node_modules
 
 
-app.component.ts (root component)
-================
-manages content of <app-root> in the html document
-takes responsibility for top level content presented to user
-NB. No code in AppComponent class as root component exists just to manage content shown to user
+Create Project
+==============
+ng new first-project
 
-angular.json
-============
+Run the project
+===============
+ng serve
+- creates simple http server
+- hosts new project
 
-
-package.json
-============
-"json": "json-server data.js -p 3500 -m authMiddleware.js"
-static data 
+url:  http://localhost:4200/
 
 
-authMiddleware.js
+What was created?
 =================
+Root component in tree - placeholder for more lower level components
+Component is combination of view and backing logic
+This component is rendering the default angular page
+Root page is index.html referring to root component (src/app - app.module.ts, 
+                                                               app.component.css
+                                                                             html
+                                                                             ts
+                                                                             .spec.ts - testing)
+
+app.component.html - {{ title }} <- app.component.ts - title = 'first-project'
 
 
-              
+Create new sub component
+========================
+Can create the required files manually or use cli
+ng generate component hello-world
+files created in src/app/hello-world
+app.module.ts modified to import/register/recognise this new component
+selector defined in hello-world.component.ts
+add selector tag to app.component.html - <app-hello-world></app-hello-world>
+can use multiple times - how are they differentiated?
+
+
+Create new date component (needs js/ts functionality)
+=====================================================
+ng generate component date
+created in app/date
+selector defined in date.component.ts
+
+
+Components
+==========
+Every Angular component is mainly a Typescript class.
+HTML and CSS are basically attachments to this
+This class needs to be registered as an Angular component
+- so add meta data to class - annotation/decorator
+- @Component <- takes object with properties
+
+Completed part 7 - anatomy of a component
+
+
+
+
+
+
+
+
+
