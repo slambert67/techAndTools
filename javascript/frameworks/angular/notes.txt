@@ -82,9 +82,302 @@ This class needs to be registered as an Angular component
 - so add meta data to class - annotation/decorator
 - @Component <- takes object with properties
 
-Completed part 7 - anatomy of a component
+
+Binding data from component class
+=================================
+In html: {{ member variable name }}
+View automatically renders the value in the class instance - one way data binding
 
 
+Template Interpolation
+======================
+{{}} - Triggers Angular to do interpolation (string, expression etc)
+Interprets text in {{}} as something to be evaluated
+So not necessarily just a reference to a component variable
+e.g.
+{{ 1+1 }}
+{{ someNumber + 1 }}
+{{ addTwoNumbers(6,7) }}
+{{ addTwoNumbers(someNumber,7) }}
+Note that 'this' is not required
+
+
+Looping with ngFor
+==================
+Known as a directive - an attribute added to an element
+Determine html element to repeat
+<p *ngFor="let phoneNumber of user.phone">{{phoneNumber}}</p>
+loops over user.phone which is an array defined in component
+
+
+ngIf
+====
+Element removed from DOM if expression evaluates to false
+
+
+Passing inputs to components
+============================
+import angular/core/Input into component
+
+declare input parameter
+- @Input('nameInTemplate') nameInComponent: string;
+- then use this.nameInComponent
+
+pass value where component used: app.component.html
+<app-address-card-params suppliedName="new name"></app-address-card-params>
+
+associate suppliedName with component member variable
+@Input('suppliedName') username: String='';
+
+interpolate in html view
+<p>{{username}}</p>
+
+
+Using ngOnInit Lifecycle hook
+=============================
+Certain lifecycle events
+Constructor executes when html element refers to an angular component
+Populates member values after this
+ngOnInit called when instance created and initialised
+Lifecycle hooks made available to us with the use of interfaces (can act as compile time checks)
+
+*** See angular documentation for other lifecycle hooks ***
+
+
+Passing member variables to components
+======================================
+app.component.html
+<app-address-card [user]="user"></app-address-card>
+[] => "user" refers to user object defined in app.component.ts
+[user] refers to input variable defined in sub component
+"user" refers to instance name in parent component
+
+
+Styling Components
+==================
+.name refers to all name classes but want to confine to our component.
+could use .address-card .name
+But, in Angular, the CSS applies only to it's component. Angular adds it's own properties to implement this.
+Project root has src/styles.css for global styles
+
+
+Handling Click Events
+=====================
+Surround usual browser event with ()
+(click)="toggleCollapse()"
+
+
+Two way data binding with ngModel
+=================================
+{{}} -> string interpolation - always a string
+[]   -> binding. Preserves type. Useful for assigning html element attributes
+
+<input type="text" ngModel="inputText">
+ngModel requires a module import - to be discussed later
+app.module.ts : import { FormsModule } from '@angular/forms';
+<input type="text" [(ngModel)]="inputText"> => two way data binding on inputText
+[()] - banana in a box
+[] - pick up value from component and use in view.      Component -> View
+() - pick up value/event in view and pass to component. View -> Component
+
+
+Creating and using multiple modules
+===================================
+Project can contain multiple modules
+Module consolidates(?) different components
+Feature modules - group of related components
+
+ngModule annotation (decorator?) denotes a class as being an angular module
+
+declarations -> components that are a part of this module
+imports -> specify dependencies on other modules
+
+ng generate module <name>
+- folder created in src/app
+
+ng generate component view/view-component
+
+parent module imports child module
+child module must still export it's components
+
+import at top of file is a typescript import - types/classes must be imported
+within ngmodule it is an angular import
+
+
+Creating a Service
+==================
+ng generate service <name>
+created in src/app
+has @Injectable annotation
+c.f. @Component, @NgModule
+No update to *.module.ts - because not obvious where a developer will be using a Service
+So must be declared manually in modules that will be using it
+Defined in providers[] array property
+Now available for components to use
+
+
+Dependency Injection
+====================
+Easy initialisation of classes (and classes that depend on other classes)
+Framework handles object creation and injects the service into the component requiring it
+Define constructor parameter to hold injected service
+Assign to member variable so available to the whole component
+
+constructor( private svc: TestService ) {}
+- shortcut to create svc member variable
+
+
+Service Injection Context
+=========================
+Components & Services work differently in the context of modules
+
+components
+- declared inside modules
+- available only to other components in the module
+- add to module exports so available to other modules
+- other modules have to import
+summary for component to be used outside it's module
+- owning module must export
+- using module must import
+
+Services
+- listed in module providers array
+- Injected into component
+- Inner components also have access
+- SERVICES ARE NOT RESTRICTED TO THE MODULE THEY ARE DECLARED IN!
+- There is a common shared space for Services - Service Injection Context
+- So why not declare in ANY module? Lazy Loading
+
+Lazy Loading
+- Affects how Service Injection Context works
+- We've explicitly loaded modules so far (I think - imports)
+- Another way is Lazy Loading - multiple Injection Contexts
+- Therefore different instances of a Service - which instance do I get. *** RESEARCH LATER ***
+
+
+Making REST calls with HttpClient
+=================================
+HttpClient service available out of the box
+Import module that this service comes with - HttpClientModule
+Makes sense to import this service from root module
+
+app.module.ts
+-------------
+import { HttpClientModule } from '@angular/common/http'; <- TS import of module
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    ViewModule
+  ],
+
+app.component.ts
+----------------
+import { HttpClient } from '@angular/common/http'; <- TS import of service
+
+  // I need TestService and HttpClient service
+  constructor(private svc: TestService, private http: HttpClient) {
+    this.svc.printToConsole('Got the service');
+  }
+
+  ngOnInit() {
+    // asynchronous operation. asynchronous object returned called an observable (Promise in angularJS)
+    let obs = this.http.get('https://api.github.com/users/koushikkothagal');
+    obs.subscribe( (response: any) => console.log(response));
+    console.log('This prints before result from asynchronous request');
+  }
+
+
+Extending the sample application
+================================
+response may be used in view after a search for example
+but response object not available on initialisation
+So
+<div *ngIf="restResponse">
+    {{restResponse.login}}
+</div>
+or
+response?.login
+
+
+Binding summary
+===============
+<h1>Binding project is up and running</h1>
+
+<p>This is just some view text - no binding</p>
+
+<!-- 
+  View automatically renders the value in the class instance member variable 
+  String / expression interpolation etc
+  Interprets text in {{}} as something to be evaluated
+  Note that 'this' is not required
+-->
+<h5>One way bound with double curly brackets</h5>
+<p>{{var1}}</p>
+
+<h5>Array values accessed by specifying index</h5>
+<p>{{arr1[0]}} - {{arr1[1]}}</p>
+
+<!--
+  Member variable accessed directly within <p>. {{}} not needed?
+-->
+<h5>Array values accessed using ngfor</h5>
+<p *ngFor="let entry of arr1">{{entry}}</p>
+
+<!-- 
+  sub component 
+  Pass hard coded value to sub component - use an attribute
+  c.f. <img src="xyz">
+  code subcomponent to accept this as input
+-->
+<h5>Hard coded value passed in</h5>
+<app-sub squoink="value of squoink"></app-sub>
+
+<!--
+  Pass member variable of parent to sub component
+  [] tells angular to treat entry in quotes as a member variable
+  simple string here but works with objects
+-->
+<h5>Member variable value passed in</h5>
+<app-sub [squoink]="var1"></app-sub>
+
+<!--
+  Try interpolation
+-->
+<h5>Member variable passed in using interpolation</h5>
+<app-sub squoink="{{var1}}"></app-sub>
+
+<!--
+  View updating data in component and then reflected back in view where appropriate
+  ngModel requires import of standard angular module
+-->
+<h5>Two way data binding</h5>
+<input type="text" [(ngModel)]="inputText1">
+{{inputText1}}
+
+<!-- 
+  one way from view to component 
+  Not sure how
+-->
+
+
+Building an Angular project
+===========================
+ng serve
+- looks at codebase
+- bundles up modules
+- creates local server (dev server)
+  - lots of js files loaded
+  - not minified
+  - not consolidated
+- need optimisations when deploying
+- deployed as 3 files: html, css, js
+- ng build bundles files
+- files stored in dist folder
+- Need to run in production mode for optimisations
+- ng build --prod
+- also does AOT - ahead of time compilation
+  - templates compiled. Angular compiler not downloaded when page is accessed
 
 
 

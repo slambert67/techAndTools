@@ -1,0 +1,69 @@
+<h1>Binding project is up and running</h1>
+
+<p>This is just some view text - no binding</p>
+
+<!-- 
+  View automatically renders the value in the class instance member variable 
+  String / expression interpolation etc
+  Interprets text in {{}} as something to be evaluated
+  Note that 'this' is not required
+-->
+<h5>One way bound with double curly brackets</h5>
+<p>{{var1}}</p>
+
+<h5>Array values accessed by specifying index</h5>
+<p>{{arr1[0]}} - {{arr1[1]}}</p>
+
+
+<!--
+  Member variable accessed directly within <p>. {{}} not needed?
+-->
+<h5>Array values accessed using ngfor</h5>
+<p *ngFor="let entry of arr1">{{entry}}</p>
+
+
+
+
+<!-- 
+  sub component 
+  Pass hard coded value to sub component - use an attribute
+  c.f. <img src="xyz">
+  code subcomponent to accept this as input
+-->
+<h5>Hard coded value passed in</h5>
+<app-sub squoink="value of squoink"></app-sub>
+
+
+
+<!--
+  Pass member variable of parent to sub component
+  [] tells angular to treat entry in quotes as a member variable
+  simple string here but works with objects
+-->
+<h5>Member variable value passed in</h5>
+<app-sub [squoink]="var1"></app-sub>
+
+
+<!--
+  Try interpolation
+-->
+<h5>Member variable passed in using interpolation</h5>
+<app-sub squoink="{{var1}}"></app-sub>
+
+
+<!--
+  View updating data in component and then reflected back in view where appropriate
+  ngModel requires import of standard angular module
+-->
+<h5>Two way data binding</h5>
+<input type="text" [(ngModel)]="inputText1">
+{{inputText1}}
+
+
+<!-- 
+  one way from view to component 
+  Not sure how
+-->
+
+
+
