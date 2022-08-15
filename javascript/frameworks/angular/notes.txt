@@ -380,6 +380,121 @@ ng serve
   - templates compiled. Angular compiler not downloaded when page is accessed
 
 
+Routing
+=======
+Dynamically change view. No traditional full page refresh
+Routing changes content of whole viewport
+Simulates full page refresh
+Why not different divs controlled by ngIf? - apparently quite tedious?
+
+2 principles
+
+- URL based routing
+  - foo.com/view1, foo.com/view2 etc
+  - view urls need to be exposed
+  - index.html loaded and then angular works out whichview to display
+
+- Component based routing
+  - not suitable to have a component responsible for multiple views
+  - so 1 ROOT component per view
+  - view1 has component tree, view2 has component tree etc
+
+view		url					component
+----		---					---------
+view1		foo.com/view1		component1 (+ tree of subcomponents)
+view2		foo.com/view2		component2 (+ tree of subcomponents)
+
+Angular app
+- define route urls
+- create ROOT components responsible for each view
+- configure angular to map route URLs to ROOT components
+
+
+Creating angular project with routing
+=====================================
+ng new routing-intro --routing
+@angular/router added to dependencies in package.json
+Provides routing template config
+array of Routes
+e.g.
+const routes: Routes = [
+  {path: 'home', component: HomeComponent},
+  {path: 'settings', component: SettingsComponent}
+];
+adds <router-outlet> to view (app.component.html)
+component view injected into this element
+http://localhost:4200/home
+http://localhost:4200/settings
+
+
+Route redirects and wildcards
+=============================
+Can setup default route
+-----------------------
+{path: '', component: HomeComponent}
+-> shows that multiple paths can be mapped to the same component
+
+{path: '',     component: HomeComponent}
+{path: 'home', component: HomeComponent}
+Not a recommended construct
+Redirect is better than copy
+{path: '', redirectTo: '/home', pathMatch: 'full'} - / needed as not a relative path
+
+
+Can handle non existent routes
+------------------------------
+{path: '**', component: PageNotFoundComponent}
+
+
+Configuring child routes
+========================
+Suppose we have child pages of /settings e.g. /settings/profile, /settings/contact
+Specify children of an existing parent route
+
+  {
+    path: 'settings', 
+    component: SettingsComponent,
+    children: [
+      {path: 'profile', component: SettingsProfileComponent},
+      {path: 'contact', component: SettingsContactComponent}
+    ]
+  },
+
+Child components also need a <router-outlet>
+
+
+Showing navigation for routes
+=============================
+<a href="/home">Home</a>
+<a href="/settings">Settings</a>
+This does a full page refresh. href tells browser to do this
+
+We need to tell angular to change the route
+<a routerLink="home">Home</a>
+<a routerLink="settings">Settings</a>
+Why not ngRouterLink?
+
+
+Next Steps
+==========
+Deep dive into components
+Testing (Jasmine, Protractor)
+Deep dive into routing
+RxJS
+State Management - ngRx
+
+
+
+
+
+
+
+BEAR IN MIND?
+No, changing Routes to Route[] makes no difference. Here's why:
+'Route' is a single route. To create an array of 'Route', you simply write: Route[]
+Now, 'Routes' already is an array-type of 'Route'. 
+Route[] and Routes are semantically the same, it highly depends on what style YOU or your company's style guideline requires you to use. 
+Changing the import was necessary to introduce Angular to the new type.
 
 
 
