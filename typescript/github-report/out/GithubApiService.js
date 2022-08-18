@@ -23,21 +23,31 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const GithubApiService_1 = require("./GithubApiService");
-const _ = __importStar(require("lodash"));
-let svc = new GithubApiService_1.GithubApiService();
-if (process.argv.length < 3) {
-    console.log('Enter user');
-}
-else {
-    let username = process.argv[2];
-    svc.getUserInfo(username, (user) => {
-        console.log(process.argv);
-        svc.getRepos(username, (repos) => {
-            let sortedRepos = _.sortBy(repos, [(repo) => repo.forkCount]);
-            let filteredRepos = _.take(sortedRepos, 3);
-            user.repos = filteredRepos;
-            console.log(user);
+exports.GithubApiService = void 0;
+const request = __importStar(require("request"));
+const User_1 = require("./User");
+const Repo_1 = require("./Repo");
+const OPTIONS = {
+    headers: {
+        'User-Agent': 'request'
+    }
+};
+class GithubApiService {
+    getUserInfo(userName, cb) {
+        request.get('https://api.github.com/users/' + userName, OPTIONS, (error, response, body) => {
+            //console.log(response);
+            //console.log(error);
+            //console.log(body);
+            let user = new User_1.User(JSON.parse(body)); // can alternatively set json:true in options
+            //console.log( user );
+            cb(user);
         });
-    });
+    }
+    getRepos(userName, cb) {
+        request.get('https://api.github.com/users/' + userName + '/repos', OPTIONS, (error, response, body) => {
+            let repos = JSON.parse(body).map((repo) => new Repo_1.Repo(repo));
+            cb(repos);
+        });
+    }
 }
+exports.GithubApiService = GithubApiService;

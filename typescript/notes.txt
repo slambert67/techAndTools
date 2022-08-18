@@ -172,8 +172,8 @@ Essentially, a type placeholder with a restriction
 
 Modules
 =======
-export class Person {} - NB - actually executes the code in this file!
-import {Person} from './classes' - relative path. .ts not required
+export class Person {} 
+import {Person} from './classes' - relative path. .ts not required. - NB - actually executes the code in this file!
 
 
 Compiler arguments
@@ -229,8 +229,17 @@ npm install request lodash --save  (request is http request functionality)
 npm install @types/lodash @types/request --save-dev
 
 
-Creating model classes
-======================
+And all the rest
+================
+https://api.github.com/users/koushikkothagal
+See github-report
+
+Cannot return a value directly from asynchronous method
+Many ways to handle this
+- promises
+- observables
+- callbacks (basic way)
+
 
 
 
