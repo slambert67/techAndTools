@@ -475,6 +475,18 @@ We need to tell angular to change the route
 Why not ngRouterLink?
 
 
+Dependency Injection - 2
+========================
+Dependency Injection subsystem - DI
+
+Dependency Consumer
+Dependency Provider
+	
+@Injector() decorator shows that class can be injected
+
+
+
+
 Next Steps
 ==========
 Deep dive into components
@@ -485,18 +497,175 @@ State Management - ngRx
 
 
 
+Deborah Kurata
+==============
+import part of ES2015
+
+Bootstrap
+---------
+index.html to host application
+define angular module
+ES2015 backticks allow composing HTML over multiple lines - template interpolation?
+styles.css is used for global styling
+
+to use component selector as a directive
+- owning component must be part of module
+or
+- it must have been imported into module
+
+Directive - custom html element or attribute
+
+* prefix denotes structural directive
+
+*ngIf, *ngFor in BrowserModule
+
+for of 
+- iterables. [a,b,c] -> a,b,c
+vs for in
+- iterates over properties of an object [a,b,c] -> 0,1,2
+
+
+Binding
+=======
+Interpolation
+-------------
+{{title}} : title is a member variable of component class
+
+{{showImage ? 'Hide' : 'Show'}} <- why does this work as showImage is Boolean
+
+Property Binding
+----------------
+<img [src]='product.imageUrl'>
+- src is element property
+- value is template expression - member variable of component class
+c.f
+<img src={{product.imageUrl}}>
+one way from component to html
+
+Event binding
+-------------
+Connect event to component method
+<button (click)='toggleImage()'>
+
+Two way binding
+===============
+<input type='text' [(ngModel)]='listFilter'>
+[] : component to html
+() : html (change) event/value -> component. Think event sent so other mechanism to update component?
+
+
+Pipes
+=====
+Transform bound properties before display
+Built in pipes: date, number,decimal,percent,currency,json etc
+Can build custom pipes
+{{product.productCode | lowercase}}
+can chain pipes
+pipe1 | pipe2
+some pipes can take params
+currency:'USD':'symbol':'1.2-2'
+
+
+Improving components
+====================
+strong typing and interfaces
+encapsulating styles
+lifecycle hooks
+custom pipes
+nested components
+
+
+Interfaces
+==========
+Two primary ways to use
+- define custom/unique data types
+- feature set - define methods and properties class must have
+
+
+Nested Components
+=================
+Use as
+- directive
+- routing target
+
+parent passes info to child with @Input
+child passes info to parent by emitting event @Output. EventEmitter
+
+child
+@Output() notify: EventEmitter<string> = new EventEmitter<string>();
+<string> identifies kind of data passed with the event
+
+onClick() {this.notify.emit('clicked')}
+
+parent.html
+<child (notify)='onNotify($event)'
+
+
+Services and Dependency Injection
+=================================
+could do this:
+let svc = new myService()
+local to component so cannot share data
+more difficult to mock for testing?
+
+or
+
+register service with angular (angular injector)
+creates single instance of this class - singleton
+maintains a container of created service instances
+
+Remember constructor argument approach to injecting services
+
+Dependency injection definition
+-------------------------------
+A coding pattern in which a class receives instances of objects it needs (dependencies) from an external source
+rather than creating them itself
+
+Root injector - available to all. 
+- @Injectable decorator property. providedIn:'root'
+
+Component injector - available to component and its children. 1 instance for each instance of component
+- @Component decorator property. providers:[ProductService]
+
+Service does not need to be defined in an angular module?
+
+
+
+Observables and Reactive Extensions (RxJS)
+==========================================
+Observable sequence = Observable stream
+- collection of items over time
+- unlike an array doesn't retain items
+- emitted items can be observed over time
+
+Observer emits 3 types of notifications
+- next notification
+- error notification - observable completes
+- complete notification
+
+http get
+- http get
+- returns observable which will emit notifications
+- subscribe to start observable
+
+observable pipe - transform emitted items
+
+common usage
+- start the observable (subscribe)
+- pipe emitted items through a set of operators
+- process notifications (next, error, complete
+- stop observable (unsubscribe)
 
 
 
 
-BEAR IN MIND?
-No, changing Routes to Route[] makes no difference. Here's why:
-'Route' is a single route. To create an array of 'Route', you simply write: Route[]
-Now, 'Routes' already is an array-type of 'Route'. 
-Route[] and Routes are semantically the same, it highly depends on what style YOU or your company's style guideline requires you to use. 
-Changing the import was necessary to introduce Angular to the new type.
 
 
+---------
+typescript does not need keyword function?
+: void for no return type
 
-
+ngModule decorator
+declarations for our own components
+import for angular and external modules
 

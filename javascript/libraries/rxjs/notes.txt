@@ -1,6 +1,2 @@
-Observable: Invokable collection of future values or events
-Observer: collection of callbacks that knows how to listen to values delivered by an Observable
-Subscription: represents execution of an Observable. Primarily useful for cancelling the execution
-Operators: map, filter, concat etc
-Subject: cf eventEmitter. Only way of multicasting a value or event to multiple Observers
-Schedulers: centralised dispatchers to control concurrency.
+Reactive Programming
+- Paradigm that works with ASYNCHRONOUS DATA STREAMS
