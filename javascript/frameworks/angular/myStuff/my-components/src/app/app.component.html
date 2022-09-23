@@ -1,0 +1,41 @@
+<!--
+players is defined in COMPONENT
+DATA BINDING
+When you write a DATA BINDING, you're dealing exclusively with the DOM PROPERTIES and EVENTS of the target object.
+as opposed to HTML ATTRIBUTES
+The target of a data binding can be a property, an event, or an attribute name.
+- ONE WAY
+  - {{selectedPlayer}}              - COMPONENT member value to VIEW/DOM  - INTERPOLATION
+  - (click)="selectPlayer(player)"  - VIEW/DOM event to COMPONENT         - EVENT BINDING
+- TWO WAY
+  - Combines PROPERTY and EVENT BINDING in a single notation
+  - [(ngModel)]="twoWayBinding"
+    - () - User changes flow  TO    COMPONENT FROM  VIEW setting property as with         EVENT BINDING
+    - [] - Value flows        FROM  COMPONENT TO    VIEW setting displayed value as with  PROPERTY BINDING
+- Summary
+Use [] to bind from source to view
+Use () to bind from view to source
+Use [()] to bind in a two-way sequence of view to source to view
+
+-->
+<h2>Player List</h2>
+
+<p>Select a player from the list to see details.</p>
+
+<ul>
+  <li *ngFor="let player of players">
+    <button type="button" (click)="selectPlayer(player)">
+      <P>{{player}}</P> <!-- INTERPOLATION -->
+    </button>
+  </li>
+</ul>
+
+<p>You have selected {{selectedPlayer}}</p>
+
+<h5>Two way data binding</h5>
+<input type="text" [(ngModel)]="twoWayBinding">
+{{twoWayBinding}}
+<p><button type="button" (click)="doubleNumber()">Double</button></p>
+
+<!-- Parent/Child interaction -->
+<app-p1></app-p1>

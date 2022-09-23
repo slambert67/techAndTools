@@ -669,3 +669,47 @@ ngModule decorator
 declarations for our own components
 import for angular and external modules
 
+
+Custom Directives
+=================
+Those directives can add and remove copies of the template content based on their own logic.
+One structural directive per element
+
+Prefixed by * -> Angular transforms into ng-template
+
+eg.
+<div
+  *ngFor="let hero of heroes; let i=index; let odd=odd; trackBy: trackById"
+  [class.odd]="odd">
+  ({{i}}) {{hero.name}}
+</div>
+
+becomes:
+<ng-template ngFor let-hero [ngForOf]="heroes"
+  let-i="index" let-odd="odd" [ngForTrackBy]="trackById">
+  <div [class.odd]="odd">
+    ({{i}}) {{hero.name}}
+  </div>
+</ng-template>
+
+Custom directive creates an 'embedded view' from ng-template (TemplateRef)
+Inserts into 'view container' (ViewContainerRef) adjacent to directive's host element
+ViewContainerRef contains TemplateRef?
+
+ng generate directive <name>
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+Inject TemplateRef and ViewContainerRef in the directive constructor as private variables
+- thought injection was for services?
+
+
+
+Questions for Future Processing
+===============================
+  <li *ngFor="let player of players">
+    <button type="button" (click)="selectPlayer(player)">
+      <P>{{player}}</P>
+    </button>
+  </li>
+players is a member variable but player isn't so why does interpolation work?
+
+
