@@ -1,14 +1,20 @@
 import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, ViewChild } from '@angular/core';
+import {C1Component} from "../c1/c1.component";
 
 @Component({
   selector: 'app-p1',
   templateUrl: './p1.component.html',
   styleUrls: ['./p1.component.css']
 })
-export class P1Component implements OnInit {
+export class P1Component implements OnInit, AfterViewInit {
 
   parentName!: string;
   childEventText!: string;
+
+  // gives parent class access to child class
+  @ViewChild(C1Component)
+  private c1!: C1Component;
 
   /*
   A parent component cannot use data binding to read child properties or invoke child methods
@@ -26,7 +32,7 @@ export class P1Component implements OnInit {
   Because the class instances are not connected to one another, the parent class cannot access the child class properties and methods.
   When the parent component class requires that kind of access, inject the child component into the parent as a ViewChild
    */
-  // todo
+  // done
 
 
   /*
@@ -37,10 +43,17 @@ export class P1Component implements OnInit {
    */
   // todo
 
+  // Conditional content projection
+  // todo
+
   constructor() { }
 
   ngOnInit(): void {
     this.parentName = 'P1';
+  }
+
+  ngAfterViewInit() {
+    this.c1.invokedByParentClass();
   }
 
   onChildEvent( eventText: string) {

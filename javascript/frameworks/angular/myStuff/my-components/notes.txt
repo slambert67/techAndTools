@@ -5,4 +5,9 @@ app.component
 Parent/Child communication
 ==========================
 P1,C1
-Property binding, event handling, template reference
+Property binding, event handling, template reference, ViewChild
+Content Projection
+
+P2
+Dynamic Component
+todo

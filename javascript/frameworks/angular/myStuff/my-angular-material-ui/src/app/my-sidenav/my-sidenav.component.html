@@ -1,0 +1,12 @@
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #sidenav mode="side" position="end" opened>
+    <label for="name">Name (4 to 8 characters):</label>
+
+    <input type="text" id="name" name="name" required
+           minlength="4" maxlength="8" size="10">
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <p>Main content</p>
+    <p><button mat-button (click)="sidenav.toggle()">Toggle sidebar</button></p>
+  </mat-sidenav-content>
+</mat-sidenav-container>

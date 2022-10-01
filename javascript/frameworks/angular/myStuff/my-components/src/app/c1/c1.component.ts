@@ -35,13 +35,17 @@ export class C1Component implements OnInit {
     this.x = false;
   }
 
-  invokedByParent() {
+  invokedByParentTemplate() {
     this.x = !this.x;
     if (this.x) {
       this.y = "Clicked by parent";
     } else {
       this.y = "Unclicked by parent";
     }
+  }
+
+  invokedByParentClass() {
+    console.log("Invoked by parent class");
   }
 
 }

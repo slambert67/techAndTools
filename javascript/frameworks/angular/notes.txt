@@ -713,3 +713,8 @@ Questions for Future Processing
 players is a member variable but player isn't so why does interpolation work?
 
 
+[(ngModel)]="twoWayBinding"
+() is event binding 	i.e. DOM to Component
+[] is property binding 	i.e. DOM to Component
+
+

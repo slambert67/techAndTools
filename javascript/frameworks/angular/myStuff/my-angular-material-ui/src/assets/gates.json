@@ -1,0 +1,76 @@
+[
+  {
+    "links": [
+      {
+        "rel": "self",
+        "href": "/v1/resources/gates/245561"
+      }
+    ],
+    "resource": {
+      "id": 245561,
+      "airport": "AOS",
+      "category": "gate",
+      "name": "A24",
+      "description": "Gate A24",
+      "terminal": "1",
+      "status": "serviceable"
+    },
+    "flights": [
+      {
+        "direction": "departure",
+        "id": 511231,
+        "flightIdentity": "SK763",
+        "flightRepeatCount": 0,
+        "scheduledTime": "2022-09-28T07:40:00Z",
+        "allocationStartTime": "2022-09-28T06:55:00Z",
+        "allocationEndTime": "2022-09-28T07:40:00Z"
+      },
+      {
+        "direction": "departure",
+        "id": 490531,
+        "flightIdentity": "BA216",
+        "flightRepeatCount": 0,
+        "scheduledTime": "2022-09-28T08:00:00Z",
+        "allocationStartTime": "2022-09-28T07:15:00Z",
+        "allocationEndTime": "2022-09-28T08:00:00Z"
+      }
+    ]
+  },
+  {
+    "links": [
+      {
+        "rel": "self",
+        "href": "/v1/resources/gates/245571"
+      }
+    ],
+    "resource": {
+      "id": 245571,
+      "airport": "AOS",
+      "category": "gate",
+      "name": "B01",
+      "description": "Gate B01",
+      "terminal": "2",
+      "status": "serviceable"
+    },
+    "flights": [
+      {
+        "direction": "departure",
+        "id": 516951,
+        "flightIdentity": "AH944",
+        "flightRepeatCount": 0,
+        "scheduledTime": "2022-09-28T11:10:00Z",
+        "allocationStartTime": "2022-09-28T10:25:00Z",
+        "allocationEndTime": "2022-09-28T11:10:00Z"
+      },
+      {
+        "direction": "departure",
+        "id": 514971,
+        "flightIdentity": "BA888",
+        "flightRepeatCount": 0,
+        "scheduledTime": "2022-09-28T16:05:00Z",
+        "allocationStartTime": "2022-09-28T15:20:00Z",
+        "allocationEndTime": "2022-09-28T16:05:00Z"
+      }
+    ]
+  }
+]

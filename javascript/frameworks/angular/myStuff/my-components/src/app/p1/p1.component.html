@@ -1,5 +1,8 @@
 <h2>P1</h2>
-<app-c1 #childReferenceTemplate [c1Attribute1]="parentName" [c1Attribute2]=2 (c1Event)="onChildEvent($event)"></app-c1>
+<app-c1 #childReferenceTemplate [c1Attribute1]="parentName" [c1Attribute2]=2 (c1Event)="onChildEvent($event)">
+  <p>Parent content projected to child</p>
+  <p squoink>Parent content projected to child using selector</p>
+</app-c1>
 <p>Event received from child - {{childEventText}}</p>
-<button (click)="childReferenceTemplate.invokedByParent()">Invoke child method</button>
+<button (click)="childReferenceTemplate.invokedByParentTemplate()">Invoke child method</button>
 

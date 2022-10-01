@@ -2,3 +2,10 @@
 <p>My parent is {{attr1}}</p>
 <p>Doubled attr2 = {{attr2}}</p>
 <p>{{y}}</p>
+
+<!-- Content projected from parent - default-->
+<ng-content></ng-content>
+
+<!-- Content projected from parent - selectors -->
+<ng-content select="[squoink]"></ng-content>
+

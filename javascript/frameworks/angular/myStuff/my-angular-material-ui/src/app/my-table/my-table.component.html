@@ -1,0 +1,18 @@
+<p>my-table works!</p>
+
+<!-- Table with column headers only - no data-->
+
+<table mat-table>
+  <!-- No data so no need to specify dataSource -->
+
+  <!--
+    ng-container needed for each column definition. Here we loop over a data structure defining the columns
+    columnDefs is just an array of objects
+  -->
+  <ng-container [matColumnDef]="column.field" *ngFor="let column of columnDefs">
+    <th mat-header-cell *matHeaderCellDef>{{column.label}}</th>>
+  </ng-container>
+
+  <!-- columnsToDisplay defines a subset of the columns defined above -->
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+</table>
