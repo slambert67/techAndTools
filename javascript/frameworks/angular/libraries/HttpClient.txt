@@ -1,0 +1,16 @@
+import { HttpClient } from '@angular/common/http';
+constructor(private _http: HttpClient) {}
+
+Fetching from assets
+angular.json
+						"assets": [
+							"src/favicon.ico",
+							"src/assets",
+              {
+                "glob": "**/*",
+                "input": "src/assets/",
+                "output": "/gates-mf/assets/"
+              }
+						],
+
+this._http.get('gates-mf/assets/grid-columns-to-display.json');

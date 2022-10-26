@@ -17,6 +17,14 @@ Use [] to bind from source to view
 Use () to bind from view to source
 Use [()] to bind in a two-way sequence of view to source to view
 
+Dynamic Components
+------------------
+Component templates are not always fixed
+An application might need to load new components at runtime.
+Need a way to load a new component without a fixed reference to the component in the template.
+Angular comes with its own API for loading components dynamically
+Before adding components, you have to define an anchor point to tell Angular where to insert components
+
 -->
 <h2>Player List</h2>
 
@@ -39,3 +47,9 @@ Use [()] to bind in a two-way sequence of view to source to view
 
 <!-- Parent/Child interaction -->
 <app-p1></app-p1>
+
+<!-- Dynamic component - no config -->
+<app-dynamic-comp-container></app-dynamic-comp-container>
+<hr>
+<!-- Dynamic component - config -->
+<app-dynamic-comp-with-config></app-dynamic-comp-with-config>

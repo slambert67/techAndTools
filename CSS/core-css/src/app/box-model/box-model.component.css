@@ -1,0 +1,75 @@
+/*
+               margin
+               border
+               padding
+  --------------------------------- ---
+  |                               |  |
+  |        content                | height
+  |                               |  |
+  --------------------------------- ---
+  <        width                  >
+
+  box-sizing: content-box DEFUALT
+    sizes refer to content box
+    total box size = content + padding + border
+
+  box-sizing: border-box
+    sizes refer to content + padding + border
+
+  padding adds space between content and border
+
+  margin NOT counted towards actual size
+  margin is an invisible space around the box and pushes other elements away
+  adjacent margins collapse and take on largest of 2 values - see box 3
+
+
+ */
+
+#container {
+  background-color: yellow;
+}
+
+#box1 {
+  background-color: red;
+  border: solid black;
+/*  padding: 10px 20px 30px 40px;*/
+}
+
+#box2 {
+  background-color: green;
+  border: solid black;
+  /*  padding: 10px 20px 30px 40px;*/
+  padding-top: 40px;
+  padding-bottom: 40px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+#box3 {
+  background-color: orange;
+  border: solid black;
+  /*  padding: 10px 20px 30px 40px;*/
+}
+
+#p1 {
+  border:solid;
+  background-color: aqua;
+  padding: 20px;
+  margin-bottom: 100px;
+}
+#p2 {
+  border:solid;
+  background-color: hotpink;
+  padding: 20px;
+  margin-top: 100px;
+}
+
+#box4 {
+  background-color: darkolivegreen;
+  border: solid black;
+  padding: 50px;
+}
+#p3 {
+  padding: 50px;
+  border-radius: 30px;
+}

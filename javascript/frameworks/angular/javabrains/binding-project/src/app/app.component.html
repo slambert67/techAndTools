@@ -2,8 +2,8 @@
 
 <p>This is just some view text - no binding</p>
 
-<!-- 
-  View automatically renders the value in the class instance member variable 
+<!--
+  View automatically renders the value in the class instance member variable
   String / expression interpolation etc
   Interprets text in {{}} as something to be evaluated
   Note that 'this' is not required
@@ -20,8 +20,8 @@
 <h5>Array values accessed using ngfor</h5>
 <p *ngFor="let entry of arr1">{{entry}}</p>
 
-<!-- 
-  sub component 
+<!--
+  sub component
   Pass hard coded value to sub component - use an attribute
   c.f. <img src="xyz">
   code subcomponent to accept this as input
@@ -46,13 +46,19 @@
 <!--
   View updating data in component and then reflected back in view where appropriate
   ngModel requires import of standard angular module
+  [(ngModel)]="inputText1" is the shorthand for [ngModel]="inputText1" (ngModelChange)="inputText1 = $event"
+  The ng-model directive binds the value of HTML controls (input, select, textarea) to application data
 -->
 <h5>Two way data binding</h5>
 <input type="text" [(ngModel)]="inputText1">
 {{inputText1}}
+<hr>
 
-<!-- 
-  one way from view to component 
+
+
+
+<!--
+  one way from view to component
   Not sure how
 -->
 

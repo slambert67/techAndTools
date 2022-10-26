@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {MyGate} from "../models/Gates/myGates";
 
 @Injectable()
 export class MyService {
@@ -20,6 +21,10 @@ export class MyService {
 
   fetchGateData(): Observable<any> {
     return this._http.get('assets/gates.json');
+  }
+
+  fetchMyGateData(): Observable<any> {
+    return this._http.get('assets/my-gates.json');
   }
 
   fetchFlightData(flightARI: number): Observable<any> {

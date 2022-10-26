@@ -3,7 +3,7 @@ Reactive Programming
 
 npm install rxjs
 npm install @types/node
-import {Observable, of} from "rxjs";
+	
 
 Asynchronous
 ============

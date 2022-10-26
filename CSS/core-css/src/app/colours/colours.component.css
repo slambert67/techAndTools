@@ -1,0 +1,16 @@
+#wrapper * {
+  padding: 20px;
+  font-size: 20px;
+/*  border: 20px solid rgba(0,0,0,0.5);*/
+  border: 20px solid;
+}
+
+#wrapper main {
+  background-color: yellow;
+  color: red;
+  border-left-color: blue;
+  border-right-color: blueviolet;
+  border-top-color: darkgreen;
+  border-bottom-color: darkturquoise;
+  width: 50%;
+}

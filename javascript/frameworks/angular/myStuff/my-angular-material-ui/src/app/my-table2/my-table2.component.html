@@ -13,19 +13,19 @@ columnsToDisplay defines a subset of the columns defined above
 <!-- Pass in ALL CONFIG when ready -->
 <table mat-table>
 
-  <ng-container [matColumnDef]="column.field" *ngFor="let column of columnDefs">
+  <ng-container [matColumnDef]="column.field" *ngFor="let column of columnDefs | async">
     <th mat-header-cell *matHeaderCellDef>{{column.label}}</th>>
   </ng-container>
-  <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplay | async"></tr>
 </table>
 
 
 
-<!-- Table with data -->
+<!-- Table with data
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container [matColumnDef]="column.field" *ngFor="let column of columnDefs">
     <td mat-cell *matCellDef="let element">{{element[column.field]}}</td>
   </ng-container>
   <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
-</table>
+</table>-->
 

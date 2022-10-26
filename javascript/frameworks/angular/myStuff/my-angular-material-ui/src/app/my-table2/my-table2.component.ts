@@ -17,24 +17,30 @@ import {HttpClient} from "@angular/common/http";
 export class MyTable2Component implements OnInit {
 
   //columnDefs!: Array<GatesGridColumnDef>;
-  columnDefs!: GatesGridColumnDef[];
-  columnsToDisplay!: string[];
+  columnDefs!: Observable<GatesGridColumnDef[]>;
+  columnsToDisplay!: Observable<string[]>;
 
-  public dataSource = new MatTableDataSource<MyGate>();
+  //public dataSource = new MatTableDataSource<MyGate>();
 
   constructor(private _gateService: MyService, private httpClient: HttpClient) { }
 
+  ngOnInit() {
+    this.columnDefs = this._gateService.fetchColumnDefs();
+    this.columnsToDisplay = this._gateService.fetchColumnsToDisplay();
+  }
+
+  /*
   ngOnInit(): void {
-    /*
+
       "compilerOptions": {
     "resolveJsonModule": true,
     "esModuleInterop": true,
-     */
+
     this.columnDefs =  ColumnDefs;
     this.columnsToDisplay = ColumnsToDisplay;
 
     this.getData();
-    /*this._gateService.fetchColumnDefs().subscribe( res1 => {
+    this._gateService.fetchColumnDefs().subscribe( res1 => {
 
       this._gateService.fetchColumnsToDisplay().subscribe( res2 => {
         console.log(res1);
@@ -42,7 +48,7 @@ export class MyTable2Component implements OnInit {
         this.columnDefs = res1;
         this.columnsToDisplay = res2;
       })
-    });*/
+    });
   }
 
   getData() {
@@ -50,6 +56,8 @@ export class MyTable2Component implements OnInit {
       console.log(res);
       this.dataSource.data = res;
     });
-  }
+
+
+  }*/
 
 }

@@ -12,4 +12,5 @@ export class AppComponent {
   inputText1!: string;
   inputText2!: string;
   inputText3!: string;
+  noNgModel: string = "No ngModel!";
 }
