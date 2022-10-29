@@ -1,0 +1,180 @@
+[
+    {
+      "direction": "arrival",
+      "airport": "AOS",
+      "id": 457331,
+      "aircraftId": 457321,
+      "aircraftRegistration": "9HAEQ",
+      "aircraftSubtypeIATACode": "320",
+      "aircraftTerminal": "4",
+      "aircraftTypeIATACode": "!00",
+      "aircraftTypeICAOCode": "A320",
+      "aircraftVisitIdentifier": 457321,
+      "carrierIATACode": "BA",
+      "carrierICAOCode": "BAW",
+      "codeShareStatus": "00",
+      "dayOfOperation": 29,
+      "prevIATACode": "SVQ",
+      "prevICAOCode": "LEZL",
+      "displayRollOff": {
+        "displayPublic": "Y",
+        "displayStaff": "Y"
+      },
+      "flightClassificationCode": "PAX",
+      "flightIdentity": "BA353",
+      "flightNatureCode": "PAX",
+      "flightNumber": "353",
+      "flightOriginDate": "2022-09-28",
+      "flightRepeatCount": 0,
+      "flightSectorCode": "I",
+      "flightServiceTypeIATACode": "J",
+      "flightStatusCode": "SH",
+      "flightStatusUpdatedTime": "2022-09-28T06:56:01+00:00",
+      "flightTasks": {
+        "tasksCompleted": 0,
+        "tasksCritical": 0,
+        "tasksOverdue": 0,
+        "tasksTotal": 0
+      },
+      "flightTerminal": "2",
+      "ICAOFlightIdentity": "BAW353",
+      "instrumentVisual": "I",
+      "latestKnownTime": "2022-09-29T06:15:00+00:00",
+      "latestKnownTimeSource": "S",
+      "latestKnownTimeSourceField": "STA",
+      "latestKnownUpdatedTime": "2022-09-28T06:56:01+00:00",
+      "linkFlight": {
+        "id": 491201,
+        "linkFlightArrivalIATACode": "SVQ",
+        "linkFlightArrivalICAOCode": "LEZL",
+        "linkFlightDepartureIATACode": "AOS",
+        "linkFlightDepartureICAOCode": "AOSR",
+        "linkFlightIATACode": "BA",
+        "linkFlightICAOCode": "BAW",
+        "linkFlightICAOIdentity": "BAW354",
+        "linkFlightIdentity": "BA354",
+        "linkFlightNumber": "354",
+        "linkFlightOriginDate": "2022-09-29",
+        "linkFlightRepeatCount": 0,
+        "linkScheduledDate": "2022-09-29"
+      },
+      "locationRegion": "EU",
+      "noOfTakeoffLandings": 0,
+      "originIATACode": "SVQ",
+      "originICAOCode": "LEZL",
+      "originOrDestName": "Sevilla",
+      "publicAirlineLogoICAOCode": "BA",
+      "publicCarrierCode": "BA",
+      "publicFlightIdentity": "BA353",
+      "scheduledDate": "2022-09-29",
+      "scheduledTime": "2022-09-29T06:15:00+00:00",
+      "scheduledOnGroundDuration": 30,
+      "schengenFlight": "Y",
+      "stand": "D53R",
+      "standPositionPlanner": "D53R",
+      "timestamp": "2022-09-28T07:04:38+00:00",
+      "links": [
+        {
+          "rel": "self",
+          "href": "/v2/flights/457331"
+        },
+        {
+          "rel": "linkFlight",
+          "href": "/v2/flights/491201"
+        }
+      ]
+    },
+  {
+    "direction": "arrival",
+    "airport": "AOS",
+    "id": 457351,
+    "aircraftId": 457341,
+    "aircraftRegistration": "9HAEQ",
+    "aircraftSubtypeIATACode": "320",
+    "aircraftTerminal": "4",
+    "aircraftTypeIATACode": "!00",
+    "aircraftTypeICAOCode": "A320",
+    "aircraftVisitIdentifier": 457321,
+    "carrierIATACode": "BA",
+    "carrierICAOCode": "BAW",
+    "codeShareStatus": "00",
+    "dayOfOperation": 29,
+    "prevIATACode": "SVQ",
+    "prevICAOCode": "LEZL",
+    "displayRollOff": {
+      "displayPublic": "Y",
+      "displayStaff": "Y"
+    },
+    "flightClassificationCode": "PAX",
+    "flightIdentity": "AA111",
+    "flightNatureCode": "PAX",
+    "flightNumber": "353",
+    "flightOriginDate": "2022-09-28",
+    "flightRepeatCount": 0,
+    "flightSectorCode": "I",
+    "flightServiceTypeIATACode": "J",
+    "flightStatusCode": "SH",
+    "flightStatusUpdatedTime": "2022-09-28T06:56:01+00:00",
+    "flightTasks": {
+      "tasksCompleted": 0,
+      "tasksCritical": 0,
+      "tasksOverdue": 0,
+      "tasksTotal": 0
+    },
+    "flightTerminal": "2",
+    "gates": [
+      {
+        "gate": "A06",
+        "gateArea": "A06",
+        "isGateManuallySet": true
+      },
+      {}
+    ],
+    "ICAOFlightIdentity": "BAW353",
+    "instrumentVisual": "I",
+    "latestKnownTime": "2022-09-29T06:15:00+00:00",
+    "latestKnownTimeSource": "S",
+    "latestKnownTimeSourceField": "STA",
+    "latestKnownUpdatedTime": "2022-09-28T06:56:01+00:00",
+    "linkFlight": {
+      "id": 491201,
+      "linkFlightArrivalIATACode": "SVQ",
+      "linkFlightArrivalICAOCode": "LEZL",
+      "linkFlightDepartureIATACode": "AOS",
+      "linkFlightDepartureICAOCode": "AOSR",
+      "linkFlightIATACode": "BA",
+      "linkFlightICAOCode": "BAW",
+      "linkFlightICAOIdentity": "BAW354",
+      "linkFlightIdentity": "BA354",
+      "linkFlightNumber": "354",
+      "linkFlightOriginDate": "2022-09-29",
+      "linkFlightRepeatCount": 0,
+      "linkScheduledDate": "2022-09-29"
+    },
+    "locationRegion": "EU",
+    "noOfTakeoffLandings": 0,
+    "originIATACode": "SVQ",
+    "originICAOCode": "LEZL",
+    "originOrDestName": "Sevilla",
+    "publicAirlineLogoICAOCode": "BA",
+    "publicCarrierCode": "BA",
+    "publicFlightIdentity": "BA353",
+    "scheduledDate": "2022-09-29",
+    "scheduledTime": "2022-09-29T06:15:00+00:00",
+    "scheduledOnGroundDuration": 30,
+    "schengenFlight": "Y",
+    "stand": "D53R",
+    "standPositionPlanner": "D53R",
+    "timestamp": "2022-09-28T07:04:38+00:00",
+    "links": [
+      {
+        "rel": "self",
+        "href": "/v2/flights/457331"
+      },
+      {
+        "rel": "linkFlight",
+        "href": "/v2/flights/491201"
+      }
+    ]
+  }
+]

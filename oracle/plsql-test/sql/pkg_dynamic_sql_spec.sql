@@ -25,10 +25,11 @@
 --                                        to subsequent test steps
 -- AIMS-3805 - Steve Lambert - 29/09/20 - Implement today and now date functionality
 -- AIMS-4039 - Steve Lambert - 22/10/20 - Implement seed data functionality
+-- AIMS-6201 - Steve Lambert - 17/05/22 - Improve Logging
 -- -----------------------------------------------------------------------------
 
 CREATE OR REPLACE PACKAGE 
--- Identifier: AIMS-4039
+-- Identifier: AIMS-6201
 pkg_dynamic_sql
 IS
 
@@ -40,15 +41,18 @@ PROCEDURE insert_row( p_table_name     IN     VARCHAR2,
 PROCEDURE update_row( p_table_name     IN VARCHAR2,
                       p_column_details IN OUT JSON_OBJECT_T,
                       p_where_clause   IN OUT JSON_OBJECT_T,
-                      p_site_id        IN     VARCHAR2 );
+                      p_site_id        IN     VARCHAR2,
+                      p_rows_updated      OUT INTEGER );
 
 PROCEDURE delete_row( p_table_name     IN VARCHAR2,
-                      p_where_clause   IN JSON_OBJECT_T );
+                      p_where_clause   IN JSON_OBJECT_T,
+                      p_rows_deleted      OUT INTEGER );
 
 PROCEDURE select_row( p_table_name           IN     VARCHAR2,
                       p_select_column_names  IN     JSON_ARRAY_T,
                       p_where_clause         IN     JSON_OBJECT_T,
-                      p_results              IN OUT JSON_ARRAY_T );
+                      p_results              IN OUT JSON_ARRAY_T,
+                      p_rows_selected           OUT INTEGER );
 
 PROCEDURE call_routine( p_package_name IN  VARCHAR2,
                         p_routine_name IN  VARCHAR2,

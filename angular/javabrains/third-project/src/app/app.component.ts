@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TestService } from './test.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -7,16 +7,17 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  // shortcut syntax. Create svc private variable and assign injected service to this
+  // I need TestService and HttpClient service
   constructor(private svc: TestService, private http: HttpClient) {
-    svc.printToConsole('Got the service!');
+    this.svc.printToConsole('Got the service');
   }
 
   ngOnInit() {
-    let myObservable = this.http.get('https://api.github.com/users/koushikkothagal');
-
-    myObservable.subscribe( (response) => console.log(response) );
+    // asynchronous operation. asynchronous object returned called an observable (Promise in angularJS)
+    let obs = this.http.get('https://api.github.com/users/koushikkothagal');
+    obs.subscribe( (response: any) => console.log(response));
+    console.log('This prints before result from asynchronous request');
   }
 }

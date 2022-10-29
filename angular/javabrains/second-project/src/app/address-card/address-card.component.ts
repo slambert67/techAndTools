@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { User } from './user.model';
 
 @Component({
   selector: 'app-address-card',
@@ -7,28 +8,30 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class AddressCardComponent implements OnInit {
 
-  user: any;
+  //user: any;  // will ultimately pass this in as parameter from higher level component
 
-  // decorator that accepts name property from component tag app-address-card
-  @Input('name') userName: string;
+  // reworked to pass in object instead of individual values
+  // @Input('name') userName!: string;  // ! indicates we are aware variable is not initialised
+  @Input('user') user: User;
 
-  constructor() {
+  isCollapsed: boolean = true;
+
+  constructor() { 
   }
 
-  // lifecycle method/hook. Invoked by angular
-  // Angular needs component to be constructed before initialising values
-  // see implements onInit above
-  ngOnInit() {
+  toggleCollapse() {
+    this.isCollapsed = !this.isCollapsed;
+  }
 
+  ngOnInit(): void {
+    // not needed as object populated on input
+    /*
     this.user = {
-      name: this.userName,
-      title: 'Software Developer',
-      address: '37 royston road',
-      phone: [
-        '0161 2826122',
-        '07967 977357'
-      ]
-    };
+      name: this.userObj.name,
+      title: this.userObj.designation,
+      address: this.userObj.address,
+      phone: this.userObj.phone
+    }*/
   }
 
 }

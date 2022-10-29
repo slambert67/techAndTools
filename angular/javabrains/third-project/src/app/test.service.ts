@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class TestService {
 
-  printToConsole(arg) {
+  printToConsole(arg: string) {
     console.log(arg);
   }
 }

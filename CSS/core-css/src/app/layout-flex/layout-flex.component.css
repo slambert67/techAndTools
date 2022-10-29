@@ -1,0 +1,54 @@
+/*
+flex-direction defines main axis - row or column
+
+justify-content defines space distribution around content along main axis
+  left:           content at left with space on right
+  right:          content at right with space on left
+  center:         content in centre with space to left and right
+  space-between:  space evenly distributes along main axis. First item flush with main start edge
+  space-around:   As above but space between first item and main start edge
+
+align-items. c.f. justify content but for cross axis (ie typically vertically)
+
+align-content:    No effect on single row. Usd when items have wrapped
+
+flex-wrap:        Allows flex items to wrap onto another row
+
+flex:             Defines amount of space flex item takes. Seems to override justify-content
+
+order:            Used to order flex items
+ */
+.flex-container1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: dodgerblue;
+  height: 100px;
+/*  justify-content: space-between;
+  align-items: flex-end;
+  height: 200px;
+*/
+}
+
+.flex-container1 > div {
+  padding: 10px;
+}
+
+#d1 {
+  background-color: red;
+  flex:1;
+  order: 1;
+}
+
+#d2 {
+  background-color: yellow;
+  flex:5;
+}
+
+#d3 {
+  background-color: green;
+  flex:5;
+}
+
+

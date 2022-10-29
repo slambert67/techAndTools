@@ -9,26 +9,21 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ViewComponentComponent implements OnInit {
 
-  // constructor(private svc: TestService) {
-    // svc.printToConsole('From inner module / component');
-  // }
+  userName!: String;
+  restResponse: any;
 
-  userName: string = "";
-  response: any;
-
-  constructor(private http: HttpClient) {
-
+  // I need TestService
+  constructor(private svc: TestService, private http: HttpClient) {
+    this.svc.printToConsole('Inner module has also got the service');
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
   search() {
-    this.http.get('https://api.github.com/users/' + this.userName)
-    .subscribe( (response) => {
-      this.response = response;
-      console.log(this.response);
-    });
+    this.http.get('https://api.github.com/users/' + this.userName).subscribe( (response: any) => {
+      this.restResponse = response;
+      console.log(this.restResponse);
+    } );
   }
-
 }

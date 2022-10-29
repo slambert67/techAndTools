@@ -1,0 +1,11 @@
+<h1>My App</h1>
+
+<!--
+<p><a routerLink="home">Home</a></p>
+<p><a routerLink="settings">Settings</a></p>
+-->
+
+<a *ngFor="let route of routes" [routerLink]="route.url"><p>{{route.linkName}}</p></a>
+
+<!-- (activate) returns $event as class of the activated component -->
+<router-outlet (activate)="onRouteActivate($event)" (deactivate)="onRouteDeactivate($event)"></router-outlet>

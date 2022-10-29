@@ -1,0 +1,9 @@
+th.mat-header-cell{
+  width: 140px;
+  min-width: 140px;
+}
+
+td.mat-cell{
+  width: 140px;
+  min-width: 140px;
+}

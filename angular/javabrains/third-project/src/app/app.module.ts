@@ -1,5 +1,5 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -14,10 +14,12 @@ import { TestService } from './test.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,  // contains HttpClient service
+    HttpClientModule,
     ViewModule
   ],
-  providers: [TestService],
+  providers: [
+    TestService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

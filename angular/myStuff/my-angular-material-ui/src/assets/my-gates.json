@@ -1,0 +1,26 @@
+[
+  {
+    "gate": "B14",
+    "terminal": 1,
+    "gateDescription": "Gate B14",
+    "gateStatus": "LAST CALL",
+    "flightID": "CX258",
+    "flightARI": 111
+  },
+  {
+    "gate": "B15",
+    "terminal": 1,
+    "gateDescription": "Gate B15",
+    "gateStatus": "CLOSED",
+    "flightID": "BA074",
+    "flightARI": 222
+  },
+  {
+    "gate": "B22",
+    "terminal": 1,
+    "gateDescription": "Gate B22",
+    "gateStatus": "OPEN",
+    "flightID": "CX259",
+    "flightARI": 333
+  }
+]

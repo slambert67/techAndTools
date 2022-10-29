@@ -1,0 +1,14 @@
+<app-address-card name='New Name'></app-address-card>
+
+<app-address-card2 [user]='user'></app-address-card2><br>
+
+<!-- ONE WAY DATA BINDING 
+[value] = ONE WAY DATA BINDING : look up value from component
+<input type="text" [value]="inputText">
+-->
+
+<!-- TWO WAY DATA BINDING 
+[(ngModel)]="inputText"
+-->
+<input type="text" [(ngModel)]="inputText">
+{{inputText}}

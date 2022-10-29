@@ -54,10 +54,11 @@
 -- AIMS-4542 - Steve Lambert - 25/01/21 - Fix 'maximum open cursors exceeded' error by closing cursor
 --                                        after successful select_row execution
 -- AIMS-4700 - Steve Lambert - 19/02/21   Support new date format - today[+/-]ddTHH24:MI
+-- AIMS-6201 - Steve Lambert - 17/05/22 - Improve Logging
 -- -----------------------------------------------------------------------------
 
 CREATE OR REPLACE PACKAGE BODY 
--- Identifier: AIMS-4700
+-- Identifier: AIMS-6201
 
 pkg_dynamic_sql
 IS
@@ -983,7 +984,8 @@ END call_routine;
 PROCEDURE select_row( p_table_name           IN VARCHAR2,
                       p_select_column_names  IN JSON_ARRAY_T,
                       p_where_clause         IN JSON_OBJECT_T,
-                      p_results              IN OUT JSON_ARRAY_T )
+                      p_results              IN OUT JSON_ARRAY_T,
+                      p_rows_selected           OUT INTEGER )
 IS
   l_select_string      VARCHAR2(32767) := NULL;
   l_where_string       VARCHAR2(32767) := NULL;
@@ -995,7 +997,6 @@ IS
   l_date               DATE;
   l_number             NUMBER;
   l_varchar2           VARCHAR2(4000);
-  l_rows_fetched       INTEGER;
   l_status             SMALLINT;
   l_col_details        dbms_sql.desc_tab2;
   l_where_column_names JSON_KEY_LIST;
@@ -1048,10 +1049,10 @@ BEGIN
   l_status := dbms_sql.execute(l_cursor);
 
   -- fetch the rows in turn
-  l_rows_fetched := 0;
+  p_rows_selected := 0;
   WHILE ( dbms_sql.fetch_rows(l_cursor) > 0 ) LOOP
 
-    l_rows_fetched := l_rows_fetched + 1;
+    p_rows_selected := p_rows_selected + 1;
     l_row := new JSON_OBJECT_T;
 
     -- process the retrieved columns in turn
@@ -1095,7 +1096,7 @@ BEGIN
   -- close the cursor
   dbms_sql.close_cursor(l_cursor);
 
-  IF l_rows_fetched = 0 THEN
+  IF p_rows_selected = 0 THEN
     RAISE_APPLICATION_ERROR(no_rows_selected, 'No rows selected');
   END IF;
 
@@ -1125,7 +1126,8 @@ END select_row;
 --
 -- =============================================================================
 PROCEDURE delete_row( p_table_name     IN VARCHAR2,
-                      p_where_clause   IN JSON_OBJECT_T )
+                      p_where_clause   IN JSON_OBJECT_T,
+                      p_rows_deleted      OUT INTEGER )
 IS
   l_sql                VARCHAR2(32767);
   l_where_column_count SMALLINT;
@@ -1169,7 +1171,7 @@ BEGIN
                         FALSE); -- delete so no new pk
 
   -- execute the SQL statement
-  l_status := dbms_sql.execute(l_cursor);
+  p_rows_deleted := dbms_sql.execute(l_cursor);
 
   -- close the cursor
   dbms_sql.close_cursor(l_cursor);
@@ -1205,7 +1207,8 @@ END delete_row;
 PROCEDURE update_row( p_table_name     IN VARCHAR2,
                       p_column_details IN OUT JSON_OBJECT_T,
                       p_where_clause   IN OUT JSON_OBJECT_T,
-                      p_site_id        IN     VARCHAR2 )
+                      p_site_id        IN     VARCHAR2,
+                      p_rows_updated      OUT INTEGER )
 IS
   l_sql                VARCHAR2(32767);
   l_update_string      VARCHAR2(32767) := NULL;
@@ -1213,7 +1216,7 @@ IS
   l_column_count       SMALLINT;
   l_where_column_count SMALLINT;
   l_cursor             SMALLINT;
-  l_status             SMALLINT;
+  l_rows_affected      INTEGER;
   l_column_names       JSON_KEY_LIST;
   l_where_column_names JSON_KEY_LIST;
 
@@ -1269,7 +1272,7 @@ BEGIN
                         FALSE); -- update so no new pk
 
   -- execute the SQL statement
-  l_status := dbms_sql.execute(l_cursor);
+  p_rows_updated := dbms_sql.execute(l_cursor);
 
   -- close the cursor
   dbms_sql.close_cursor(l_cursor);

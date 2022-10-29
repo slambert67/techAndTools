@@ -1,70 +1,720 @@
-questions
-=========
+Setup
+=====
+1. Install Node
+---------------
+uninstall npm - npm uninstall -g npm
 
-=========
-browser
-^
-|
-bootstrap file(main.ts)
-^
-|
-root module (app.module.ts)
-^
-|
-root component (app.component.ts)  <- cf. grails controller
-^                       ^
-|                       |
-model (model.ts)        template (app.component.html)
+nodejs.org
+node -v shows currently installed version
+npm -v (node package manager)
+installed to C:/Program Files/nodejs
+added to PATH
+
+2. Install IDE
+--------------
+VS Code or Webstorm
+
+3. Angular CLI
+--------------
+cli.angular.io
+
+ngis command to run cli
+ng -v gives version
+
+npm install @angular/cli (scoped package name - @group/package)
+npm install @angular/cli    -> installs in current directory
+npm install @angular/cli -g -> installs globally
+
+npm root -g
+C:\Users\steve.lambert\AppData\Roaming\npm\node_modules
 
 
-main.ts (bootstrap file)
-=======
-imports top level module and bootstraps from this
-ie. starts the application
+Create Project
+==============
+ng new first-project
 
-eg.
-import { AppModule } from './app/app.module';
-platformBrowserDynamic().bootstrapModule(AppModule)
+Run the project
+===============
+ng serve
+- creates simple http server
+- hosts new project
+
+url:  http://localhost:4200/
 
 
-app.module.ts (bootstrap module)
-=============
-specifies top level module:
-bootstrap: [AppComponent]
+What was created?
+=================
+Root component in tree - placeholder for more lower level components
+Component is combination of view and backing logic
+This component is rendering the default angular page
+Root page is index.html referring to root component (src/app - app.module.ts, 
+                                                               app.component.css
+                                                                             html
+                                                                             ts
+                                                                             .spec.ts - testing)
 
-imports required modules (also import files in which these modules are defined):
+app.component.html - {{ title }} <- app.component.ts - title = 'first-project'
+
+
+Create new sub component
+========================
+Can create the required files manually or use cli
+ng generate component hello-world
+files created in src/app/hello-world
+app.module.ts modified to import/register/recognise this new component
+selector defined in hello-world.component.ts
+add selector tag to app.component.html - <app-hello-world></app-hello-world>
+can use multiple times - how are they differentiated?
+
+
+Create new date component (needs js/ts functionality)
+=====================================================
+ng generate component date
+created in app/date
+selector defined in date.component.ts
+
+
+Components
+==========
+Every Angular component is mainly a Typescript class.
+HTML and CSS are basically attachments to this
+This class needs to be registered as an Angular component
+- so add meta data to class - annotation/decorator
+- @Component <- takes object with properties
+
+
+Binding data from component class
+=================================
+In html: {{ member variable name }}
+View automatically renders the value in the class instance - one way data binding
+
+
+Template Interpolation
+======================
+{{}} - Triggers Angular to do interpolation (string, expression etc)
+Interprets text in {{}} as something to be evaluated
+So not necessarily just a reference to a component variable
+e.g.
+{{ 1+1 }}
+{{ someNumber + 1 }}
+{{ addTwoNumbers(6,7) }}
+{{ addTwoNumbers(someNumber,7) }}
+Note that 'this' is not required
+
+
+Looping with ngFor
+==================
+Known as a directive - an attribute added to an element
+Determine html element to repeat
+<p *ngFor="let phoneNumber of user.phone">{{phoneNumber}}</p>
+loops over user.phone which is an array defined in component
+
+
+ngIf
+====
+Element removed from DOM if expression evaluates to false
+
+
+Passing inputs to components
+============================
+import angular/core/Input into component
+
+declare input parameter
+- @Input('nameInTemplate') nameInComponent: string;
+- then use this.nameInComponent
+
+pass value where component used: app.component.html
+<app-address-card-params suppliedName="new name"></app-address-card-params>
+
+associate suppliedName with component member variable
+@Input('suppliedName') username: String='';
+
+interpolate in html view
+<p>{{username}}</p>
+
+
+Using ngOnInit Lifecycle hook
+=============================
+Certain lifecycle events
+Constructor executes when html element refers to an angular component
+Populates member values after this
+ngOnInit called when instance created and initialised
+Lifecycle hooks made available to us with the use of interfaces (can act as compile time checks)
+
+*** See angular documentation for other lifecycle hooks ***
+
+
+Passing member variables to components
+======================================
+app.component.html
+<app-address-card [user]="user"></app-address-card>
+[] => "user" refers to user object defined in app.component.ts
+[user] refers to input variable defined in sub component
+"user" refers to instance name in parent component
+
+
+Styling Components
+==================
+.name refers to all name classes but want to confine to our component.
+could use .address-card .name
+But, in Angular, the CSS applies only to it's component. Angular adds it's own properties to implement this.
+Project root has src/styles.css for global styles
+
+
+Handling Click Events
+=====================
+Surround usual browser event with ()
+(click)="toggleCollapse()"
+
+
+Two way data binding with ngModel
+=================================
+{{}} -> string interpolation - always a string
+[]   -> binding. Preserves type. Useful for assigning html element attributes
+
+<input type="text" ngModel="inputText">
+ngModel requires a module import - to be discussed later
+app.module.ts : import { FormsModule } from '@angular/forms';
+<input type="text" [(ngModel)]="inputText"> => two way data binding on inputText
+[()] - banana in a box
+[] - pick up value from component and use in view.      Component -> View
+() - pick up value/event in view and pass to component. View -> Component
+
+
+Creating and using multiple modules
+===================================
+Project can contain multiple modules
+Module consolidates(?) different components
+Feature modules - group of related components
+
+ngModule annotation (decorator?) denotes a class as being an angular module
+
+declarations -> components that are a part of this module
+imports -> specify dependencies on other modules
+
+ng generate module <name>
+- folder created in src/app
+
+ng generate component view/view-component
+
+parent module imports child module
+child module must still export it's components
+
+import at top of file is a typescript import - types/classes must be imported
+within ngmodule it is an angular import
+
+
+Creating a Service
+==================
+ng generate service <name>
+created in src/app
+has @Injectable annotation
+c.f. @Component, @NgModule
+No update to *.module.ts - because not obvious where a developer will be using a Service
+So must be declared manually in modules that will be using it
+Defined in providers[] array property
+Now available for components to use
+
+
+Dependency Injection
+====================
+Easy initialisation of classes (and classes that depend on other classes)
+Framework handles object creation and injects the service into the component requiring it
+Define constructor parameter to hold injected service
+Assign to member variable so available to the whole component
+
+constructor( private svc: TestService ) {}
+- shortcut to create svc member variable
+
+
+Service Injection Context
+=========================
+Components & Services work differently in the context of modules
+
+components
+- declared inside modules
+- available only to other components in the module
+- add to module exports so available to other modules
+- other modules have to import
+summary for component to be used outside it's module
+- owning module must export
+- using module must import
+
+Services
+- listed in module providers array
+- Injected into component
+- Inner components also have access
+- SERVICES ARE NOT RESTRICTED TO THE MODULE THEY ARE DECLARED IN!
+- There is a common shared space for Services - Service Injection Context
+- So why not declare in ANY module? Lazy Loading
+
+Lazy Loading
+- Affects how Service Injection Context works
+- We've explicitly loaded modules so far (I think - imports)
+- Another way is Lazy Loading - multiple Injection Contexts
+- Therefore different instances of a Service - which instance do I get. *** RESEARCH LATER ***
+
+
+Making REST calls with HttpClient
+=================================
+HttpClient service available out of the box
+Import module that this service comes with - HttpClientModule
+Makes sense to import this service from root module
+
+app.module.ts
+-------------
+import { HttpClientModule } from '@angular/common/http'; <- TS import of module
   imports: [
     BrowserModule,
-    AppRoutingModule
-  ]
+    AppRoutingModule,
+    HttpClientModule,
+    ViewModule
+  ],
 
-declare imported components:
-  declarations: [
-    AppComponent
-  ]
+app.component.ts
+----------------
+import { HttpClient } from '@angular/common/http'; <- TS import of service
 
-export the module:
-export class AppModule { }
+  // I need TestService and HttpClient service
+  constructor(private svc: TestService, private http: HttpClient) {
+    this.svc.printToConsole('Got the service');
+  }
 
-
-app.component.ts (root component)
-================
-manages content of <app-root> in the html document
-takes responsibility for top level content presented to user
-NB. No code in AppComponent class as root component exists just to manage content shown to user
-
-angular.json
-============
-
-
-package.json
-============
-"json": "json-server data.js -p 3500 -m authMiddleware.js"
-static data 
+  ngOnInit() {
+    // asynchronous operation. asynchronous object returned called an observable (Promise in angularJS)
+    let obs = this.http.get('https://api.github.com/users/koushikkothagal');
+    obs.subscribe( (response: any) => console.log(response));
+    console.log('This prints before result from asynchronous request');
+  }
 
 
-authMiddleware.js
+Extending the sample application
+================================
+response may be used in view after a search for example
+but response object not available on initialisation
+So
+<div *ngIf="restResponse">
+    {{restResponse.login}}
+</div>
+or
+response?.login
+
+
+Binding summary
+===============
+<h1>Binding project is up and running</h1>
+
+<p>This is just some view text - no binding</p>
+
+<!-- 
+  View automatically renders the value in the class instance member variable 
+  String / expression interpolation etc
+  Interprets text in {{}} as something to be evaluated
+  Note that 'this' is not required
+-->
+<h5>One way bound with double curly brackets</h5>
+<p>{{var1}}</p>
+
+<h5>Array values accessed by specifying index</h5>
+<p>{{arr1[0]}} - {{arr1[1]}}</p>
+
+<!--
+  Member variable accessed directly within <p>. {{}} not needed?
+-->
+<h5>Array values accessed using ngfor</h5>
+<p *ngFor="let entry of arr1">{{entry}}</p>
+
+<!-- 
+  sub component 
+  Pass hard coded value to sub component - use an attribute
+  c.f. <img src="xyz">
+  code subcomponent to accept this as input
+-->
+<h5>Hard coded value passed in</h5>
+<app-sub squoink="value of squoink"></app-sub>
+
+<!--
+  Pass member variable of parent to sub component
+  [] tells angular to treat entry in quotes as a member variable
+  simple string here but works with objects
+-->
+<h5>Member variable value passed in</h5>
+<app-sub [squoink]="var1"></app-sub>
+
+<!--
+  Try interpolation
+-->
+<h5>Member variable passed in using interpolation</h5>
+<app-sub squoink="{{var1}}"></app-sub>
+
+<!--
+  View updating data in component and then reflected back in view where appropriate
+  ngModel requires import of standard angular module
+-->
+<h5>Two way data binding</h5>
+<input type="text" [(ngModel)]="inputText1">
+{{inputText1}}
+
+<!-- 
+  one way from view to component 
+  Not sure how
+-->
+
+
+Building an Angular project
+===========================
+ng serve
+- looks at codebase
+- bundles up modules
+- creates local server (dev server)
+  - lots of js files loaded
+  - not minified
+  - not consolidated
+- need optimisations when deploying
+- deployed as 3 files: html, css, js
+- ng build bundles files
+- files stored in dist folder
+- Need to run in production mode for optimisations
+- ng build --prod
+- also does AOT - ahead of time compilation
+  - templates compiled. Angular compiler not downloaded when page is accessed
+
+
+Routing
+=======
+Dynamically change view. No traditional full page refresh
+Routing changes content of whole viewport
+Simulates full page refresh
+Why not different divs controlled by ngIf? - apparently quite tedious?
+
+2 principles
+
+- URL based routing
+  - foo.com/view1, foo.com/view2 etc
+  - view urls need to be exposed
+  - index.html loaded and then angular works out whichview to display
+
+- Component based routing
+  - not suitable to have a component responsible for multiple views
+  - so 1 ROOT component per view
+  - view1 has component tree, view2 has component tree etc
+
+view		url					component
+----		---					---------
+view1		foo.com/view1		component1 (+ tree of subcomponents)
+view2		foo.com/view2		component2 (+ tree of subcomponents)
+
+Angular app
+- define route urls
+- create ROOT components responsible for each view
+- configure angular to map route URLs to ROOT components
+
+
+Creating angular project with routing
+=====================================
+ng new routing-intro --routing
+@angular/router added to dependencies in package.json
+Provides routing template config
+array of Routes
+e.g.
+const routes: Routes = [
+  {path: 'home', component: HomeComponent},
+  {path: 'settings', component: SettingsComponent}
+];
+adds <router-outlet> to view (app.component.html)
+component view injected into this element
+http://localhost:4200/home
+http://localhost:4200/settings
+
+
+Route redirects and wildcards
+=============================
+Can setup default route
+-----------------------
+{path: '', component: HomeComponent}
+-> shows that multiple paths can be mapped to the same component
+
+{path: '',     component: HomeComponent}
+{path: 'home', component: HomeComponent}
+Not a recommended construct
+Redirect is better than copy
+{path: '', redirectTo: '/home', pathMatch: 'full'} - / needed as not a relative path
+
+
+Can handle non existent routes
+------------------------------
+{path: '**', component: PageNotFoundComponent}
+
+
+Configuring child routes
+========================
+Suppose we have child pages of /settings e.g. /settings/profile, /settings/contact
+Specify children of an existing parent route
+
+  {
+    path: 'settings', 
+    component: SettingsComponent,
+    children: [
+      {path: 'profile', component: SettingsProfileComponent},
+      {path: 'contact', component: SettingsContactComponent}
+    ]
+  },
+
+Child components also need a <router-outlet>
+
+
+Showing navigation for routes
+=============================
+<a href="/home">Home</a>
+<a href="/settings">Settings</a>
+This does a full page refresh. href tells browser to do this
+
+We need to tell angular to change the route
+<a routerLink="home">Home</a>
+<a routerLink="settings">Settings</a>
+Why not ngRouterLink?
+
+
+Dependency Injection - 2
+========================
+Dependency Injection subsystem - DI
+
+Dependency Consumer
+Dependency Provider
+	
+@Injector() decorator shows that class can be injected
+
+
+
+
+Next Steps
+==========
+Deep dive into components
+Testing (Jasmine, Protractor)
+Deep dive into routing
+RxJS
+State Management - ngRx
+
+
+
+Deborah Kurata
+==============
+import part of ES2015
+
+Bootstrap
+---------
+index.html to host application
+define angular module
+ES2015 backticks allow composing HTML over multiple lines - template interpolation?
+styles.css is used for global styling
+
+to use component selector as a directive
+- owning component must be part of module
+or
+- it must have been imported into module
+
+Directive - custom html element or attribute
+
+* prefix denotes structural directive
+
+*ngIf, *ngFor in BrowserModule
+
+for of 
+- iterables. [a,b,c] -> a,b,c
+vs for in
+- iterates over properties of an object [a,b,c] -> 0,1,2
+
+
+Binding
+=======
+Interpolation
+-------------
+{{title}} : title is a member variable of component class
+
+{{showImage ? 'Hide' : 'Show'}} <- why does this work as showImage is Boolean
+
+Property Binding
+----------------
+<img [src]='product.imageUrl'>
+- src is element property
+- value is template expression - member variable of component class
+c.f
+<img src={{product.imageUrl}}>
+one way from component to html
+
+Event binding
+-------------
+Connect event to component method
+<button (click)='toggleImage()'>
+
+Two way binding
+===============
+<input type='text' [(ngModel)]='listFilter'>
+[] : component to html
+() : html (change) event/value -> component. Think event sent so other mechanism to update component?
+
+
+Pipes
+=====
+Transform bound properties before display
+Built in pipes: date, number,decimal,percent,currency,json etc
+Can build custom pipes
+{{product.productCode | lowercase}}
+can chain pipes
+pipe1 | pipe2
+some pipes can take params
+currency:'USD':'symbol':'1.2-2'
+
+
+Improving components
+====================
+strong typing and interfaces
+encapsulating styles
+lifecycle hooks
+custom pipes
+nested components
+
+
+Interfaces
+==========
+Two primary ways to use
+- define custom/unique data types
+- feature set - define methods and properties class must have
+
+
+Nested Components
 =================
+Use as
+- directive
+- routing target
+
+parent passes info to child with @Input
+child passes info to parent by emitting event @Output. EventEmitter
+
+child
+@Output() notify: EventEmitter<string> = new EventEmitter<string>();
+<string> identifies kind of data passed with the event
+
+onClick() {this.notify.emit('clicked')}
+
+parent.html
+<child (notify)='onNotify($event)'
 
 
-              
+Services and Dependency Injection
+=================================
+could do this:
+let svc = new myService()
+local to component so cannot share data
+more difficult to mock for testing?
+
+or
+
+register service with angular (angular injector)
+creates single instance of this class - singleton
+maintains a container of created service instances
+
+Remember constructor argument approach to injecting services
+
+Dependency injection definition
+-------------------------------
+A coding pattern in which a class receives instances of objects it needs (dependencies) from an external source
+rather than creating them itself
+
+Root injector - available to all. 
+- @Injectable decorator property. providedIn:'root'
+
+Component injector - available to component and its children. 1 instance for each instance of component
+- @Component decorator property. providers:[ProductService]
+
+Service does not need to be defined in an angular module?
+
+
+
+Observables and Reactive Extensions (RxJS)
+==========================================
+Observable sequence = Observable stream
+- collection of items over time
+- unlike an array doesn't retain items
+- emitted items can be observed over time
+
+Observer emits 3 types of notifications
+- next notification
+- error notification - observable completes
+- complete notification
+
+http get
+- http get
+- returns observable which will emit notifications
+- subscribe to start observable
+
+observable pipe - transform emitted items
+
+common usage
+- start the observable (subscribe)
+- pipe emitted items through a set of operators
+- process notifications (next, error, complete
+- stop observable (unsubscribe)
+
+
+
+
+
+
+---------
+typescript does not need keyword function?
+: void for no return type
+
+ngModule decorator
+declarations for our own components
+import for angular and external modules
+
+
+Custom Directives
+=================
+Those directives can add and remove copies of the template content based on their own logic.
+One structural directive per element
+
+Prefixed by * -> Angular transforms into ng-template
+
+eg.
+<div
+  *ngFor="let hero of heroes; let i=index; let odd=odd; trackBy: trackById"
+  [class.odd]="odd">
+  ({{i}}) {{hero.name}}
+</div>
+
+becomes:
+<ng-template ngFor let-hero [ngForOf]="heroes"
+  let-i="index" let-odd="odd" [ngForTrackBy]="trackById">
+  <div [class.odd]="odd">
+    ({{i}}) {{hero.name}}
+  </div>
+</ng-template>
+
+Custom directive creates an 'embedded view' from ng-template (TemplateRef)
+Inserts into 'view container' (ViewContainerRef) adjacent to directive's host element
+ViewContainerRef contains TemplateRef?
+
+ng generate directive <name>
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+Inject TemplateRef and ViewContainerRef in the directive constructor as private variables
+- thought injection was for services?
+
+
+
+Questions for Future Processing
+===============================
+  <li *ngFor="let player of players">
+    <button type="button" (click)="selectPlayer(player)">
+      <P>{{player}}</P>
+    </button>
+  </li>
+players is a member variable but player isn't so why does interpolation work?
+
+
+[(ngModel)]="twoWayBinding"
+() is event binding 	i.e. DOM to Component
+[] is property binding 	i.e. DOM to Component
+
+

@@ -1,0 +1,69 @@
+At Rules
+========
+Tell CSS how to behave
+
+@import : Tells CSS engine to include another stylesheet
+
+
+Custom Properties (Variables)
+=============================
+Typically define globally
+
+define:
+:root { --main-background-colour: yellow }
+
+use:
+div { background-color: var(--main-background-colour) }
+
+@apply - deprecated
+BUT used by Tailwind?
+
+SCSS/SASS
+=========
+@import : c.f. old @import
+
+@use :  c.f. old @import
+        loads mixins, functions, variables
+        loaded stylesheets known as modules
+
+@mixin : styles to be reused throughout project
+
+@mixin reset-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@include reset-list;
+
+variables
+$myvar: yellow
+background-color: $myvar
+
+Properties
+==========
+Layout - basic
+--------------
+display:  block/inline/child behaviour(flex, grid etc)
+float:    surrounding elements 'float' around this one
+
+Box model
+---------
+padding
+border
+margin
+border-radius
+
+Layout - Flex
+-------------
+flex-direction
+justify-content
+align-items
+
+
+
+Colours
+=======
+background-color:   background colour of element
+color:              colour of text
+border-left-color:  colour of left border
+

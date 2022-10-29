@@ -1,0 +1,14 @@
+<!--
+ViewContainerRef represents a container where one or more views can be attached.
+any DOM element can be used as a view container.
+Angular doesn’t insert views inside the element, but appends them after the element bound to ViewContainer.
+This is similar to how the router-outlet inserts components.
+ng-container element
+ViewContainerRef.insert(ViewRef)
+
+ViewContainer contains
+- host views                  : ViewContainerRef.createComponent    -> returns ComponentRef
+- embedded views(TemplateRef) : ViewContainerRef.createEmbeddedView -> returns ViewRef
+
+Can contain other ViewContainers - how created?
+-->

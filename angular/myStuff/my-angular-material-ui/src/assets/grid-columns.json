@@ -1,0 +1,22 @@
+[
+    {
+      "field": "gate",
+      "label": "Gate"
+    },
+    {
+      "field": "terminal",
+      "label": "Terminal"
+    },
+    {
+      "field": "gateDescription",
+      "label": "Description"
+    },
+    {
+      "field": "gateStatus",
+      "label": "Status"
+    },
+    {
+      "field": "flightID",
+      "label": "Flight ID"
+    }
+]

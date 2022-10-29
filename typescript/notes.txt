@@ -1,14 +1,246 @@
-typescriptlang.org
-.ts extension
-cross browser
-tsc hello.ts -> js
+Addresses some problems with Javascript
+- lack of typing
+- No checks on type and number of function arguments
+- Can't enforce object stucture
 
-code hierarchy
-- module/namespace
-  - class
-    - fields
-    - constructors
-    - properties
-    - functions
-    - interfaces
+Why Javascript?
+- Browsers only execute Javascript
+- So: Typescript -> Javascript -> Bowser (transpilation)
+
+Typescript = superset of javascript
+
+Install Visual Studio Code
+Install Node.js - provides typescript compiler
+                - executes resultant javascript
+Install typescript compiler 
+- npm install -g typescript
+
+tsc file.ts -> file.js
+node file.js to execute
+
+Types
+=====
+Defined with postfix notation
+- var a: number;
+
+number, string, boolean, undefined, null, symbol(ES6)
+- undefined and null are both primitive data types with one value each (undefined and null)
+
+arrays.
+- var myarr: number[];
+
+What about arrays with mixed types?
+tuples
+- var myarr: [number, boolean] = [1, true];
+
+Type erasure and error behaviour
+================================
+Declared types not shown in the javascript
+Types really used at development timeand not runtime
+Typescript compiler can raise an error but still generate valid javascript
+
+
+Types with functions
+====================
+Number of args must always match
+Can specify arg as optional by appending ?
+
+function add( a,b,c?)    - c undefined if not passed
+function add( a, b, c=0) - c defaults to 0 if not passed
+
+Return value can also be typed
+function add( a, b, c=0): number {}
+
+
+Implicit Typing
+===============
+Type inferred from first usage
+Assignment must be on same line as declaration
+Otherwise var is of type 'any'
+
+
+Any and Union types
+===================
+var a : any;
+var a : number | boolean;
+
+
+Classes & Interfaces
+====================
+class Person {
+    firstName : String;
+    lastName : String;
+}
+
+var aPerson: Person = new Person();
+
+aPerson.firstName = 'Steve';
+console.log(aPerson.firstName);
+console.log(aPerson);
+
+
+Methods and Constructors
+========================
+All methods and member variables are public by default and can be accessed directly
+    constructor() {
+        this.firstName = 'unspecified';
+        this.lastName = 'unspecified';
+    }
+
+
+Inheritance
+===========
+class Programmer extends Person {
+}
+Can override
+Reference overridden routine with super.
+Can also use super() inside constructor to call parent class constructor
+
+
+Polymorphism
+============
+class Person
+class Programmer extends Person (more specific)
+can have
+- var x: Person = new Programmer()
+- can assign Programmer to this because a Programmer is a type of person
+TODO - examine uses of polymorphism
+
+
+Interfaces
+==========
+cf classes but methods are empty
+class ClassName implements InterfaceName {
+}
+Why use?
+
+
+Duck Typing
+===========
+Define inline object - not based on class
+Can be assigned value of instance of class if structure matches
+
+
+Member Visibility
+=================
+members available directly with dot notation - read and write
+Typescript has concept of a private member variable
+public is default
+use private
+works for methods as well
+Can mark members as private in constructor as a shortcut
+Shortcut also works with public
+Examine protected
+
+
+readonly modifier
+=================
+class Person {
+    readonly firstName : String;
+}
+Can assign a value at declaration time or pass to a constructor
+Can mark members as readonly in constructor as a shortcut
+
+Enums
+=====
+enum DaysOfTheWeek {
+  SUN, MON, TUE, WED, THU, FRI, SAT
+}
+or
+enum DaysOfTheWeek {
+  SUN=6, MON=7, TUE=8, WED=9, THU=10, FRI=11, SAT=12
+}
+let day: DaysOfTheWeek;
+day = DaysOfTheWeek.MON;
+
+
+Generics
+========
+Parameterisation of types
+
+function echo<T>(arg: T): T {
+  return arg;
+}
+Ensures type of arg is preserved with return value arg
+T is a placeholder for type information - doesn't have to be T
+
+function personEcho<T extends Person>(person: T): T {
+}
+
+Essentially, a type placeholder with a restriction
+
+
+Modules
+=======
+export class Person {} 
+import {Person} from './classes' - relative path. .ts not required. - NB - actually executes the code in this file!
+
+
+Compiler arguments
+==================
+tsc -help shows all options
+tsc test.ts --out output-script.js
+tsc test.ts --watch - monitors for changes and then compiles
+
+
+tsconfig
+========
+tsconfig.json lives at root of project
+can create manually or
+tsc --init
+noEmitOnError does not create js file if tsc shows errors
+
+
+Creating an npm project
+=======================
+npm init & accept defaults
+add start to scripts object in package.json
+scripts {
+  "start":"tsc && node out/index.js"
+}
+npm start
+
+
+Installing libraries and type definitions
+=========================================
+lodash - utility library for javascript
+npm install lodash --save
+import * as _ from 'lodash' <- only library name needed and not relative path
+can be acessed with _. or foo, or whatever
+lodash is javascript so we have no typing info. And so no autocompletion in IDE
+Can load type definition libraries
+npm install @types/lodash --save-dev
+
+
+Setting up the project
+======================
+create project folder
+npm init
+tsc --init
+create src folder for source code files and out folder for js files
+set rootDir to ./src
+set outDir to ./out
+create index.ts in src
+add "start":"tsc && node out/index.js" to package.json
+
+Adding dependencies
+===================
+npm install request lodash --save  (request is http request functionality)
+npm install @types/lodash @types/request --save-dev
+
+
+And all the rest
+================
+https://api.github.com/users/koushikkothagal
+See github-report
+
+Cannot return a value directly from asynchronous method
+Many ways to handle this
+- promises
+- observables
+- callbacks (basic way)
+
+
+
+
 

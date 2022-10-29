@@ -7,22 +7,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DateComponent implements OnInit {
 
-  // member variables can be referenced from view with {{}}
-  //message = 'hello';
   //message: string = new Date().toDateString();
-  dateMessage: string;
+  dateMessage: string = '';
   someNumber: number = 10;
 
-  constructor() {
+  constructor() { 
 
+    // => means 'this' refers to component instance
     setInterval( () => {
-      const currentDate = new Date();
+      let currentDate = new Date();
       this.dateMessage = currentDate.toDateString() + ' ' + currentDate.toLocaleTimeString();
     }, 1000);
 
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+  }
+
+  addTwoNumbers(a: number,b: number) {
+    return a+b;
   }
 
 }

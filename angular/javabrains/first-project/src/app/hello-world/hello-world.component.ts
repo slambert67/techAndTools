@@ -9,7 +9,7 @@ export class HelloWorldComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

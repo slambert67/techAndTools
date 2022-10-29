@@ -1,0 +1,111 @@
+$ git config --list --show-origin
+file:"C:\\ProgramData/Git/config"       core.symlinks=false
+file:"C:\\ProgramData/Git/config"       core.autocrlf=true
+file:"C:\\ProgramData/Git/config"       core.fscache=true
+file:"C:\\ProgramData/Git/config"       color.diff=auto
+file:"C:\\ProgramData/Git/config"       color.status=auto
+file:"C:\\ProgramData/Git/config"       color.branch=auto
+file:"C:\\ProgramData/Git/config"       color.interactive=true
+file:"C:\\ProgramData/Git/config"       help.format=html
+file:"C:\\ProgramData/Git/config"       rebase.autosquash=true
+
+
+GLOBAL
+======
+none - so what's that above?
+
+
+SYSTEM
+======
+file:C:/Program Files/Git/mingw64/etc/gitconfig http.sslcainfo=C:/Program Files/Git/mingw64/ssl/certs/ca-bundle.crt
+file:C:/Program Files/Git/mingw64/etc/gitconfig http.sslbackend=openssl
+file:C:/Program Files/Git/mingw64/etc/gitconfig diff.astextplain.textconv=astextplain
+file:C:/Program Files/Git/mingw64/etc/gitconfig filter.lfs.clean=git-lfs clean -- %f
+file:C:/Program Files/Git/mingw64/etc/gitconfig filter.lfs.smudge=git-lfs smudge -- %f
+file:C:/Program Files/Git/mingw64/etc/gitconfig filter.lfs.process=git-lfs filter-process
+file:C:/Program Files/Git/mingw64/etc/gitconfig filter.lfs.required=true
+file:C:/Program Files/Git/mingw64/etc/gitconfig credential.helper=manager
+
+
+LOCAL
+=====
+file:.git/config        core.repositoryformatversion=0
+file:.git/config        core.filemode=false
+file:.git/config        core.bare=false
+file:.git/config        core.logallrefupdates=true
+file:.git/config        core.symlinks=false
+file:.git/config        core.ignorecase=true
+file:.git/config        remote.origin.url=git@man-cisrv-1.ultra-as.net:aims/aos-api.git
+file:.git/config        remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+file:.git/config        branch.master.remote=origin
+file:.git/config        branch.master.merge=refs/heads/master
+
+
+Line Endings
+============
+LF(\n, $) & CR(\r, ^M) -> control characters
+
+LF - Line feed
+==============
+Represents end of line of text
+Linux & Mac : Equivalent to start of new line. Not so on windows!
+
+CR - Carriage return
+====================
+Moves cursor to start of current line
+
+Configuring line endings with git
+=================================
+git config --global core.autocrlf [true|false|input]
+- false undesirable unless convinced EVERYONE uses same OS
+- true : checked out with CRLF
+         checked in with CRLF replaced with LF
+- input : No conversion on checkout
+          Converted to LF when committed
+
+.gitattributes a better solution
+
+# We'll let Git's auto-detection algorithm infer if a file is text. If it is,
+# enforce LF line endings regardless of OS or git configurations.
+* text=auto eol=lf   <- ENFORCE ON CHECKOUT AND COMMIT. Most windows apps support LF only now
+
+# Isolate binary files in case the auto-detection algorithm fails and
+# marks them as text files (which could brick them).
+*.{png,jpg,jpeg,gif,webp,woff,woff2} binary
+
+after commiting:
+git add --renormalize .
+
+Bonus: Create an .editorconfig File
+enforce LF on file creation in editor of your choice
+
+
+========================
+Hi Roy,
+
+It seems me and Neil have different git configurations.
+
+I have the core.autocrlf=true set globally
+
+However, lint in webstorm doesn’t like the CRLF line endings.
+
+To make this a non-issue for any developer on this project I think a small
+.gitattributes file committed to this projects repo would help
+
+.gitattributes
+# We'll let Git's auto-detection algorithm infer if a file is text. If it is,
+# enforce LF line endings regardless of OS or git configurations.
+* text=auto eol=lf   <- ENFORCE ON CHECKOUT AND COMMIT. Most windows apps support LF now anyway
+
+# Isolate binary files in case the auto-detection algorithm fails and marks them as text files.
+*.{png,jpg,jpeg,gif,webp,woff,woff2} binary
+
+
+Could you confirm that this seems reasonable Roy?
+
+
+
+
+
+
+

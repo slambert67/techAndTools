@@ -1,15 +1,9 @@
 <p>view-component works!</p>
+
 User name: <input type="text" [(ngModel)]="userName">
-<button (click)="search()">Search</button>
+<p><button (click)="search()">Search</button></p>
 
-<div *ngIf="response">
-{{response.login}}
-{{response.public_repos}}
-{{response.public_gists}}
-{{response.followers}}
+<div *ngIf="restResponse">
+    {{restResponse.login}}
 </div>
-
-<!--
-    response?. takes care of null response
--->
 

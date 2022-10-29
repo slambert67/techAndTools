@@ -1,25 +1,28 @@
 import { Component } from '@angular/core';
-import { User } from './address-card2/user.model';
+import { User } from './address-card/user.model';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {
 
-  // uses address-card-2 component. Higher in hierarchy
-  user: User;  // can be used in template with []
+  user: User;
 
-  // TWO WAY DATA BINDING
-  inputText: string = 'Initial value';
+  inputText: string = "Initial value 1";
+  inputText2: string = "Initial value 2";
 
   constructor() {
+    // create instance of User class to pass to address card component
     this.user = new User();
-
-    this.user.name = 'Kathleen Lambert';
-    this.user.designation = 'Retired';
-    this.user.address = '23 st michaels close';
-    this.user.phone = ['01924 454121', '01924 454121'];
+    this.user.name = 'foo bar';
+    this.user.designation = 'software engineer';
+    this.user.address = 'blah blah address';
+    this.user.phone = [
+      '123-123-123',
+      '456-456-456'
+    ]
   }
 }

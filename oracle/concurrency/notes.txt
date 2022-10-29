@@ -1,0 +1,91 @@
+declare
+  l_total conctest.total%type;
+begin
+
+  select nvl(total,0)
+    into l_total
+    from conctest
+   where myrowid = 1;
+
+  l_total := l_total + 1;
+
+  dbms_session.sleep(10);
+
+  update conctest
+     set total = l_total;
+end;
+
+session 1 executes block
+session 2 executes block - hangs as session 1 is updating same row
+session 1 commits        - session 2 stops hanging. total = 1
+session 2 commits        - total = 1. Lost update
+
+HANGS AND COMPLETES BUT GET LOST UPDATE
+
+Some tools (e.g. Forms) protect against this by ensuring:
+- row unchanged from when I queried it (no updates from other sessions)
+- locked before I make changes
+
+
+Pessimistic Locking
+===================
+query data without locking
+pick a row to update
+before changes made : SELECT blah FOR UPDATE NOWAIT
+re queries same row but locking against updates
+
+declare
+  l_total conctest.total%type;
+begin
+
+  select nvl(total,0)
+    into l_total
+    from conctest
+   where myrowid = 1 FOR UPDATE NOWAIT;
+
+  l_total := l_total + 1;
+
+  dbms_session.sleep(10);
+
+  update conctest
+     set total = l_total;
+end;
+
+
+RAISES LOCK ERROR, COMPLETES BUT DON'T GET LOST UPDATE
+Catch exception and retry
+
+Pessimistic as we're expecting someone to try and change the row
+
+
+Optimistic Locking
+==================
+Keep old and new values in system
+
+
+Pessimistic locking preferred
+
+
+Blocking
+========
+INSERT, UPDATE, DELETE & SELECT FOR UPDATE all block
+
+SELECT FOR UPDATE
+-----------------
+Add NOWAIT and no longer blocks
+
+Blocked INSERTS
+---------------
+Only occurs if >1 session trying to create row with same primary key. Use sequences
+
+Blocked UPDATES & DELETES
+-------------------------
+Attempting to manipulate a row someone has already locked
+
+
+Deadlock
+--------
+99% of time due to non indexed foreign keys
+See Expert one-on-one to resolve
+
+
