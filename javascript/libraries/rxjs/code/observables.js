@@ -3,6 +3,7 @@
 // Subscribing to an Observable is analogous to calling a Function
 // Observables are able to deliver values either synchronously or asynchronously
 // func.call() means "give me one value synchronously"
+// Observables are COLD until there is a Subscription. Unicast - 1 source per subscriber
 // observable.subscribe() means "give me any amount of values, either synchronously or asynchronously"
 // Observables are created using new Observable or a creation operator
 // Observables can be created with new Observable. Most commonly, observables are created using creation functions, like of, from, interval, etc
@@ -15,7 +16,7 @@
 exports.__esModule = true;
 // manual creation of an Observable
 var rxjs_1 = require("rxjs");
-// takes one argument. A function.
+// takes one argument. A function. This function accepts a Subscriber (Implements Observer interface)
 // This function is called when the Observable is INITIALLY subscribed to
 var ob = new rxjs_1.Observable(function (subscriber) {
     // synchronous values
@@ -25,7 +26,11 @@ var ob = new rxjs_1.Observable(function (subscriber) {
     // asynchronous value
     setTimeout(function () {
         subscriber.next(4);
+    }, 3000);
+    setTimeout(function () {
+        subscriber.next(5);
         subscriber.complete();
+        subscriber.unsubscribe();
     }, 3000);
 });
 console.log('just before subscribe to observable sub1');

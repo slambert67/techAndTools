@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="471bdd66-080f-4620-a616-8fadf8a41f09" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/notes.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../javascript/js-core/spread.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/Subscriptions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/behaviourSubject.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../CSS/vite-project/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../CSS/vite-project/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../CSS/vite-project/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../CSS/vite-project/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/app.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c1/c1.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c1/c1.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c2/c2.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c2/c2.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c2/c2.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c2/c2.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c3/c3.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c3/c3.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c3/c3.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/dom-manipulation/src/app/c3/c3.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/my-components/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/my-components/src/app/app.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/my-components/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/my-components/src/app/app.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/my-components/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/my-components/src/app/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/my-components/src/app/dynamic-comp-container/dynamic-comp-container.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/frameworks/angular/myStuff/my-components/src/app/dynamic-comp-container/dynamic-comp-container.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/libraries/rxjs/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/libraries/rxjs/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/observables.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/observables.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/observables.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/observables.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/observers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/observers.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/subjects.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../javascript/libraries/rxjs/code/subjects.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2HEA5u3WTVQsk73Eu233ukqnDuK" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="471bdd66-080f-4620-a616-8fadf8a41f09" name="Changes" comment="" />
+      <created>1667839696368</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1667839696368</updated>
+      <workItem from="1667839698342" duration="57000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

@@ -13,7 +13,7 @@
 //
 // marble diagrams are used to explain how operators work
 
-import {of, map, filter, tap, switchMap, distinctUntilChanged} from "rxjs";
+import {of, map, filter, tap, switchMap, concatMap, combineLatest, distinctUntilChanged} from "rxjs";
 
 // of operator creates an observable.
 // pipe is used to stitch together functional operators into a chain
