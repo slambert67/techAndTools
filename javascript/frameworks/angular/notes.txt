@@ -18,8 +18,8 @@ VS Code or Webstorm
 --------------
 cli.angular.io
 
-ngis command to run cli
-ng -v gives version
+ng is command to run cli
+ng version gives version
 
 npm install @angular/cli (scoped package name - @group/package)
 npm install @angular/cli    -> installs in current directory
@@ -27,6 +27,13 @@ npm install @angular/cli -g -> installs globally
 
 npm root -g
 C:\Users\steve.lambert\AppData\Roaming\npm\node_modules
+
+
+21/11/22
+--------
+need global and local cli installed?
+global needed to start a new application
+14.1.0
 
 
 Create Project

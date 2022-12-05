@@ -26,7 +26,15 @@ export class AppService {
         }
       });*/
 
-    return this.httpService.get('http://localhost:4000/v1/resources/gates?numberOfFlights=2&sort=terminal|gate',
+/*    return this.httpService.get('http://localhost:4000/v1/resources/gates?numberOfFlights=2&sort=terminal|gate',
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic ' + Buffer.from('REST_RESOURCES_GATES:$W5ztv=xDxv@gu6@','utf-8').toString('base64')
+        }
+      }).pipe( map((res) => res.data));*/
+
+    return this.httpService.get('http://10.172.252.8:4000/v1/resources/gates?numberOfFlights=2&sort=terminal|gate',
       {
         headers: {
           'Content-Type': 'application/json',

@@ -5,30 +5,119 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5664aa4-f87d-4020-84fc-e31784f9bbef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/notes.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../js-core/spread.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/Subscriptions.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/behaviourSubject.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../CSS/vite-project/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../../CSS/vite-project/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../CSS/vite-project/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/../../../CSS/vite-project/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/app.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c1/c1.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c1/c1.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c2/c2.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c2/c2.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c2/c2.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c2/c2.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c3/c3.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c3/c3.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c3/c3.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/dom-manipulation/src/app/c3/c3.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-components/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-components/src/app/app.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-components/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-components/src/app/app.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-components/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-components/src/app/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-components/src/app/dynamic-comp-container/dynamic-comp-container.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-components/src/app/dynamic-comp-container/dynamic-comp-container.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/observables.js" beforeDir="false" afterPath="$PROJECT_DIR$/code/observables.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/observables.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/observables.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/observers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/observers.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/operators.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/operators.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/subjects.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/subjects.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../asynchronicity/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../asynchronicity/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../asynchronicity/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../asynchronicity/async1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../asynchronicity/nodeServer/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/JSON/1JSON.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/JSON/json.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/NaN/NaN.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/XE/xe-angular.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/XE/xe-common.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/XE/xe-jquery.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/array/1Array.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/arrowFunctions/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/arrowFunctions/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/1Async.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/2Callback.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/3Ajax.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/async.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/async.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/countdown.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/oldCode/ajax.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/oldCode/example1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/oldCode/jquery-1.4.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/oldCode/myAsync.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/oldCode/test.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/oldCode/test2.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/async/oldCode/test3.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/README.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/main2.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/main3.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/observables/http.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/observables/http.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/observables/http2.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/observables/http2.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/observables/http3.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/observables/http3.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/observables/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/observables/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/oldPromises/callback1.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/oldPromises/callback1.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/oldPromises/custardcream.PNG" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/oldPromises/errorPropagation.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/oldPromises/errorPropagation.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/oldPromises/promise1.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/oldPromises/promise1.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/oldPromises/promiseChain.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/oldPromises/promiseChain.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/script1.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/script2.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/script3.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/template.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/template2.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/asynchronousCode/template3.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/errors/errors.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/events/events.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/functional/1functional.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/functional/1functional.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/inheritance/1emptyObject.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/inheritance/2publicPropertyOnInstance.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/inheritance/3publicPropertyOnPrototype.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/inheritance/4publicMethodOnInstance.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/inheritance/5publicMethodOnPrototype.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/inheritance/6privateProperty.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/inheritance/7inheritance.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/commonJS/child.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/commonJS/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/commonJS/notes.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/commonJS/parent.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/commonJS/sayHi.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/es6/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/es6/module.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/es6/sub.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/es6/sub2.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/modules/modules.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/object/copyObject.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/object/object.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/promises/1Promise.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/promises/2Promise.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/promises/3Promise.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/promises/4Promise.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/promises/db.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/promises/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/regExp/regExp.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/scopeAndClosures/1Scope.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/scopeAndClosures/2Closure.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/scopeAndClosures/3Closure.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/scopeAndClosures/4Closure.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/scopeAndClosures/5Module.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/scopeAndClosures/6Module.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/scopeAndClosures/7Module.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/string/palindrome.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/string/reverseString.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/string/string.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/symbols/index.mjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/symbols/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/this/1DefaultBinding.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/this/2ImplicitBinding.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/this/3ExcplicitBinding.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/this/4NewBinding.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../core/this/5BindingPrecedence.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/javabrains/routing-intro/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/javabrains/routing-intro/src/app/app.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-angular-material-ui/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/my-angular-material-ui/src/app/app.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/notes.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../js-core/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../js-core/.idea/js-core.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../js-core/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../js-core/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../js-core/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../js-core/spread.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.service.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,6 +186,7 @@
       <workItem from="1667838045933" duration="959000" />
       <workItem from="1667920174118" duration="1011000" />
       <workItem from="1668524857078" duration="625000" />
+      <workItem from="1669824097626" duration="859000" />
     </task>
     <servers />
   </component>

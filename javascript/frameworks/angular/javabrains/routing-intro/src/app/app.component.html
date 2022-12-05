@@ -7,5 +7,6 @@
 
 <a *ngFor="let route of routes" [routerLink]="route.url"><p>{{route.linkName}}</p></a>
 
+<h1>Router Outlet</h1>
 <!-- (activate) returns $event as class of the activated component -->
 <router-outlet (activate)="onRouteActivate($event)" (deactivate)="onRouteDeactivate($event)"></router-outlet>
