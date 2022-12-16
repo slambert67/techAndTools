@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import {Action, State, StateContext} from "@ngxs/store"
+import {Action, State, StateContext} from "@ngxs/store";
 import {TodoStateModel} from "../models/TodoStateModel";
 import {AddItemAction, ToggleItemAction} from "../actions/todo-actions";
 import {TodoModel} from "../models/TodoModel";
@@ -17,12 +17,13 @@ Mutated by actions
 @Injectable()
 export class TodoState {
 
-  @Action(AddItemAction)
+  @Action(AddItemAction)  // action class or array of action classes
   addItem( ctx: StateContext<TodoStateModel>, action: AddItemAction ) {
     // purpose of action is to mutate state, so need ctx
     // want to add new item into items array
 
-    const {name} = action;  // destructuring assignment? Same as name in constructor
+    console.log('State now implementing AddItemAction');
+    const {name} = action;  // destructure AddItemAction constructor
     if (!name) {return}
 
     const state = ctx.getState();
@@ -36,7 +37,6 @@ export class TodoState {
     }
 
     // mutate the state
-    // Investigate ... syntax further. Destructured copy?
     ctx.setState({
       ...state,
       items: [...state.items, todoItem]
@@ -47,6 +47,8 @@ export class TodoState {
 
   @Action(ToggleItemAction)
   toggleItem( ctx: StateContext<TodoStateModel>, action: ToggleItemAction ) {
+
+    console.log('State now implementing ToggleItemAction');
     const state = ctx.getState();
 
     const modifiedTodoItems = state.items.map( (item) => {

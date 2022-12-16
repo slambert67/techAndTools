@@ -1,0 +1,20 @@
+Single source of truth for application state.
+Built on rxjs
+ngxs actions are asynchronous
+Supports Observables and Promises
+npm install @ngxs/store --save
+
+4 major concepts
+
+Store: Global state container, action dispatcher and selector
+Actions: Class describing the action to take and its associated metadata
+State: Class definition of the state
+Selects: State slice selectors
+
+Implementation
+==============
+Define interfaces to represent data model. TodoModel.ts, TodoStateModel.ts
+Define the state slice. @State, @Action (Our states listen to actions via an @Action decorator). todo-state.ts
+Define Action classes. todo-actions.ts
+Define Selectors. @Selector determines relevant state. Selectors are calculated when state changes. todo-selectors.ts
+Specify the state slices. NgxsModule. app.module.ts
