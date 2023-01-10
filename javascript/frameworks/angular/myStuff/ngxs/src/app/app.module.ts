@@ -15,6 +15,8 @@ import { Ngxs4Component } from './ngxs4/ngxs4/ngxs4.component';
 import {Ngxs4State} from "./ngxs4/ngxs4-state";
 import { Ngxs5Component } from './ngxs5/ngxs5/ngxs5.component';
 import {NavigationState} from "./ngxs5/ngxs5/ngxs5-state";
+import { NgxstestComponent } from './ngxstest/ngxstest/ngxstest.component';
+import {NgxstestState} from "./ngxstest/ngxstest-state";
 
 @NgModule({
   declarations: [
@@ -23,12 +25,13 @@ import {NavigationState} from "./ngxs5/ngxs5/ngxs5-state";
     Ngxs2Component,
     Ngxs3Component,
     Ngxs4Component,
-    Ngxs5Component
+    Ngxs5Component,
+    NgxstestComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    NgxsModule.forRoot([ Ngxs1State, Ngxs2State, Ngxs3State, Ngxs4State, NavigationState ], {
+    NgxsModule.forRoot([ NgxstestState ], {
       developmentMode: !environment.production
     })
   ],

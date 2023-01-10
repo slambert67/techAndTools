@@ -5,27 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5664aa4-f87d-4020-84fc-e31784f9bbef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../core/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../core/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../core/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../core/destructuringAssignment.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../core/spread.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/ngxs1/ngxs1-state.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/ngxs2/ngxs2-state.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/ngxs3/ngxs3-state.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/assets/my-num.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/angular.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/angular.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/notes.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/actions/todo-actions.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.component.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/models/TodoModel.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/models/TodoStateModel.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/selectors/todo-selectors.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/states/todo-state.ts" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/behaviourSubject2.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/behaviourSubject.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/behaviourSubject.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,23 +35,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/myStuff/gitProjects/techAndTools/javascript/libraries/rxjs&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2021.3\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/myStuff/gitProjects/techAndTools/javascript/libraries/rxjs/code",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.sourceCode",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2021.3\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\myStuff\gitProjects\techAndTools\javascript\libraries\rxjs\code" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -97,6 +84,7 @@
       <workItem from="1669824097626" duration="859000" />
       <workItem from="1670842443722" duration="9000" />
       <workItem from="1670930725181" duration="887000" />
+      <workItem from="1673274444446" duration="1425000" />
     </task>
     <servers />
   </component>
@@ -108,6 +96,7 @@
         <option value="$PROJECT_DIR$/code/operators.js" />
         <option value="$PROJECT_DIR$/code/subjects.js" />
         <option value="$PROJECT_DIR$/code/behaviourSubject.js" />
+        <option value="$PROJECT_DIR$/code/behaviourSubject2.js" />
       </list>
     </option>
   </component>
