@@ -1,0 +1,2 @@
+Arrow functions do not have a 'this'
+'this' becomes 'this' of outer scope

@@ -17,6 +17,8 @@ import { Ngxs5Component } from './ngxs5/ngxs5/ngxs5.component';
 import {NavigationState} from "./ngxs5/ngxs5/ngxs5-state";
 import { NgxstestComponent } from './ngxstest/ngxstest/ngxstest.component';
 import {NgxstestState} from "./ngxstest/ngxstest-state";
+import { CompComponent } from './sandbox/comp/comp.component';
+import {NumState} from "./sandbox/comp/comp-state";
 
 @NgModule({
   declarations: [
@@ -26,13 +28,20 @@ import {NgxstestState} from "./ngxstest/ngxstest-state";
     Ngxs3Component,
     Ngxs4Component,
     Ngxs5Component,
-    NgxstestComponent
+    NgxstestComponent,
+    CompComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    NgxsModule.forRoot([ NgxstestState ], {
-      developmentMode: !environment.production
+    NgxsModule.forRoot([ Ngxs4State ], {
+      developmentMode: !environment.production,
+      selectorOptions: {
+        // These Selector Settings are recommended in preparation for NGXS v4
+        // (See above for their effects)
+        suppressErrors: false,
+        injectContainerState: false
+      }
     })
   ],
   providers: [HttpClient],

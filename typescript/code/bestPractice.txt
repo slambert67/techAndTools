@@ -1,0 +1,2 @@
+declare variables as const and loosen as required
+use least verbose type declarations
