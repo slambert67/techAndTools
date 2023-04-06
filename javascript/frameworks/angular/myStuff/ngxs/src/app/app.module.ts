@@ -18,7 +18,7 @@ import {NavigationState} from "./ngxs5/ngxs5/ngxs5-state";
 import { NgxstestComponent } from './ngxstest/ngxstest/ngxstest.component';
 import {NgxstestState} from "./ngxstest/ngxstest-state";
 import { CompComponent } from './sandbox/comp/comp.component';
-import {NumState} from "./sandbox/comp/comp-state";
+import {ComplexState} from "./sandbox/comp/comp-state";
 
 @NgModule({
   declarations: [
@@ -34,7 +34,7 @@ import {NumState} from "./sandbox/comp/comp-state";
   imports: [
     BrowserModule,
     HttpClientModule,
-    NgxsModule.forRoot([ Ngxs4State ], {
+    NgxsModule.forRoot([ ComplexState ], {
       developmentMode: !environment.production,
       selectorOptions: {
         // These Selector Settings are recommended in preparation for NGXS v4
