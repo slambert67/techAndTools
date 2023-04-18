@@ -26,11 +26,7 @@ var ob = new rxjs_1.Observable(function (subscriber) {
     // asynchronous value
     setTimeout(function () {
         subscriber.next(4);
-    }, 3000);
-    setTimeout(function () {
-        subscriber.next(5);
         subscriber.complete();
-        subscriber.unsubscribe();
     }, 3000);
 });
 console.log('just before subscribe to observable sub1');

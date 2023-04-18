@@ -5,41 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5664aa4-f87d-4020-84fc-e31784f9bbef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/sandbox/comp/comp-state.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/AddOperation.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/ChangeDetection.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/CombinationOperators1.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/CreatingObservable.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/DeclarativeHandlingParams.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/DeclarativePattern1.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/DeclarativePatternService.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/GoingReactive1.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/HandleException1.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/HandleException2.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/HandleException3.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/HandleException3b.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/HigherOrderConcatMap.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/HigherOrderMergeMap.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/HigherOrderSwitchMap.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/MaintainStateScan.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/MaintainStateScan2.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/MappingReturnedData.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/Observable1.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/Observer1.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/StartReceivingEmissions.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/StopReceivingEmissions.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/Subscribe1.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/Terms.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/notesKurata.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Kurata/shareReplay.PNG" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/exceptionHandling.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.component.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/app.module.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/ngxs4/ngxs4-state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/ngxs4/ngxs4-state.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/ngxs4/ngxs4/ngxs4.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../../frameworks/angular/myStuff/ngxs/src/app/ngxs4/ngxs4/ngxs4.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/sandbox.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/sandbox2.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/operators.js" beforeDir="false" afterPath="$PROJECT_DIR$/code/operators.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/operators.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/operators.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/observables.js" beforeDir="false" afterPath="$PROJECT_DIR$/code/observables.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,6 +93,8 @@
       <workItem from="1675349236549" duration="883000" />
       <workItem from="1675784664270" duration="1799000" />
       <workItem from="1678185202428" duration="2415000" />
+      <workItem from="1681742526700" duration="2468000" />
+      <workItem from="1681824921892" duration="5129000" />
     </task>
     <servers />
   </component>
@@ -136,6 +107,8 @@
         <option value="$PROJECT_DIR$/code/subjects.js" />
         <option value="$PROJECT_DIR$/code/behaviourSubject.js" />
         <option value="$PROJECT_DIR$/code/behaviourSubject2.js" />
+        <option value="$PROJECT_DIR$/code/sandbox.js" />
+        <option value="$PROJECT_DIR$/code/sandbox2.js" />
       </list>
     </option>
   </component>
