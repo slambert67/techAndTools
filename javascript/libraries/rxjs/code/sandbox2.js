@@ -1,18 +1,19 @@
 "use strict";
 exports.__esModule = true;
 var rxjs_1 = require("rxjs");
-var mysubfunc = function (sub) {
-    sub.next("ponkival");
-    sub.next("punkflap");
+/*
+Subscriber
+- Implements Observer Interface
+- Extends Subscription
+ */
+// define subscriber function - tells Observable how to generate values
+var subscriberFunction = function (sub) {
+    sub.next("hello");
+    sub.next("world");
     sub.complete();
 };
-// subscriber defines values emitted from observable
-/*const observable = new Observable<string>((subscriber: Subscriber<string>) => {
-    subscriber.next("Hello");
-    subscriber.next("World");
-    subscriber.complete();
-});*/
-var observable = new rxjs_1.Observable(mysubfunc);
+// define the Observable
+var observable = new rxjs_1.Observable(subscriberFunction);
 // An observer is a consumer of values
 // An observer is something that is interested in the emitted values by the observable
 // An Observer is simply a set of callbacks (next, error, complete).
@@ -28,4 +29,6 @@ var observer = {
         return console.log("[observer] complete!");
     }
 };
-var subscription = observable.subscribe(observer);
+var subscription;
+subscription = observable.subscribe(observer);
+subscription.unsubscribe();

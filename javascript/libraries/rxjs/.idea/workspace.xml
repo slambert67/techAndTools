@@ -5,10 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5664aa4-f87d-4020-84fc-e31784f9bbef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/code/sandbox.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/sandbox2.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/creation/from.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/creation/fromEvent.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/creation/of.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/join/concatAll.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/join/mergeAll.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/join/switchAll.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/joinCreation/combineLatest.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/joinCreation/forkJoin.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/joinCreation/notes.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/operators/transformation/switchMap.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/observables.js" beforeDir="false" afterPath="$PROJECT_DIR$/code/observables.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/sandbox2.js" beforeDir="false" afterPath="$PROJECT_DIR$/code/sandbox2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/sandbox2.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/sandbox2.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +66,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\myStuff\gitProjects\techAndTools\javascript\libraries\rxjs\code" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\myStuff\gitProjects\techAndTools\javascript\libraries\rxjs\code\operators\join" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -95,6 +107,9 @@
       <workItem from="1678185202428" duration="2415000" />
       <workItem from="1681742526700" duration="2468000" />
       <workItem from="1681824921892" duration="5129000" />
+      <workItem from="1681912641333" duration="3532000" />
+      <workItem from="1682065073131" duration="14235000" />
+      <workItem from="1682331067175" duration="11641000" />
     </task>
     <servers />
   </component>
@@ -109,6 +124,14 @@
         <option value="$PROJECT_DIR$/code/behaviourSubject2.js" />
         <option value="$PROJECT_DIR$/code/sandbox.js" />
         <option value="$PROJECT_DIR$/code/sandbox2.js" />
+        <option value="$PROJECT_DIR$/code/operators/creation/of.js" />
+        <option value="$PROJECT_DIR$/code/operators/creation/from.js" />
+        <option value="$PROJECT_DIR$/code/operators/creation/fromEvent.js" />
+        <option value="$PROJECT_DIR$/code/operators/joinCreation/combineLatest.js" />
+        <option value="$PROJECT_DIR$/code/operators/joinCreation/forkJoin.js" />
+        <option value="$PROJECT_DIR$/code/operators/join/switchAll.js" />
+        <option value="$PROJECT_DIR$/code/operators/join/concatAll.js" />
+        <option value="$PROJECT_DIR$/code/operators/transformation/switchMap.js" />
       </list>
     </option>
   </component>
