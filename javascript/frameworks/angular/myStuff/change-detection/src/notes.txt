@@ -1,0 +1,90 @@
+
+Change Detection - 2 sub processes
+==================================
+
+Subprocess 1 - View Checking
+----------------------------
+Synchronisation of component view with data model
+
+
+Subprocess 2 - Automatic execution of Subprocess 1
+--------------------------------------------------
+Can be disabled
+
+
+High Level Process
+------------------
+Component
+- class   : data model
+- template: view
+
+Data binding connects the 2
+Bindings of interest to Angular Change Detection mechanism
+
+
+data model state changes
+model and view out of sync
+sync needed
+can kick off manually if {ngZone: 'noop'}
+
+constructor( private cdr: ChangeDetectorRef )
+this.cdr.detectChanges() : manually detect changes
+
+Happens recursively for whole component subtree down
+
+--
+Template compiles to a function with 2 modes
+- creation mode
+- update mode
+
+Different types of view (root, component, embedded)
+- component: ViewRef class (Implements ChangeDetectorRef)
+- embedded:  ViewRef class  (ViewContainerRef.createEmbeddedView
+- root:      RootViewRef class (extends ViewRef)
+
+Initial view checking
+ApplicationRef
+
+Subprocess 2
+------------
+Angular initiates view checking for us so we don't have to do it manually
+
+In which cases might state of our application change?
+
+================================================================
+Different course
+================================================================
+What to rerender and when
+How does Angular know - zone.js
+monkey patches browser api
+
+event happens - zone.js triggers change detection
+2 zones. Only 1 active at a time
+
+Outer zone(Parent zone)
+- Never trigger CD
+- ngZone.runOutsideAngular()
+
+-> forked to -> Inner zone (Angular zone)
+- triggers CD
+- ngZone.run() moves back to inner zone
+
+With onPush CD
+- CD NEVER RUNS unless view is dirty
+- if child is dirty then parent is dirty
+
+When is view marked as dirty?
+- event binding
+  - simply connecting method from component to an actual output? (change)="itemChanged($event)"
+- async pipe
+  - someObservable$ | async
+- cdRef.markForCheck
+- set input in CD cycle?
+
+===================
+Angular schedules change detection based on signals from Zone.js.
+
+
+
+
+

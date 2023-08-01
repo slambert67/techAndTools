@@ -5,19 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5664aa4-f87d-4020-84fc-e31784f9bbef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/code/operators/creation/from.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/operators/creation/fromEvent.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/operators/creation/of.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/operators/join/concatAll.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/operators/join/mergeAll.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/operators/join/switchAll.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/operators/joinCreation/combineLatest.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/operators/joinCreation/forkJoin.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/operators/joinCreation/notes.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/code/operators/transformation/switchMap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/sandbox2.js" beforeDir="false" afterPath="$PROJECT_DIR$/code/sandbox2.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/sandbox2.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/sandbox2.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../typescript/code/LanguageFeatures/arrowFunctions/notes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../typescript/code/LanguageFeatures/callbacks/notes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../typescript/code/LanguageFeatures/closures/1Closure.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../typescript/code/LanguageFeatures/closures/1Closure.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../typescript/code/LanguageFeatures/closures/notes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../typescript/code/bestPractice.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../typescript/bestPractice.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../typescript/notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../typescript/notes.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,23 +39,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/myStuff/gitProjects/techAndTools/javascript/libraries/rxjs/code&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2021.3\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/myStuff/gitProjects/techAndTools/javascript/libraries/rxjs/code",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.sourceCode",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2021.3\\plugins\\JavaScriptLanguage\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\myStuff\gitProjects\techAndTools\javascript\libraries\rxjs\code" />
@@ -110,6 +105,7 @@
       <workItem from="1681912641333" duration="3532000" />
       <workItem from="1682065073131" duration="14235000" />
       <workItem from="1682331067175" duration="11641000" />
+      <workItem from="1688032206766" duration="11000" />
     </task>
     <servers />
   </component>
