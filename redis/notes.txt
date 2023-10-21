@@ -1,0 +1,49 @@
+External programs talk to Redis using a TCP socket and a Redis specific protocol.
+Redis provides a command line utility that can be used to send commands to Redis - redis-cli
+
+Redis instance running on localhost at port 6379.
+
+redis-cli ping
+
+set mykey somevalue
+get mykey -> somevalue
+
+commands
+========
+set
+setnx
+get
+mset
+mget
+incr
+incrby
+
+
+types
+=====
+string - simplest type to associate with a key
+json - json.set, json.get
+lists - lists of strings sorted by insertion order
+sets - are unordered collections of unique strings
+hashes - are record types modeled as collections of field-value pairs
+streams - data structure that acts like an append-only log
+
+if value is of type string -> GET <key>
+if value is of type hash -> HGET or HMGET or HGETALL <key>
+if value is of type lists -> lrange <key> <start> <end>
+if value is of type sets -> smembers <key>
+if value is of type sorted sets -> ZRANGEBYSCORE <key> <min> <max>
+if value is of type stream -> xread count <count> streams <key> <ID>. https://redis.io/commands/xread
+
+type <key> gives type
+
+search
+------
+keys
+scan
+sets
+
+delete
+------
+flushall
+flushdb
