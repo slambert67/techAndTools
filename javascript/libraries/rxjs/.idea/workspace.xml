@@ -5,15 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5664aa4-f87d-4020-84fc-e31784f9bbef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/code/timers/timer1.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../typescript/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../typescript/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../core/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/../../core/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../core/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/../../core/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/code/timers/timer2.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/behaviourSubject.js" beforeDir="false" afterPath="$PROJECT_DIR$/code/behaviourSubject.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/code/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/timers/timer1.js" beforeDir="false" afterPath="$PROJECT_DIR$/code/timers/timer1.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/code/timers/timer1.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/timers/timer1.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../node/nestjs/notes.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/.eslintrc.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/.prettierrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/nest-cli.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.controller.spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.controller.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.module.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.service.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/main.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/test/app.e2e-spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/test/jest-e2e.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/tsconfig.build.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../node/poc/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../../node/poc/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +125,11 @@
       <workItem from="1688032206766" duration="11000" />
       <workItem from="1697721976419" duration="250000" />
       <workItem from="1697815990434" duration="823000" />
-      <workItem from="1697879652654" duration="2090000" />
+      <workItem from="1697879652654" duration="2592000" />
+      <workItem from="1698054979666" duration="2207000" />
+      <workItem from="1698229962917" duration="1133000" />
+      <workItem from="1702455933184" duration="1207000" />
+      <workItem from="1702460691147" duration="624000" />
     </task>
     <servers />
   </component>
@@ -134,6 +153,7 @@
         <option value="$PROJECT_DIR$/code/operators/join/concatAll.js" />
         <option value="$PROJECT_DIR$/code/operators/transformation/switchMap.js" />
         <option value="$PROJECT_DIR$/code/timers/timer1.js" />
+        <option value="$PROJECT_DIR$/code/timers/timer2.js" />
       </list>
     </option>
   </component>

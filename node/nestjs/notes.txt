@@ -1,0 +1,185 @@
+Built on top of Express
+
+Install CLI: npm install -g @nestjs/cli@latest
+
+New project: nest new <projectName>
+
+Run project: npm run start:dev
+
+Entry point: main.ts (port 3000 by default)
+
+http.get -> controller -> service -> response
+
+classes instantiated automatically by the framework
+
+Acronyms
+========
+dto: data transfer object
+
+Modules
+=======
+AppModule: root of application
+eg.
+Users module
+Orders module
+
+Modules have dependencies on each other
+
+New module: nest generate module <moduleName>
+- defined as an import to root module by default
+
+New controller: nest generate controller<moduleName>
+- creates a controller for moduleName
+
+New service: ng generate service <moduleName>
+- creates a service/provider
+
+New everything: nest generate resource<moduleName> --dry-run
+
+
+Controllers
+===========
+Define routes
+
+GET /ninjas -> []
+GET /ninjas/:id -> {}
+POST /ninjas
+PUT /ninjas/:id
+DELETE /ninjas/:id
+
+@Controller('ninjas')  // ninjas is prefix
+export class NinjasController {
+	// GET /ninjas -> []
+	@Get()  // decorator telling nest this is a routine to handle a get request
+	getNinjas() {
+		return [];
+    }
+
+	// GET /ninjas/:id -> {}
+	@Get(':id')  // how to get hold of ':id' to work with? See @Param decorator below
+	getOneNinja( @Param('id') id: string ) {
+		return {
+			id
+		};
+    }
+
+	// POST /ninjas  // need to parse request body
+	@Post()
+	createNinja( @Body() createNinjaDto: CreateNinjaDto ) {
+		return {
+			name: createNinjaDto.name
+		}
+	}
+	// create dto folder in ninjas to define structure
+
+
+
+	// PUT /ninjas/:id
+	@Put(':id')
+	updateNinja( @Param('id') id: string, @Body() updateNinjaDto: UpdateNinjaDto ) {
+		return {
+			id,
+			name: updateNinjaDto
+		}
+	}
+
+
+	// DELETE /ninjas/:id
+
+
+    // query url
+	// GET /ninjas?type=fast -> []
+	@Get()
+	getFastNinjas( @Query('type') type: string ) {
+		return [ {type} ];
+	}
+
+
+}
+
+
+Providers
+=========
+Can be injected into any class that depends on it
+
+@Injectable()
+export class NinjaService() {
+	private ninjas = [];
+
+	getNinjas() {
+		return this.ninjas;
+	}
+}
+
+export class NinjasController{
+
+	constructor(private readonly ninjasService: NinjasService) {  // inject the service
+	}
+
+	getNinjas() {
+		return this.ninjasService.getNinjas();
+	}
+}
+
+
+Exception Handling
+==================
+if (!ninja) {
+	throw new Error('not found');
+}
+Nest needs to know what to do with this error
+
+try and catch
+	throw new NotFoundException() <- Nest has these built in http exceptions
+
+
+Pipes
+=====
+transform or validate data
+
+url params come in as strings
+may need transforming
+
+	// GET /ninjas/:id -> {}
+	@Get(':id')  // how to get hold of ':id' to work with? See @Param decorator below
+	getOneNinja( @Param('id', ParseIntPipe) id: number ) {    // converts string to number
+		return {
+			id
+		};
+    }
+
+validating
+npm install --save class-validator class-transformer
+github.com/typestack/class-validator
+
+import {MinLength} from 'class-validator';
+
+export class CreateNinjaDto {
+	@MinLength(3)
+	name: string;
+
+	@IsEnum(['stars', 'nunchucks'], {message: 'Custom Message'} )
+	weapon: 'stars' | 'nunchucks';
+}
+
+@MinLength decorator ignored unless ValidationPipe used ...
+	@Post()
+	createNinja( @Body( new ValidationPipe() ) createNinjaDto: CreateNinjaDto ) {
+		return {
+			name: createNinjaDto.name
+		}
+	}
+
+
+Guards
+======
+Route protection
+e.g. Authorization/Authentication
+
+nest generate guard <guardName>
+
+can attach to entire controller(guards all routes) or individual funtions
+
+@Controller('ninjas')  // ninjas is prefix
+@UseGuards(MyGuard)
+export class NinjasController {}

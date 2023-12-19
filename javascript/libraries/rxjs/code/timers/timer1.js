@@ -8,8 +8,8 @@ function correcting_interval(interval) {
 var t0;
 var tx;
 var counter = 0;
-var myob = correcting_interval(10000);
-myob.subscribe(function (x) {
+var myob = correcting_interval(1000);
+var s1 = myob.subscribe(function (x) {
     /*    if ( counter === 0 ) {
             t0 = new Date().getTime();
             console.log(`First value received at ${t0}`);
@@ -18,5 +18,16 @@ myob.subscribe(function (x) {
         }
         counter++;
         console.log(x);*/
-    console.log(new Date().getTime());
+    console.log('S1' + (new Date().getTime()));
+});
+var s2 = myob.subscribe(function (x) {
+    /*    if ( counter === 0 ) {
+            t0 = new Date().getTime();
+            console.log(`First value received at ${t0}`);
+        } else {
+            tx =
+        }
+        counter++;
+        console.log(x);*/
+    console.log('S2' + (new Date().getTime()));
 });
