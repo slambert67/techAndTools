@@ -10,15 +10,20 @@ The mock function provides features to
 - set return values
 - change the implementation
 
+npm test <module> - run tests
+
+mocking presentation: https://www.youtube.com/watch?v=Af4M8GMoxi4
+=================================================================
+Obvious abuses
+--------------
+Partial mocks
+Mocking the Subject
 
 
+Best Practice
+-------------
+Mock all dependencies - I think
 
 
-
-npm test - run tests
-
-module1 - test simple public function
-module2 - jest.fn
-module3 - jest.spyOn
 
 
