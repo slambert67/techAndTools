@@ -5,30 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c5664aa4-f87d-4020-84fc-e31784f9bbef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/code/timers/timer2.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../asynchronicity/async1.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../asynchronicity/async1.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/4/c/4c38a0ac428416cc42827fab72f1613081790503" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/4/c/4c38a0ac428416cc42827fab72f1613081790503" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/timers/timer1.js" beforeDir="false" afterPath="$PROJECT_DIR$/code/timers/timer1.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code/timers/timer1.ts" beforeDir="false" afterPath="$PROJECT_DIR$/code/timers/timer1.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../node/nestjs/notes.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/.eslintrc.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/.prettierrc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/nest-cli.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.controller.spec.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.controller.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.module.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/app.service.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/src/main.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/test/app.e2e-spec.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/test/jest-e2e.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/tsconfig.build.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/nestjs/project-name/tsconfig.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../node/poc/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../../node/poc/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../jest/myJest/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/../../../jest/myJest/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../jest/myJest/.idea/sonarlint/securityhotspotstore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/../../../jest/myJest/.idea/sonarlint/securityhotspotstore/index.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../jest/myJest/notes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../../jest/myJest/notes.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,6 +115,7 @@
       <workItem from="1698229962917" duration="1133000" />
       <workItem from="1702455933184" duration="1207000" />
       <workItem from="1702460691147" duration="624000" />
+      <workItem from="1706529094565" duration="797000" />
     </task>
     <servers />
   </component>

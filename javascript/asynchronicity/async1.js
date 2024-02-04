@@ -9,8 +9,8 @@ function myDummyServer(y) {
     }, 5000);
 }
 
-function returnPromise(myData) {
-    //console.log('getting promise');
+async function returnPromise(myData) {
+    console.log('getting promise');
     return new Promise(function(resolve, reject) {
         // Some imaginary 2000 ms timeout simulating a db call
         setTimeout(()=> {
