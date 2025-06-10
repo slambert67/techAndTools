@@ -1,0 +1,58 @@
+Observer - observes and responds to notifications
+         - receive 3 types of notifications
+         - so need to specify callbacks that handle these
+         - a collection of callbacks that knows how to listen to
+           values delivered by an observable
+         - ALSO defined as an interface with next,error and complete methods
+- process next item
+- handle errors
+- handle completion
+
+subscribe to start receiving emitted items
+pipe to apply operations on emitted value
+stop the stream - unsubscribe
+
+subscriber - implements Observer interface
+             Inside rxjs, observer converted to subscriber
+           - is an observer with additional features
+             -e.g. unsubscribe method
+           - rarely used except WITHIN rxjs
+
+Observable - collection of events or values emitted over time
+           - can have multiple observers
+		   - Can even emit observables
+           - can be synchronous or asynchronous
+           - finite or infinite number of values emitted
+           - HOT - hard at work emitting even before there are any subscriptions
+           - COLD - Needs subscription.
+             - e.g. array elements, http get
+             - each subscriber gets all the values
+
+Operators - pipe().subscribe() ensures all operators subscribe to their input observable
+
+
+Going Reactive - https://github.com/DeborahK/Angular-RxJS
+==============
+See Going Reactive section in Kurata course (pluralsight)
+
+catchError - must be after any operator that could generate an error
+EMPTY - immediately emits a completion notification
+throwError
+
+Handling Observable errors
+- catch
+- optionally rethrow
+- replaced errored Observable with new Observable
+
+Mapping returned data
+=====================
+
+
+Combining data streams
+======================
+combineLatest  - LATEST emitted value from each observable combined into an array
+forkJoin       - LAST emitted value from each observable combined into an array
+               - Only emits one time when all input observables complete
+               - Can use when waiting for multiple http requests to complete
+withLatestFrom - Pipeable operator. Driven by source observable emissions
+

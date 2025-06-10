@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   players!: string[];
   selectedPlayer!: string;
   twoWayBinding!: number;
+  withoutNgModel: string = "Initial value";
 
   ngOnInit() {
     this.players = ['Kasparov', 'Carlsen', 'Fischer'];

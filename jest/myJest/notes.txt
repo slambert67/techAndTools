@@ -1,0 +1,35 @@
+npm install --save-dev jest
+
+Mocking is a technique to isolate test subjects by replacing dependencies with objects that you can control and inspect.
+A dependency can be anything your subject depends on, but it is typically a module that the subject imports.
+When we talk about mocking in Jest, we’re typically talking about replacing dependencies with the Mock Function
+
+The Mock function
+-----------------
+The goal for mocking is to replace something we don’t control with something we do, so it’s important that what we replace it with has all the features we need.
+The mock function provides features to
+- capture calls
+- set return values
+- change the implementation
+
+npm test <module> - run tests
+
+mocking presentation: https://www.youtube.com/watch?v=Af4M8GMoxi4
+=================================================================
+Obvious abuses
+--------------
+Partial mocks
+Mocking the Subject
+
+
+Best Practice
+-------------
+Mock all dependencies - I think
+
+Todo
+====
+jest.createMockFromModule
+
+
+
+

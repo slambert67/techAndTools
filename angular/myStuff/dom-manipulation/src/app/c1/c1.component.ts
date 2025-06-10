@@ -1,3 +1,11 @@
+/*
+all components are hosted inside a custom DOM element
+component and directive classes can obtain an instance of ElementRef associated with their host element through Dependency Injection (DI):
+So while a component can get access to its host element through DI,
+  the ViewChild decorator is used most often to get a reference to a DOM element in its view (template).
+  But, it’s reversed for directives — they have no views and they usually work directly with the element they are attached to.
+ */
+
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 
 @Component({
@@ -15,16 +23,9 @@ export class C1Component implements OnInit, AfterViewInit {
                Some cannot be returned from DOM                   - ViewRef
 
    */
-  @ViewChild("tref", {read: ElementRef}) tref!: ElementRef;
+  @ViewChild("tref", {read: ElementRef}) tref!: ElementRef;  // access DOM element in component view
 
-
-  /*
-  all components are hosted inside a custom DOM element
-  component and directive classes can obtain an instance of ElementRef associated with their host element through Dependency Injection (DI):
-  So while a component can get access to its host element through DI,
-    the ViewChild decorator is used most often to get a reference to a DOM element in its view (template).
-    But, it’s reversed for directives — they have no views and they usually work directly with the element they are attached to.
-   */
+  // access host element via Dependency Injection
   constructor(private hostElement: ElementRef) {
     console.log('In constructor');
     console.log(this.hostElement.nativeElement);  // <app-c1>
@@ -32,6 +33,7 @@ export class C1Component implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
   }
+
 
   ngAfterViewInit() {
     console.log('In after view init');

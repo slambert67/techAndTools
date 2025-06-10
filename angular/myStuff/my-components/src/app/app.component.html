@@ -9,13 +9,17 @@ The target of a data binding can be a property, an event, or an attribute name.
   - (click)="selectPlayer(player)"  - VIEW/DOM event to COMPONENT         - EVENT BINDING
 - TWO WAY
   - Combines PROPERTY and EVENT BINDING in a single notation
-  - [(ngModel)]="twoWayBinding"
+  - [()]="twoWayBinding"
     - () - User changes flow  TO    COMPONENT FROM  VIEW setting property as with         EVENT BINDING
     - [] - Value flows        FROM  COMPONENT TO    VIEW setting displayed value as with  PROPERTY BINDING
 - Summary
 Use [] to bind from source to view
 Use () to bind from view to source
 Use [()] to bind in a two-way sequence of view to source to view
+  - If element has property count then must emit countChange event for the following to work:
+    - [(count)]
+  - Form elements (Input etc) typically have a value property but not a valueChange event
+    - use [(ngModel)]
 
 Dynamic Components
 ------------------
@@ -45,11 +49,25 @@ Before adding components, you have to define an anchor point to tell Angular whe
 {{twoWayBinding}}
 <p><button type="button" (click)="doubleNumber()">Double</button></p>
 
+<h5>Two way data binding without ngModel</h5>
+<app-c2 [(c2Attribute1)]="withoutNgModel"></app-c2>
+{{withoutNgModel}}
+
 <!-- Parent/Child interaction -->
 <app-p1></app-p1>
+
+
+<!-- Comms between unrelated components -->
+<h5>Comms between unrelated components</h5>
+<app-unrelated1></app-unrelated1>
+<app-unrelated2></app-unrelated2>
+
 
 <!-- Dynamic component - no config -->
 <app-dynamic-comp-container></app-dynamic-comp-container>
 <hr>
 <!-- Dynamic component - config -->
 <app-dynamic-comp-with-config></app-dynamic-comp-with-config>
+
+
+

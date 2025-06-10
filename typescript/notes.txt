@@ -36,7 +36,7 @@ tuples
 Type erasure and error behaviour
 ================================
 Declared types not shown in the javascript
-Types really used at development timeand not runtime
+Types really used at development time and not runtime
 Typescript compiler can raise an error but still generate valid javascript
 
 

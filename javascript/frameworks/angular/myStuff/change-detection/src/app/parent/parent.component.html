@@ -1,0 +1,13 @@
+<p>Parent Component</p>
+
+<!-- Not bound so CD does not run -->
+<div><input value="Not bound" type="text"></div>
+
+
+<!-- Bound so CD runs -->
+<div><input value="bound" (change)="inputChanged()" type="text"></div>
+{{viewRendered()}}
+
+<app-child1></app-child1>
+
+<app-child2></app-child2>

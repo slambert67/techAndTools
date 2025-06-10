@@ -1,0 +1,14 @@
+Angular
+=======
+ng version
+
+Angular CLI: 15.2.7
+Node: 16.18.1
+Package Manager: npm 8.19.2
+OS: win32 x64
+
+@angular-devkit/architect    0.1502.7 (cli-only)
+@angular-devkit/core         15.2.7 (cli-only)
+@angular-devkit/schematics   15.2.7 (cli-only)
+@schematics/angular          15.2.7 (cli-only)
+

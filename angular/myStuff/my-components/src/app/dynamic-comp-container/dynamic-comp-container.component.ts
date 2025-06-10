@@ -19,10 +19,12 @@ export class DynamicCompContainerComponent implements OnInit {
     this.myContainer.clear();
 
     const dyn1 = this.myContainer.createComponent(Dynamic1Component);
+    console.log(dyn1);
     // OLD METHOD : dyn1.instance.attr1 = 'DYNAMIC ONE';
     dyn1.setInput('attr1', 'DYNAMIC ONE');
 
     const dyn2 = this.myContainer.createComponent(Dynamic2Component);
+    console.log(dyn2);
     // OLD METHOD : dyn2.instance.attr1 = 'DYNAMIC TWO';
     dyn2.setInput('attr1', 'DYNAMIC TWO');
   }

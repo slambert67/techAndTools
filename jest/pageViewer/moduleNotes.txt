@@ -1,0 +1,32 @@
+A module is a self-contained piece of code that can be imported and used in other parts of the application
+There are two main module systems in JavaScript: CommonJS and ES6 Modules
+
+CommonJS is the module system used in Node.js
+It uses the require() function to import modules and the module.exports object to export functionality from a module.
+// utils.js
+const sum = (a, b) => a + b;
+module.exports = sum;
+
+// app.js
+const sum = require('./utils');
+console.log(sum(1, 2)); // 3
+
+
+ES6 Modules are the standardized module system for JavaScript, as defined by the ECMAScript 2015 (ES6) specification
+They use the import and export keywords to achieve the same functionality as CommonJS modules
+ES6 modules should have a .mjs extension or the .js extension with the "type": "module" setting in the package.json file
+
+// utils.js
+export const sum = (a, b) => a + b;
+
+// app.js
+import { sum } from './utils';
+console.log(sum(1, 2)); // 3
+
+
+Use ES6 Modules in Node.js
+==========================
+Change the file extension to .mjs.
+or
+Add the "type": "module" setting to your package.json file
+

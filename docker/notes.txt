@@ -1,0 +1,24 @@
+build, share, and run containerized applications and microservices
+
+Docker Engine
+-------------
+Docker Engine is an open source containerization technology for building and containerizing your applications. 
+Docker Engine acts as a client-server application with:
+	A server with a long-running daemon process dockerd
+	APIs which specify interfaces that programs can use to talk to and instruct the Docker daemon
+	A command line interface (CLI) client docker
+
+Docker Build
+------------
+Build images
+
+Docker Compose
+--------------
+A tool for defining and running multi-container Docker applications
+With Compose, you use a YAML file to configure your application's services. 
+Then, with a single command, you create and start all the services from your configuration.
+
+
+Docker Desktop
+==============
+The Images view displays a list of your Docker images and allows you to run an image as a container, pull the latest version of an image from Docker Hub, and inspect images.
