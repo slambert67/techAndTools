@@ -1,0 +1,137 @@
+Docker container shows 2 ports
+
+5438:5432
+
+Left side (5438) → The port exposed on your host machine (e.g., your laptop).
+Right side (5432) → The port inside the container where Postgres is actually listening.
+
+So Docker is mapping: host:5438  →  container:5432
+
+
+Why this exists
+---------------
+Postgres (the database) always runs on port 5432 inside the container (that’s the standard).
+But maybe you already had something using 5432 on your host, or you wanted multiple Postgres containers.
+So instead of binding 5432:5432, you used 5438:5432.
+That way, you connect to localhost:5438 on your host → Docker forwards traffic to Postgres at 5432 inside the container.
+
+
+How to use it
+-------------
+From your host (outside the container) →
+connect with:
+host: localhost
+port: 5438
+
+
+From another container in the same network →
+connect with:
+host: <container_name>
+port: 5432
+
+
+
+transaction service
+===================
+Not containerised
+
+Postgres			The database		Containerised
+pgadmin				Access				Containerised		Click on port (5050:80). RClick on table
+
+
+Executing
+	npm run start:dev
+	
+
+Using
+	http://localhost:3000/api
+	
+	
+
+model Transaction {
+  id           Int      @id @default(autoincrement())
+  accountId    String   @default(uuid())
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+
+
+account service
+===============
+Not containerised
+
+MongoDB 			The database	Installed locally on PC
+MongoDB Compass		GUI				Installed locally on PC		localhost:27017
+Mongoose			ORM				npm install
+
+
+Config
+	PORT=3001
+	MONGODB_URL=mongodb://localhost:27017/account-microservice
+
+
+Routes
+	router.get('/', accountController.getAccounts);
+	router.get('/:id', validate(accountValidation.getAccountById), accountController.getAccountById);
+	router.post('/', validate(accountValidation.createAccount), accountController.createAccount);
+	router.put('/:id', validate(accountValidation.updateAccountById), accountController.updateAccountById);
+	router.delete('/:id', validate(accountValidation.deleteAccountById), accountController.deleteAccountById);
+	
+	
+Executing
+	cd src
+	node index.js
+	
+	
+Using
+	Postman
+		POST
+			localhost:3001/v1/accounts
+			{
+				"name": "Steve Lambert",
+				"number": "01",
+				"type": "root"
+			}
+		GET
+			localhost:3001/v1/accounts
+			{
+				"id": "68d1678c8e0781397fd74deb",
+				"name": "Steve Lambert",
+				"number": "01",
+				"type": "root",
+				"status": "new"
+			}
+
+	Compass
+		RClick on collection and open in new tab to query data
+
+
+const AccountSchema
+	name
+	number
+	type
+	status
+	updatedAt
+  
+
+
+
+
+
+
+
+Rule of thumb
+
+Synchronous → when you need immediate correctness (blocking dependencies).
+
+Asynchronous → when you want resilience, decoupling, or background tasks
+
+
+
+
+
+
+
+

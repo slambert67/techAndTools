@@ -1,0 +1,83 @@
+Oracle locks at row level on modification only
+Oracle never locks data just to read.
+A writer does not block a reader. Fundamentally different to other databases
+A reader does not block a writer
+writers can block each other
+
+multiversioning. - multi version read consistency
+
+===
+Oracke locks TABLE data at the row level
+Stored procedure when executing is locked in a mode that does not allow write access
+
+Pessimistic Locking
+-------------------
+- Query data without locking
+- Choose a row to update (before making changes on screen)
+- Select row FOR UPDATE NOWAIT. i.e. a requery with a lock. Ensure all rows to be updated are in WHERE clause.
+	- if data unchanged, we'll get the row and it will be locked against other user's updates
+	- if locked by another user (as they are updating it), we get ORA-00054 Resource Busy error. Blocked until their lock is released
+	- if changed by another user, we get 0 rows back. Data on our screen is stale. Requery data.
+
+Pessimistic because we doubt the row will be unchanged by another user.
+
+
+Optimistic Locking
+------------------
+- keep old and new values in the application
+
+
+Pessimistic typically best for Oracle.
+
+
+Blocking
+========
+INSERT, UPDATE, DELETE, SELECT FOR UPDATE
+
+
+SELECT FOR UPDATE
+-----------------
+SELECT FOR UPDATE NOWAIT
+
+NOWAIT fails immediately instead of blocking
+
+
+INSERT
+------
+Table has Primary Key or Unique Constraint and 2 sessions simultaneously attempt an Insert
+Use Sequences to generate Primary Keys
+
+
+UPDATES and DELETES
+-------------------
+See optimistic and pessimistic locking above
+
+
+DEADLOCKS
+---------
+DEADLOCK DETECTED details in server trace file
+Unindexed foreign key is likely culprit
+
+Deleting a parent row can be problematic
+Indexing foreign keys allows Oracle to jumb to appropriate row in child table instead of locking whole table
+
+
+Lock Escalation
+---------------
+e.g. 100 row locks -> 1 tabler lock
+Oracle never does this
+
+
+DML Locks
+---------
+
+DDL Locks
+---------
+
+
+Concurrency Control
+===================
+Goes beyond locks
+
+multi-versioning -  read consistent views
+

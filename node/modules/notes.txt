@@ -1,0 +1,102 @@
+Example: math.js module
+
+1. Using CommonJS (require)
+===========================
+
+math.js
+// Exporting in CommonJS
+function add(a, b) {
+  return a + b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+module.exports = { add, multiply };
+
+
+app.js
+// Importing in CommonJS
+const math = require("./math");
+
+console.log(math.add(2, 3));      // 5
+console.log(math.multiply(2, 3)); // 6
+
+
+2. Using ES Modules (import)
+============================
+To use this, you need either:
+
+"type": "module" in package.json, OR
+
+Save files as .mjs (e.g., math.mjs, app.mjs).
+
+math.js
+// Exporting in ES Modules
+export function add(a, b) {
+  return a + b;
+}
+
+export function multiply(a, b) {
+  return a * b;
+}
+
+
+app.js
+// Importing in ES Modules
+import { add, multiply } from "./math.js";
+
+console.log(add(2, 3));      // 5
+console.log(multiply(2, 3)); // 6
+
+
+
+Key difference:
+CommonJS: require + module.exports
+
+ES Modules: import + export
+
+
+Default exports
+===============
+1. CommonJS (require)
+math.js
+// Exporting one default thing in CommonJS
+function add(a, b) {
+  return a + b;
+}
+
+module.exports = add;
+
+
+app.js
+// Importing the default in CommonJS
+const add = require("./math");
+
+console.log(add(2, 3)); // 5
+
+
+
+2. ES Modules (import)
+math.js
+// Exporting one default thing in ES Modules
+export default function add(a, b) {
+  return a + b;
+}
+
+
+app.js
+// Importing the default in ES Modules
+import add from "./math.js";
+
+console.log(add(2, 3)); // 5
+
+
+
+Summary
+CommonJS: one "default" export via module.exports, multiple via an object.
+ES Modules: supports default and named exports in a clean, standardized way.
+
+
+

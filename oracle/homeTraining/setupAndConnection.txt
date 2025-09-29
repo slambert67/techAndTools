@@ -1,0 +1,186 @@
+SYS, SYSTEM, PDBADMIN password : usual
+
+In Oracle Database Free (23ai Free)
+You get 1 root container (CDB$ROOT).
+You get 1 pluggable database by default (usually called FREEPDB1).
+If you connect as sysdba without specifying a service, you’ll land in the CDB root.
+To use your schemas/tables, you connect to the PDB service (e.g., FREEPDB1).
+
+
+
+
+SQL Developer
+-------------
+Connection - object specifying required information
+Reads any Connections defined in tnsnames.ora
+
+sqlplus sys@localhost:1521/FREEPDB1 as sysdba
+sqlplus userid=scott/tiger@localhost:1521/FREEPDB1
+
+SQL Developer connection
+	name						sltest
+	authentication type			default
+	username					sys
+	role						sysdba
+	password					usual
+	hostname					localhost
+	post						1521
+	service name				FREEPDB1
+	
+	
+
+TNS - Transparent Network Substrate
+---
+Oracle’s proprietary network protocol layer.
+It sits between the application (like SQL*Plus or an Oracle client library) and the underlying transport protocol (like TCP/IP, IPC, or named pipes).
+Abstract the underlying network protocol so Oracle tools can work across different platforms without changing code
+Manage connection details such as host, port, and service name through configuration files like tnsnames.ora
+
+tnsnames.ora
+	A local text file that maps TNS aliases (friendly names) to full connect descriptors
+	Found typically in $ORACLE_HOME/network/admin/ (Linux/Unix) or %ORACLE_HOME%\network\admin\ (Windows).
+	
+	sqlplus user@MYDB
+		instead of
+	sqlplus user@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=freepdb1)))
+	
+
+
+
+
+SYS
+---
+username
+highest privileged administrative account
+owns data dictionary
+treated specially as so powerful
+
+@localhost:1521/FREEPDB1 - EZCONNECT style connect string
+	localhost - my machine
+	1521 - default Oracle listerner port
+	FREEPDB1 - service name (PDB inside CDB). So PDB name is FREEPDB1
+
+as sysdba		make connection with SYSDBA privilege.
+				Not a normal Role. Elevated administrative privilege. startup / shutdown. Bypass normal authentication
+				Effectively Oracle superuser for that session
+				SYSDBA authentication
+					Password file 
+						(REMOTE_LOGIN_PASSWORDFILE=EXCLUSIVE or SHARED then SYS/password@... as sysdba will use that)
+					OS Authentication
+						sqlplus / as sysdba
+						OS user in appropriate OSDBA group
+							Bypasses network entirely
+						Connected logically as SYS 
+					
+			
+
+tnsnames.ora
+------------
+located in the $ORACLE_HOME/network/admin directory
+directory specified by the TNS_ADMIN environment variable or registry value
+can specify location in the actual DB
+
+powershell
+	if ($env:TNS_ADMIN) { $f=Join-Path $env:TNS_ADMIN 'tnsnames.ora'; if (Test-Path $f) { "TNS_ADMIN override: $f" } else { "TNS_ADMIN is '$env:TNS_ADMIN' but tnsnames.ora not found there" } } else { Get-ChildItem Registry::HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_* -ErrorAction SilentlyContinue | ForEach-Object { $p=Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue; if ($p.ORACLE_HOME) { $c=Join-Path $p.ORACLE_HOME 'network\admin\tnsnames.ora'; if (Test-Path $c) { "Found: $c" } } } }
+	Found: C:\app\steve\product\23ai\dbhomeFree\network\admin\tnsnames.ora
+
+SID - System Identifier
+---
+uniquely identifies a running Oracle instance on a host
+Tied to a specific memory set + background processes (an instance) running a database.
+Used internally by Oracle to distinguish between multiple instances on the SAME server
+Usually a short string, e.g., ORCLCDB, FREE, TESTDB
+In listener.ora / tnsnames.ora: Specified in SID_NAME
+bypasses the service layer and goes straight to the instance.
+
+
+Service
+-------
+A logical name that represents one or more database instances offering the same workload
+In single-instance DBs: usually just one service equals one database.
+In RAC (Real Application Clusters): a service can span multiple instances, and load balancing can occur between them.
+In multitenant databases: each PDB (pluggable database) has its own service name(s), and the container database (CDB) also has its own
+Often looks like FREEPDB1, orclpdb.mydomain.com, etc
+In listener.ora / tnsnames.ora: Specified in SERVICE_NAME
+Connecting via service name lets Oracle route your session through the listener to any instance registered for that service.
+This is the recommended modern approach.
+
+
+lsnrctl status gives service and sid details
+
+FREE is the default service name for your container database (CDB) in Oracle Database Free.
+If you connect to this service, you’ll be in the root container (CDB$ROOT)
+sqlplus sys@localhost:1521/FREE as sysdba
+
+FREEXDB is the XDB (XML Database) service that comes with Oracle by default
+mainly used for Oracle XML DB, HTTP(S) access, or WebDAV connections
+You typically don’t use this for normal SQL*Plus or application connections unless you specifically need XDB features
+
+freepdb1 is the default pluggable database (PDB) created during installation.
+This is where you’d put your user schemas and application data — this is where most people connect.
+sqlplus sys@localhost:1521/freepdb1 as sysdba
+When connected here, you’re inside the FREEPDB1 container, not the root
+
+
+handler
+-------
+endpoint inside listener process that knows how to accept incoming client connections for a service.
+In Oracle, most common handlers are:
+	Dedicated server handler — launches a new server process for each client connection
+	Shared server handler (dispatcher) — uses a pool of server processes for multiple clients (if configured).
+	
+On a fresh Oracle Free install, you normally see two handlers for a service because:
+	One is for TCP/IP connections ((PROTOCOL=TCP)) — the standard way SQL*Plus and most apps connect
+	One is for IPC (Inter-Process Communication) — used for local (same machine) connections without going over TCP, and sometimes for background communication between Oracle processes.
+	
+LOCAL SERVER → IPC handler
+
+REMOTE SERVER → TCP handler
+
+
+Variables set in installation
+-----------------------------
+
+ORACLE_HOME					Path to Oracle installation, e.g., C:\app\<user>\product\23.0.0\dbhomeFree.
+ORACLE_SID					Default instance name (FREE)
+PATH						Updated to include %ORACLE_HOME%\bin for command-line tools
+TNS_ADMIN (optional)		Directory containing tnsnames.ora.
+ORACLE_BASE					Base Oracle directory, e.g., C:\app\<user>
+
+
+Possibly not set - Oracle can get information from the registry
+HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_<OracleHomeName>
+
+powershell
+	Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_*' | Select-Object ORACLE_HOME
+		C:\app\steve\product\23ai\dbhomeFree
+	Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_*' | Select-Object ORACLE_BASE
+		C:\app\steve\product\23ai
+	Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_*' | Select-Object ORACLE_SID
+		FREE
+	Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE\ORACLE\KEY_*' | Select-Object TNS_ADMIN
+		
+		
+	
+# Look for all registry keys containing "ORACLE"
+Get-ChildItem -Path 'Registry::HKEY_LOCAL_MACHINE\SOFTWARE' -Recurse | Where-Object { $_.Name -match 'ORACLE' } | ForEach-Object { $_.Name try { Get-ItemProperty -Path $_.PSPath | Format-List } catch {} "`n" }
+
+
+
+who am i
+--------
+SELECT USER, SYS_CONTEXT('USERENV', 'CURRENT_SCHEMA') AS CURRENT_SCHEMA
+FROM dual;
+	SYS		SYS
+	
+new schema
+----------
+CREATE USER scott IDENTIFIED BY tiger
+  DEFAULT TABLESPACE USERS
+  TEMPORARY TABLESPACE TEMP
+  QUOTA UNLIMITED ON USERS;
+  
+  
+GRANT CREATE SESSION, CREATE TABLE, CREATE VIEW,
+      CREATE SEQUENCE, CREATE PROCEDURE, CREATE TRIGGER
+  TO scott;

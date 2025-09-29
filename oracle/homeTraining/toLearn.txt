@@ -1,0 +1,5 @@
+repeatable reads
+isolation level - serializable
+advanced queues
+hard parsing - latches
+fine grained access control

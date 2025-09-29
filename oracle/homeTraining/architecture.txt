@@ -1,0 +1,10 @@
+Database		
+	A collection of physical operating system files. May be mounted and opened by many instances
+	
+Instance		
+	A set of Oracle processes and an SGA. May mount and open a singe Database
+	Simply a set of OS processes and some memory
+	
+Dedicated Server
+	Oracle creates this new process for me when I log in. One per session.
+	Simply responds to SQL passed to it from client (over TCP/IP etc)
