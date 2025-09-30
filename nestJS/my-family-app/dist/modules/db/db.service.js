@@ -27,6 +27,12 @@ let DbService = class DbService {
         return this.adminModel.find().exec();
     }
     async create(createAdminDto) {
+        const alreadyExists = await this.findAll();
+        console.log('already exists');
+        console.log(alreadyExists);
+        if (alreadyExists.length > 0) {
+            throw new common_1.ConflictException(`Admin with name ${createAdminDto.name} already exists`);
+        }
         const createdAdmin = new this.adminModel(createAdminDto);
         return createdAdmin.save();
     }

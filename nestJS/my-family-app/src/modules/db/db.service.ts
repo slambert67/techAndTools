@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MyAdmin } from './schemas/admin.schema';
 import { Model } from 'mongoose';
@@ -19,6 +19,13 @@ export class DbService {
 
 
     async create(createAdminDto: CreateAdminDto): Promise<MyAdmin> {
+
+        const alreadyExists = await this.findAll();
+        console.log('already exists');
+        console.log(alreadyExists);
+        if (alreadyExists.length > 0) {
+            throw new ConflictException(`Admin with name ${createAdminDto.name} already exists`);
+        }
         const createdAdmin = new this.adminModel(createAdminDto);
         return createdAdmin.save();
     }

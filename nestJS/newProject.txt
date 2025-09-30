@@ -71,8 +71,22 @@ Update app.module
 	imports: [MongooseModule.forRoot('mongodb://localhost/nest')],
 	
 
+Create db module
+	see code
+	
 
-post: localhost:3000/db
+Create Swagger
+	npm install --save @nestjs/swagger
+	
+	main.ts
+		  const config = new DocumentBuilder()
+			.setTitle('Admin example')
+			.setDescription('The Admin API description')
+			.setVersion('1.0')
+			.addTag('admin')
+			.build();
+		  const documentFactory = () => SwaggerModule.createDocument(app, config);
+		  SwaggerModule.setup('api', app, documentFactory);
 
 
 
