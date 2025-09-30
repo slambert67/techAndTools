@@ -1,0 +1,81 @@
+My Project
+==========
+database
+	admin users
+		id: number
+		name: string
+		password: string
+	family members	me, julie, andy
+		id: number
+		firstName: string
+		lastName: string
+		updateString: string
+	
+typeorm
+mongodb
+
+Auth module for admin users
+rest endpoints		src/cats/cats.controller.ts
+graphql endpoints 	src/cats/cats.resolver.ts
+DTOs
+unit testing
+logging
+track activity
+middleware - add surname for search
+pipes - validation
+exception filters
+guards
+interceptors
+configuration
+websockets
+kafka
+
+
+=====
+
+Questions
+=========
+Use of forRoot, register, forFeature - something to do with dynamic modules
+@InjectRepository and @InjectModel play equivalent roles in NestJS, but they expose different abstractions because TypeORM uses Repositories and Mongoose uses Models.
+
+
+Notes
+=====
+Ch05 .env
+PORT=3001
+MONGODB_URL=mongodb://localhost:27017/account-microservice2
+
+
+
+Create new NestJS project
+=========================
+Install NestJS globally
+	npm install -g @nestjs/cli
+	
+Create new NestJS application
+	nest new my-family-app
+	
+Execute new NestJS project
+	npm run start:dev
+	
+Test initial endpoint
+	localhost:3000
+	
+Database Setup 
+	@nestjs/mongoose - The NestJS module that integrates Mongoose into the Nest ecosystem (e.g., MongooseModule.forRoot(), @Schema(), @Prop() decorators).
+	mongoose		 - The actual ODM (Object Data Modeling) library that connects to MongoDB and performs database operation
+	npm i --save @nestjs/mongoose mongoose
+	
+Update app.module
+	import { MongooseModule } from '@nestjs/mongoose';
+	imports: [MongooseModule.forRoot('mongodb://localhost/nest')],
+	
+
+
+post: localhost:3000/db
+
+
+
+
+
+

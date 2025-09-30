@@ -1,0 +1,234 @@
+Checklist
+---------
+linting
+formatting
+
+
+What version of node do I have installed?
+-----------------------------------------
+
+
+What npm packages do I have installed globally?
+-----------------------------------------------
+npm list -g --depth 0
+
+
+Module
+------
+nest g module <name>
+Singletons by default
+Every module is automatically a shared module
+Eagerly loaded by default
+
+
+
+
+Controller
+----------
+nest g controller <name>
+
+must be registered with a module
+
+/*
+Path parameters (a.k.a. route parameters)
+  Part of the URL path itself
+  Used to identify a specific resource
+  eg. GET /users/123/orders/45
+    123 is the userId, 45 is the orderId
+  
+  NestJS
+  @Get('users/:userId/orders/:orderId')
+  getOrder(@Param('userId') userId: string, @Param('orderId') orderId: string) {
+    return { userId, orderId };
+  }
+
+
+Query parameters
+  Appended to the URL after a ?
+  Used for filtering, searching, sorting, pagination, etc
+  eg. GET /products?category=books&sort=price&limit=10
+
+  NestJS
+  @Get('products')
+    findProducts(@Query('category') category: string, @Query('sort') sort: string, , @Query('limit') limit: number) {
+    return { category, sort, limit };
+  }
+
+
+  Header parameters
+    Sent in the HTTP headers.
+    Commonly used for authentication, content type, API keys, metadata.
+
+    GET /profile
+    Authorization: Bearer <token>
+    Content-Type: application/json
+
+    @Get('profile')
+    getProfile(@Headers('authorization') authHeader: string) {
+      return authHeader;
+    }
+
+
+
+  Body parameters
+    Sent in the request body (not the URL)
+    Used mainly in POST, PUT, PATCH requests when sending data
+
+    POST /users
+    Content-Type: application/json
+
+    {
+      "username": "alice",
+      "email": "alice@example.com"
+    }
+
+    @Post('users')
+    createUser(@Body() body: { username: string; email: string }) {
+      return body;
+    } 
+
+  
+  Cookie parameters
+    Sent in the Cookie header.
+    Often used for session IDs or authentication tokens
+
+    GET /dashboard
+    Cookie: sessionId=abcd1234; theme=dark
+
+  @Get('dashboard')
+  getDashboard(@Cookies('sessionId') sessionId: string) {
+    return sessionId;
+  }
+*/
+
+
+/*
+Guards
+  Authorisation - not Authentication
+  Assume authentication has taken place
+  executed 
+    after middleware
+    before interceptors
+    before pipes
+
+
+*/
+
+
+Provider
+--------
+services, repositories, factories, helpers can be treated as providers
+Key idea is that can be injected
+Typically have a lifetime scope.
+Each provider gets instantiated on bootstrap.
+Can be request scoped. Lifetime tied to request
+Must be registered with a module
+
+
+Service
+-------
+nest g service <name>
+
+
+
+Middleware
+----------
+Called before route handler
+
+
+
+Pipes
+-----
+
+
+
+
+Guards
+------
+
+
+
+Interceptors
+------------
+
+
+
+
+package.json
+------------
+
+dependencies
+	npm install <pkg> -- save
+	packages app need at runtime
+
+devDependencies
+	npm install <pkg> -- save-dev
+	package app does not need at runtime
+	
+	
+development
+	npm install
+	both dependencies and devDependencies are installed
+
+
+production
+	npm install --production
+	only dependencies will be installed
+	
+
+
+NestJS Application Structure
+============================
+main.ts
+	bootstrap
+	creates NestJS application (app) based on AppModule imported/exported from app.module
+	see @nestjs/core/nest-application.interface.d.ts
+	listens on port 3000
+	
+
+app.module.ts
+	root module
+	ties together controllers and providers etc
+	
+
+New Project
+===========
+Install NestJS globally
+	npm install -g @nestjs/cli
+	
+Create new NestJS application
+	nest new my-nest-app
+		node_modules is populated
+		
+Execute new NestJS project
+	npm run start:dev
+	
+	
+	
+Jest Testing
+============
+import { Test, TestingModule } from '@nestjs/testing';
+	provides helpers to build a NestJS application context for testing
+	
+import { AppController } from './app.controller';
+	the controller we're testing
+	
+import { AppService } from './app.service';
+	the service dependency used by the controller
+	
+Jest’s describe groups related tests.
+beforeEach runs before every test in the describe
+
+Test.createTestingModule({...})
+	Creates a temporary NestJS module for testing purposes.
+	
+.compile()
+	Builds (compiles) the testing module → Nest does DI (dependency injection), wiring everything up just like in a real app. No mocking
+	
+app.get<AppController>(AppController)
+	Retrieves an instance of AppController from the testing container
+	This is now a fully functional controller, with its AppService dependency injected
+	
+	
+	
+
