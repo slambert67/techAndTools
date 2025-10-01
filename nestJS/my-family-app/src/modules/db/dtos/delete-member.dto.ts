@@ -1,6 +1,6 @@
 import { IsString } from "class-validator";
 
-export class DeleteAdminDto {
+export class DeleteMemberDto {
   @IsString()
   name: string;
 }

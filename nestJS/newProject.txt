@@ -1,7 +1,7 @@
 My Project
 ==========
-database
-	admin users
+mongo database
+	admin users												done
 		id: number
 		name: string
 		password: string
@@ -9,20 +9,19 @@ database
 		id: number
 		firstName: string
 		lastName: string
-		updateString: string
+		relationship: string
 	
-typeorm
-mongodb
+
 
 Auth module for admin users
-rest endpoints		src/cats/cats.controller.ts
+rest endpoints												partial
 graphql endpoints 	src/cats/cats.resolver.ts
-DTOs
+DTOs														partial
 unit testing
 logging
 track activity
 middleware - add surname for search
-pipes - validation
+pipes - validation											partial
 exception filters
 guards
 interceptors
@@ -87,6 +86,25 @@ Create Swagger
 			.build();
 		  const documentFactory = () => SwaggerModule.createDocument(app, config);
 		  SwaggerModule.setup('api', app, documentFactory);
+		  
+	localhost:3000/api
+	
+
+Add Class Validation
+	npm i --save class-validator class-transformer
+	ValidationPipe
+		global or per route
+		BadRequestException if fails
+		Use to validate controller dto
+		main.ts
+			  app.useGlobalPipes(
+				new ValidationPipe({
+				  whitelist: true,              // strip unknown fields
+				  //forbidNonWhitelisted: true,   // throw if unknown fields are present
+				  transform: true,              // auto-transform to DTO instances
+				})
+			  );
+	
 
 
 

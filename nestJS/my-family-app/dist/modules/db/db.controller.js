@@ -18,56 +18,94 @@ const db_service_1 = require("./db.service");
 const create_admin_dto_1 = require("./dtos/create-admin.dto");
 const update_admin_dto_1 = require("./dtos/update-admin.dto");
 const delete_admin_dto_1 = require("./dtos/delete-admin.dto");
+const update_member_dto_1 = require("./dtos/update-member.dto");
+const create_member_dto_1 = require("./dtos/create-member.dto");
+const delete_member_dto_1 = require("./dtos/delete-member.dto");
 let DbController = class DbController {
     dbService;
     constructor(dbService) {
         this.dbService = dbService;
-        console.log('dbcontroller constructor');
     }
     async findAll() {
         return this.dbService.findAll();
     }
     async createAdmin(createAdminDto) {
-        console.log('In post controller');
         return this.dbService.create(createAdminDto);
     }
     async updateAdmin(updateAdminDto) {
-        console.log('in put controller');
         return this.dbService.update(updateAdminDto);
     }
     async deleteAdmin(deleteAdminDto) {
-        console.log('in put controller');
         return this.dbService.delete(deleteAdminDto);
+    }
+    async findAllMembers() {
+        return this.dbService.findAllMembers();
+    }
+    async createMember(createMemberDto) {
+        return this.dbService.createMember(createMemberDto);
+    }
+    async updateMember(updateMemberDto) {
+        return this.dbService.updateMember(updateMemberDto);
+    }
+    async deleteMember(deleteMemberDto) {
+        return this.dbService.deleteMember(deleteMemberDto);
     }
 };
 exports.DbController = DbController;
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('/admin'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], DbController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('/admin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_admin_dto_1.CreateAdminDto]),
     __metadata("design:returntype", Promise)
 ], DbController.prototype, "createAdmin", null);
 __decorate([
-    (0, common_1.Put)(),
+    (0, common_1.Put)('/admin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [update_admin_dto_1.UpdateAdminDto]),
     __metadata("design:returntype", Promise)
 ], DbController.prototype, "updateAdmin", null);
 __decorate([
-    (0, common_1.Delete)(),
+    (0, common_1.Delete)('/admin'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [delete_admin_dto_1.DeleteAdminDto]),
     __metadata("design:returntype", Promise)
 ], DbController.prototype, "deleteAdmin", null);
+__decorate([
+    (0, common_1.Get)('/members'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], DbController.prototype, "findAllMembers", null);
+__decorate([
+    (0, common_1.Post)('/members'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_member_dto_1.CreateMemberDto]),
+    __metadata("design:returntype", Promise)
+], DbController.prototype, "createMember", null);
+__decorate([
+    (0, common_1.Put)('/members'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_member_dto_1.UpdateMemberDto]),
+    __metadata("design:returntype", Promise)
+], DbController.prototype, "updateMember", null);
+__decorate([
+    (0, common_1.Delete)('/members'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [delete_member_dto_1.DeleteMemberDto]),
+    __metadata("design:returntype", Promise)
+], DbController.prototype, "deleteMember", null);
 exports.DbController = DbController = __decorate([
     (0, common_1.Controller)('db'),
     __metadata("design:paramtypes", [db_service_1.DbService])

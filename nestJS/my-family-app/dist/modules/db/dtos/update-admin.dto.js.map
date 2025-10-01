@@ -1,1 +1,1 @@
-{"version":3,"file":"update-admin.dto.js","sourceRoot":"","sources":["../../../../src/modules/db/dtos/update-admin.dto.ts"],"names":[],"mappings":";;;AAAA,MAAa,cAAc;IACzB,IAAI,CAAS;IACb,QAAQ,CAAS;CAClB;AAHD,wCAGC"}
+{"version":3,"file":"update-admin.dto.js","sourceRoot":"","sources":["../../../../src/modules/db/dtos/update-admin.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAA2C;AAE3C,MAAa,cAAc;IAEzB,IAAI,CAAS;IAGb,QAAQ,CAAS;CAClB;AAND,wCAMC;AAJC;IADC,IAAA,0BAAQ,GAAE;;4CACE;AAGb;IADC,IAAA,0BAAQ,GAAE;;gDACM"}

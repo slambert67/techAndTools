@@ -9,19 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateAdminDto = void 0;
+exports.CreateMemberDto = void 0;
 const class_validator_1 = require("class-validator");
-class UpdateAdminDto {
+class CreateMemberDto {
     name;
-    password;
+    age;
+    relationship;
 }
-exports.UpdateAdminDto = UpdateAdminDto;
+exports.CreateMemberDto = CreateMemberDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateAdminDto.prototype, "name", void 0);
+], CreateMemberDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateMemberDto.prototype, "age", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateAdminDto.prototype, "password", void 0);
-//# sourceMappingURL=update-admin.dto.js.map
+], CreateMemberDto.prototype, "relationship", void 0);
+//# sourceMappingURL=create-member.dto.js.map

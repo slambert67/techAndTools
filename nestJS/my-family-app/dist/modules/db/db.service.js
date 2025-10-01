@@ -17,20 +17,20 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const admin_schema_1 = require("./schemas/admin.schema");
 const mongoose_2 = require("mongoose");
+const member_schema_1 = require("./schemas/member.schema");
 let DbService = class DbService {
     adminModel;
-    constructor(adminModel) {
+    memberModel;
+    constructor(adminModel, memberModel) {
         this.adminModel = adminModel;
-        console.log('dbservice constructor');
+        this.memberModel = memberModel;
     }
     async findAll() {
         return this.adminModel.find().exec();
     }
     async create(createAdminDto) {
-        const alreadyExists = await this.findAll();
-        console.log('already exists');
-        console.log(alreadyExists);
-        if (alreadyExists.length > 0) {
+        const alreadyExists = await this.adminModel.findOne({ "name": createAdminDto.name });
+        if (alreadyExists) {
             throw new common_1.ConflictException(`Admin with name ${createAdminDto.name} already exists`);
         }
         const createdAdmin = new this.adminModel(createAdminDto);
@@ -39,8 +39,6 @@ let DbService = class DbService {
     async update(updateAdminDto) {
         const filter = { name: updateAdminDto.name };
         const update = { password: updateAdminDto.password };
-        console.log(`filter = ${filter}`);
-        console.log(`update = ${update}`);
         const updated = await this.adminModel.findOneAndUpdate(filter, update);
         if (!updated) {
             throw new common_1.NotFoundException(`Admin with name ${updateAdminDto.name} not found`);
@@ -55,11 +53,41 @@ let DbService = class DbService {
         }
         return deleted;
     }
+    async findAllMembers() {
+        return this.memberModel.find().exec();
+    }
+    async createMember(createMemberDto) {
+        const alreadyExists = await this.memberModel.findOne({ "name": createMemberDto.name });
+        if (alreadyExists) {
+            throw new common_1.ConflictException(`Member with name ${createMemberDto.name} already exists`);
+        }
+        const createdAdmin = new this.memberModel(createMemberDto);
+        return createdAdmin.save();
+    }
+    async updateMember(updateMemberDto) {
+        const filter = { name: updateMemberDto.name };
+        const update = { age: updateMemberDto.age };
+        const updated = await this.memberModel.findOneAndUpdate(filter, update);
+        if (!updated) {
+            throw new common_1.NotFoundException(`Member with name ${updateMemberDto.name} not found`);
+        }
+        return updated;
+    }
+    async deleteMember(deleteMemberDto) {
+        const filter = { name: deleteMemberDto.name };
+        const deleted = await this.memberModel.findOneAndDelete(filter);
+        if (!deleted) {
+            throw new common_1.NotFoundException(`Member with name ${deleteMemberDto.name} not found`);
+        }
+        return deleted;
+    }
 };
 exports.DbService = DbService;
 exports.DbService = DbService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(admin_schema_1.MyAdmin.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, mongoose_1.InjectModel)(member_schema_1.MyMember.name)),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model])
 ], DbService);
 //# sourceMappingURL=db.service.js.map

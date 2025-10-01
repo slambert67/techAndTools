@@ -1,1 +1,1 @@
-{"version":3,"file":"delete-admin.dto.js","sourceRoot":"","sources":["../../../../src/modules/db/dtos/delete-admin.dto.ts"],"names":[],"mappings":";;;AAAA,MAAa,cAAc;IACzB,IAAI,CAAS;CACd;AAFD,wCAEC"}
+{"version":3,"file":"delete-admin.dto.js","sourceRoot":"","sources":["../../../../src/modules/db/dtos/delete-admin.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAA2C;AAE3C,MAAa,cAAc;IAEzB,IAAI,CAAS;CACd;AAHD,wCAGC;AADC;IADC,IAAA,0BAAQ,GAAE;;4CACE"}

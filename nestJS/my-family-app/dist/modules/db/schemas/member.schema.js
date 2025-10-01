@@ -9,19 +9,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateAdminDto = void 0;
-const class_validator_1 = require("class-validator");
-class UpdateAdminDto {
+exports.MyMemberSchema = exports.MyMember = void 0;
+const mongoose_1 = require("@nestjs/mongoose");
+let MyMember = class MyMember {
     name;
-    password;
-}
-exports.UpdateAdminDto = UpdateAdminDto;
+    age;
+    relationship;
+};
+exports.MyMember = MyMember;
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], UpdateAdminDto.prototype, "name", void 0);
+], MyMember.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], MyMember.prototype, "age", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], UpdateAdminDto.prototype, "password", void 0);
-//# sourceMappingURL=update-admin.dto.js.map
+], MyMember.prototype, "relationship", void 0);
+exports.MyMember = MyMember = __decorate([
+    (0, mongoose_1.Schema)()
+], MyMember);
+exports.MyMemberSchema = mongoose_1.SchemaFactory.createForClass(MyMember);
+//# sourceMappingURL=member.schema.js.map

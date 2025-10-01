@@ -11,6 +11,11 @@ import { MongooseModule } from '@nestjs/mongoose';
     //      Used once, usually in your root AppModule
     //      It creates a single connection object that the whole app can share
     //      Connect to MongoDB at this URI
+
+    /*
+      Use forRoot() if you have a static URI (like mongodb://localhost:27017/mydb).
+      Use forRootAsync() if your URI/config depends on async or dynamic values (like environment variables through ConfigService). 
+    */
     
     DbModule
   ],

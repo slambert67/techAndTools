@@ -12,13 +12,16 @@ const mongoose_1 = require("@nestjs/mongoose");
 const admin_schema_1 = require("./schemas/admin.schema");
 const db_controller_1 = require("./db.controller");
 const db_service_1 = require("./db.service");
+const member_schema_1 = require("./schemas/member.schema");
 let DbModule = class DbModule {
 };
 exports.DbModule = DbModule;
 exports.DbModule = DbModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            mongoose_1.MongooseModule.forFeature([{ name: admin_schema_1.MyAdmin.name, schema: admin_schema_1.MyAdminSchema }])
+            mongoose_1.MongooseModule.forFeature([{ name: admin_schema_1.MyAdmin.name, schema: admin_schema_1.MyAdminSchema },
+                { name: member_schema_1.MyMember.name, schema: member_schema_1.MyMemberSchema }
+            ])
         ],
         controllers: [db_controller_1.DbController],
         providers: [db_service_1.DbService]
