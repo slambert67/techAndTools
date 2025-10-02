@@ -12,6 +12,8 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const db_module_1 = require("./modules/db/db.module");
 const mongoose_1 = require("@nestjs/mongoose");
+const auth_module_1 = require("./modules/auth/auth.module");
+const jwt_1 = require("@nestjs/jwt");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -19,7 +21,13 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forRoot('mongodb://localhost:27017'),
-            db_module_1.DbModule
+            db_module_1.DbModule,
+            auth_module_1.AuthModule,
+            jwt_1.JwtModule.register({
+                global: true,
+                secret: 'squoink',
+                signOptions: { expiresIn: '300s' },
+            })
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

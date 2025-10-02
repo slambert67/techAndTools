@@ -18,15 +18,25 @@ const mongoose_1 = require("@nestjs/mongoose");
 const admin_schema_1 = require("./schemas/admin.schema");
 const mongoose_2 = require("mongoose");
 const member_schema_1 = require("./schemas/member.schema");
+const jwt_1 = require("@nestjs/jwt");
 let DbService = class DbService {
     adminModel;
     memberModel;
-    constructor(adminModel, memberModel) {
+    jwtService;
+    constructor(adminModel, memberModel, jwtService) {
         this.adminModel = adminModel;
         this.memberModel = memberModel;
+        this.jwtService = jwtService;
+    }
+    async findValidAdmin(username, pass) {
+        const validAdmin = await this.adminModel.findOne({ "name": username, "password": pass });
+        if (!validAdmin) {
+            throw new common_1.ConflictException(`Admin with name ${username} and password ${pass} does not exist`);
+        }
+        return validAdmin;
     }
     async findAll() {
-        return this.adminModel.find().exec();
+        return await this.adminModel.find().exec();
     }
     async create(createAdminDto) {
         const alreadyExists = await this.adminModel.findOne({ "name": createAdminDto.name });
@@ -88,6 +98,7 @@ exports.DbService = DbService = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(admin_schema_1.MyAdmin.name)),
     __param(1, (0, mongoose_1.InjectModel)(member_schema_1.MyMember.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        mongoose_2.Model])
+        mongoose_2.Model,
+        jwt_1.JwtService])
 ], DbService);
 //# sourceMappingURL=db.service.js.map

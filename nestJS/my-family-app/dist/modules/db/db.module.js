@@ -13,6 +13,8 @@ const admin_schema_1 = require("./schemas/admin.schema");
 const db_controller_1 = require("./db.controller");
 const db_service_1 = require("./db.service");
 const member_schema_1 = require("./schemas/member.schema");
+const jwt_1 = require("@nestjs/jwt");
+const constants_1 = require("./constants");
 let DbModule = class DbModule {
 };
 exports.DbModule = DbModule;
@@ -21,10 +23,16 @@ exports.DbModule = DbModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: admin_schema_1.MyAdmin.name, schema: admin_schema_1.MyAdminSchema },
                 { name: member_schema_1.MyMember.name, schema: member_schema_1.MyMemberSchema }
-            ])
+            ]),
+            jwt_1.JwtModule.register({
+                global: true,
+                secret: constants_1.jwtConstants.secret,
+                signOptions: { expiresIn: '300s' },
+            }),
         ],
         controllers: [db_controller_1.DbController],
-        providers: [db_service_1.DbService]
+        providers: [db_service_1.DbService],
+        exports: [db_service_1.DbService]
     })
 ], DbModule);
 //# sourceMappingURL=db.module.js.map

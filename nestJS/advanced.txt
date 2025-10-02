@@ -1,0 +1,254 @@
+Core Architecture & Dependency Injection
+
+1. How does NestJS’s dependency injection container differ from Angular’s or other DI frameworks?
+
+Nest’s DI is inspired by Angular, but tailored for Node.js.
+
+Uses TypeScript metadata + decorators for auto-injection.
+
+Supports multiple provider registration strategies (useClass, useValue, useFactory).
+
+Works seamlessly with async initialization (forRootAsync).
+
+2. What’s the difference between request-scoped and singleton-scoped providers?
+
+Singleton (default): One instance shared across the app lifecycle.
+
+Request-scoped: A new instance created per incoming request.
+
+Request scope is useful when services depend on request context (e.g., per-request user data).
+
+3. How does forwardRef() help resolve circular dependencies?
+
+forwardRef() lets you reference a provider/module that isn’t yet defined.
+
+Useful when two services depend on each other.
+
+Without it, Nest can’t resolve the circular reference at runtime.
+
+4. Difference between @Injectable(), @Inject(), and @Optional()?
+
+@Injectable() → Marks a class as a provider managed by Nest DI.
+
+@Inject(token) → Manually injects a provider by token (useful for custom providers).
+
+@Optional() → Makes an injected dependency optional (undefined if missing).
+
+5. How to create a custom provider?
+
+Example with useFactory:
+
+{
+  provide: 'CACHE',
+  useFactory: (config: ConfigService) => new RedisCache(config.get('REDIS_URI')),
+  inject: [ConfigService],
+}
+
+
+Register in providers: [], then inject via @Inject('CACHE') cache.
+
+🔹 Middleware, Guards, Interceptors, Pipes, Filters
+
+6. Guard vs. Interceptor?
+
+Guard: Runs before route handler. Determines if request is allowed. (Auth, roles).
+
+Interceptor: Wraps around execution. Can transform request/response, log, cache.
+
+7. Custom validation pipe with service injection?
+
+@Injectable()
+export class UniqueEmailPipe implements PipeTransform {
+  constructor(private userService: UserService) {}
+  async transform(value: any) {
+    if (await this.userService.exists(value.email)) {
+      throw new BadRequestException('Email already exists');
+    }
+    return value;
+  }
+}
+
+
+8. ExceptionFilter vs. global HttpExceptionFilter?
+
+ExceptionFilters handle thrown exceptions and format responses.
+
+A global HttpExceptionFilter can catch all exceptions app-wide.
+
+Use local filters for module-specific logic, global for consistent error handling.
+
+9. Interceptors for cross-cutting concerns?
+
+Logging request duration.
+
+Transforming response shape (e.g., adding metadata).
+
+Caching responses.
+
+Applying retry logic for external calls.
+
+10. Middleware vs. Interceptors?
+
+Middleware: Runs before guards/pipes. Works at HTTP layer. No DI by default.
+
+Interceptor: Runs inside Nest context. Can access DI, transform responses, wrap handler.
+
+🔹 Modules & Application Structure
+
+11. What are dynamic modules?
+
+Modules that configure themselves dynamically at runtime.
+
+Useful for exporting providers with options (e.g., ConfigModule.forRoot() or MongooseModule.forRoot()).
+
+12. Share service across modules without circular deps?
+
+Move shared service into a SharedModule.
+
+Export it and import the module wherever needed.
+
+13. Structure a large monorepo with Nx or Lerna?
+
+Split into multiple NestJS apps (apps/) and shared libs (libs/).
+
+Each app can import from shared libs.
+
+Nx helps manage builds, testing, and dependency graph.
+
+14. When to split into microservices vs. modular monolith?
+
+Start with modular monolith for simplicity.
+
+Split into microservices when scaling bottlenecks appear:
+
+Independent scaling needs.
+
+Different teams owning different domains.
+
+Reliability/availability requirements.
+
+🔹 Database & Persistence
+
+15. @InjectRepository vs. @InjectModel?
+
+@InjectRepository → TypeORM repository (SQL DBs). Implements repository pattern.
+
+@InjectModel → Mongoose model (MongoDB). Provides document-based queries.
+
+Both abstract DB operations but map to different persistence concepts.
+
+16. Multi-tenancy with NestJS?
+
+Shared DB + tenantId field.
+
+Separate schemas per tenant.
+
+Separate DB per tenant (requires per-request DB connections, forRootAsync).
+
+17. forRoot() vs. forRootAsync()?
+
+forRoot() → Static config known at compile-time.
+
+forRootAsync() → Config built dynamically (e.g., from ConfigService, env vars, async logic).
+
+18. Transactions in TypeORM vs. Mongo?
+
+TypeORM: Use connection.transaction() or @Transaction() decorator.
+
+MongoDB: Use session.startTransaction() with replica set / sharded cluster.
+
+🔹 Microservices & Communication
+
+19. Transport layers supported?
+
+TCP, Redis, NATS, MQTT, Kafka, RabbitMQ, gRPC.
+
+20. CQRS in NestJS?
+
+Split reads (queries) and writes (commands).
+
+Use @nestjs/cqrs package → CommandHandlers, QueryHandlers, EventHandlers.
+
+Improves scalability and maintainability.
+
+21. Saga pattern in NestJS?
+
+Implemented via @nestjs/cqrs Saga.
+
+Listens for events, coordinates long-running workflows across services.
+
+Example: Order created → payment service → shipping service.
+
+22. Microservices vs. API Gateway (GraphQL/REST aggregation)?
+
+Microservices → decentralized, independent scaling.
+
+API Gateway → aggregates multiple microservices behind one entrypoint.
+
+GraphQL gateway can stitch schemas from many services.
+
+🔹 Performance, Security & Advanced Features
+
+23. Request-level caching vs. response caching?
+
+Request caching → store computed results (e.g., Redis, in-memory).
+
+Response caching → cache entire HTTP response (CacheInterceptor).
+
+24. Secure with JWT & role-based guards?
+
+Use @nestjs/passport with JWT strategy.
+
+Implement AuthGuard('jwt').
+
+Create RolesGuard that checks req.user.roles.
+
+25. OpenAPI/Swagger integration pros/cons?
+
+Pros: Auto-generated docs, client SDKs, contract enforcement.
+
+Cons: Extra decorators, may expose too much if not configured carefully.
+
+26. APP_GUARD, APP_FILTER, APP_INTERCEPTOR?
+
+Tokens to register guards/filters/interceptors as global providers.
+
+Useful alternative to app.useGlobalX() when using DI.
+
+27. Debugging memory leaks/perf bottlenecks?
+
+Use Node.js --inspect with Chrome DevTools or VSCode.
+
+Use NestJS Logger with interceptors for timing.
+
+Monitor heap usage with clinic.js or heapdump.
+
+🔹 Testing & Maintainability
+
+28. Mock a provider in unit tests?
+
+const module = await Test.createTestingModule({
+  providers: [
+    MyService,
+    { provide: MyRepository, useValue: mockRepo },
+  ],
+}).compile();
+
+
+29. Integration vs. E2E tests?
+
+Integration test: Test multiple modules together, often with in-memory DB.
+
+E2E test: Spin up the whole app, make HTTP requests (e.g., with Supertest).
+
+30. Test service using @InjectRepository/@InjectModel without DB?
+
+Mock repository/model methods (find, save, findOne).
+
+Use jest.fn() or libraries like ts-mockito.
+
+31. Role of overrideProvider() in testing?
+
+Lets you replace a real provider with a mock in a testing module.
+
+module.overrideProvider(MyService).useValue(mockService);

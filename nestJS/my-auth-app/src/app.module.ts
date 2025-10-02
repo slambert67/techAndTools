@@ -12,7 +12,7 @@ import { AppController } from './app.controller';
       global: true,
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '300s' },
-    }),
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

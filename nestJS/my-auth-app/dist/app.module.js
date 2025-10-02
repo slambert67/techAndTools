@@ -24,7 +24,7 @@ exports.AppModule = AppModule = __decorate([
                 global: true,
                 secret: constants_1.jwtConstants.secret,
                 signOptions: { expiresIn: '300s' },
-            }),
+            })
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -9,47 +9,45 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppGuard = void 0;
+exports.DbGuard = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("./constants");
-const users_service_1 = require("./users/users.service");
-let AppGuard = class AppGuard {
+let DbGuard = class DbGuard {
     jwtService;
-    usersService;
-    constructor(jwtService, usersService) {
+    constructor(jwtService) {
         this.jwtService = jwtService;
-        this.usersService = usersService;
     }
     async canActivate(context) {
         console.log('Guarding');
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
+        console.log(token);
         if (!token) {
             throw new common_1.UnauthorizedException();
         }
-        console.log(`token = ${token}`);
         try {
             const payload = await this.jwtService.verifyAsync(token, {
                 secret: constants_1.jwtConstants.secret
             });
             console.log('Guarding');
             console.log(payload);
-            request['user'] = this.usersService.findAll();
         }
         catch {
             throw new common_1.UnauthorizedException();
         }
+        const a = 1;
         return true;
     }
     extractTokenFromHeader(request) {
+        console.log(request.headers);
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
         return type === 'Bearer' ? token : undefined;
     }
 };
-exports.AppGuard = AppGuard;
-exports.AppGuard = AppGuard = __decorate([
+exports.DbGuard = DbGuard;
+exports.DbGuard = DbGuard = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [jwt_1.JwtService, users_service_1.UsersService])
-], AppGuard);
-//# sourceMappingURL=app.guard.js.map
+    __metadata("design:paramtypes", [jwt_1.JwtService])
+], DbGuard);
+//# sourceMappingURL=db.guard.js.map

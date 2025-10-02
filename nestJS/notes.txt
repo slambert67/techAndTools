@@ -102,18 +102,6 @@ Query parameters
 */
 
 
-/*
-Guards
-  Authorisation - not Authentication
-  Assume authentication has taken place
-  executed 
-    after middleware
-    before interceptors
-    before pipes
-
-
-*/
-
 
 Provider
 --------
@@ -145,6 +133,25 @@ Pipes
 
 Guards
 ------
+Authentication
+npm install --save @nestjs/jwt
+nest g module auth
+nest g controller auth
+nest g service auth
+
+	controller
+		@Post('login')
+		constructs access token based on 
+			a payload. ie. the token contains user's information (claims)
+			a secret - used when registering JwtModule as an import
+		returns the access token {"access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiam9obiIsImlhdCI6MTc1ODg5MzI2MywiZXhwIjoxNzU4ODkzMzIzfQ.nxJb0pnvZw7XQBFroNC0uVJAXxFq7qoHwEWWKaDoOVs"}
+		
+		
+		@UseGuards(AppGuard)
+		@Get('profile')
+		AppGuard (implements CanActivate) checks if correct access token has been supplied (token + secret)
+		
+		
 
 
 

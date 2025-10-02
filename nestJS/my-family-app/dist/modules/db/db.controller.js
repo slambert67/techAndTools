@@ -21,6 +21,8 @@ const delete_admin_dto_1 = require("./dtos/delete-admin.dto");
 const update_member_dto_1 = require("./dtos/update-member.dto");
 const create_member_dto_1 = require("./dtos/create-member.dto");
 const delete_member_dto_1 = require("./dtos/delete-member.dto");
+const db_guard_1 = require("./db.guard");
+const swagger_1 = require("@nestjs/swagger");
 let DbController = class DbController {
     dbService;
     constructor(dbService) {
@@ -80,12 +82,16 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DbController.prototype, "deleteAdmin", null);
 __decorate([
+    (0, common_1.UseGuards)(db_guard_1.DbGuard),
+    (0, swagger_1.ApiBearerAuth)('access-token'),
     (0, common_1.Get)('/members'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], DbController.prototype, "findAllMembers", null);
 __decorate([
+    (0, common_1.UseGuards)(db_guard_1.DbGuard),
+    (0, swagger_1.ApiBearerAuth)('access-token'),
     (0, common_1.Post)('/members'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

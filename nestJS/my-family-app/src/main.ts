@@ -19,6 +19,14 @@ async function bootstrap() {
     .setDescription('The Admin API description')
     .setVersion('1.0')
     .addTag('admin')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'access-token', // <-- name to reference later
+    )
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);

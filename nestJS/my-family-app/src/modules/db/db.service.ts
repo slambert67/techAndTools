@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Body, ConflictException, Injectable, NotFoundException, Post, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { MyAdmin } from './schemas/admin.schema';
 import { Model } from 'mongoose';
@@ -9,16 +9,29 @@ import { MyMember } from './schemas/member.schema';
 import { CreateMemberDto } from './dtos/create-member.dto';
 import { UpdateMemberDto } from './dtos/update-member.dto';
 import { DeleteMemberDto } from './dtos/delete-member.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class DbService {
 
     constructor(    @InjectModel(MyAdmin.name) private adminModel: Model<MyAdmin>,
-                    @InjectModel(MyMember.name) private memberModel: Model<MyMember>) {
+                    @InjectModel(MyMember.name) private memberModel: Model<MyMember>,
+                    private jwtService: JwtService) {
     }
 
+
+
+    async findValidAdmin(username: string, pass: string): Promise<MyAdmin | null> {
+        const validAdmin = await this.adminModel.findOne( {"name": username, "password": pass} );
+        if (!validAdmin) {
+            throw new ConflictException(`Admin with name ${username} and password ${pass} does not exist`);
+        }
+        return validAdmin;
+    }
+
+    
     async findAll(): Promise<MyAdmin[]> {
-        return this.adminModel.find().exec();
+        return await this.adminModel.find().exec();
     }
 
 

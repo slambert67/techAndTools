@@ -7,10 +7,13 @@ import { MyMember } from './schemas/member.schema';
 import { CreateMemberDto } from './dtos/create-member.dto';
 import { UpdateMemberDto } from './dtos/update-member.dto';
 import { DeleteMemberDto } from './dtos/delete-member.dto';
+import { JwtService } from '@nestjs/jwt';
 export declare class DbService {
     private adminModel;
     private memberModel;
-    constructor(adminModel: Model<MyAdmin>, memberModel: Model<MyMember>);
+    private jwtService;
+    constructor(adminModel: Model<MyAdmin>, memberModel: Model<MyMember>, jwtService: JwtService);
+    findValidAdmin(username: string, pass: string): Promise<MyAdmin | null>;
     findAll(): Promise<MyAdmin[]>;
     create(createAdminDto: CreateAdminDto): Promise<MyAdmin>;
     update(updateAdminDto: UpdateAdminDto): Promise<MyAdmin>;

@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DbModule } from './modules/db/db.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './modules/auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -17,7 +19,13 @@ import { MongooseModule } from '@nestjs/mongoose';
       Use forRootAsync() if your URI/config depends on async or dynamic values (like environment variables through ConfigService). 
     */
     
-    DbModule
+    DbModule,
+    AuthModule,
+    JwtModule.register({
+      global: true,
+      secret: 'squoink',
+      signOptions: { expiresIn: '300s' },
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -16,6 +16,19 @@ import { UsersService } from './users/users.service';
 export class AppGuard implements CanActivate {
   constructor(private jwtService: JwtService, private usersService: UsersService ) {}
 
+  /*
+    ExecutionContext is not built by me
+    It's an object that NestJS builds internally whenever a request comes in
+    So NestJS calls CanActivate providing the ExecutionContext
+
+    What ExecutionContext actually is
+      ExecutionContext extends ArgumentsHost, which is a generic wrapper around the current request lifecycle.
+      For an HTTP request, it contains:
+          The request object (context.switchToHttp().getRequest())
+          The response object (context.switchToHttp().getResponse())
+          The next function (Express-style middleware flow control)
+  */
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     console.log('Guarding');
 
@@ -36,7 +49,7 @@ export class AppGuard implements CanActivate {
       );
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      console.log('PAYLOAD');
+      console.log('Guarding');
       console.log(payload);
       request['user'] = this.usersService.findAll();
     } catch {

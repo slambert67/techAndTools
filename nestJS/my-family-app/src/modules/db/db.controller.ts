@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { DbService } from './db.service';
 import { MyAdmin } from './schemas/admin.schema';
 import { CreateAdminDto } from './dtos/create-admin.dto';
@@ -8,6 +8,8 @@ import { MyMember } from './schemas/member.schema';
 import { UpdateMemberDto } from './dtos/update-member.dto';
 import { CreateMemberDto } from './dtos/create-member.dto';
 import { DeleteMemberDto } from './dtos/delete-member.dto';
+import { DbGuard } from './db.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('db')
 export class DbController {
@@ -37,12 +39,16 @@ export class DbController {
     }
 
 
+    @UseGuards(DbGuard)
+    @ApiBearerAuth('access-token')  // 👈 matches the name from addBearerAuth
     @Get('/members')
     async findAllMembers(): Promise<MyMember[]> {
         return this.dbService.findAllMembers();
     }
 
 
+    @UseGuards(DbGuard)
+    @ApiBearerAuth('access-token')  // 👈 matches the name from addBearerAuth
     @Post('/members')    
     async createMember(@Body() createMemberDto: CreateMemberDto): Promise<MyMember> {
         return this.dbService.createMember(createMemberDto);
