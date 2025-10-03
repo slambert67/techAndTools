@@ -7,3 +7,6 @@ npm-debug.log*
 node_modules/
 jspm_packages/
 
+# NestJS build output
+**/dist/
+
