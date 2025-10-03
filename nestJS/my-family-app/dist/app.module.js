@@ -14,6 +14,7 @@ const db_module_1 = require("./modules/db/db.module");
 const mongoose_1 = require("@nestjs/mongoose");
 const auth_module_1 = require("./modules/auth/auth.module");
 const jwt_1 = require("@nestjs/jwt");
+const exceptions_module_1 = require("./modules/exceptions/exceptions.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -23,6 +24,7 @@ exports.AppModule = AppModule = __decorate([
             mongoose_1.MongooseModule.forRoot('mongodb://localhost:27017'),
             db_module_1.DbModule,
             auth_module_1.AuthModule,
+            exceptions_module_1.ExceptionsModule,
             jwt_1.JwtModule.register({
                 global: true,
                 secret: 'squoink',

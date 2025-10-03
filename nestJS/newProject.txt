@@ -1,33 +1,42 @@
 My Project
 ==========
+
+done / partial
+--------------
 mongo database
 	admin users												done
 		id: number
 		name: string
 		password: string
-	family members	me, julie, andy
+	family members	me, julie, andy							done
 		id: number
 		firstName: string
 		lastName: string
 		relationship: string
 	
-
-
-Auth module for admin users
+Auth module for admin users									done
 rest endpoints												partial
-graphql endpoints 	src/cats/cats.resolver.ts
 DTOs														partial
+pipes - validation											partial
+guards														done
+exception filters											done
+
+
+todo
+====
+graphql endpoints 	src/cats/cats.resolver.ts
 unit testing
 logging
 track activity
 middleware - add surname for search
-pipes - validation											partial
-exception filters
-guards
+
 interceptors
 configuration
 websockets
 kafka
+
+
+
 
 
 =====
@@ -111,6 +120,17 @@ Add Authentication
 	nest g module auth
 	nest g controller auth
 	nest g service auth
+	
+	
+Exception Filters
+	Define in src/common for example
+	Bind to 
+		route level
+		controller level
+		global level
+			app.useGlobalFilters(new MyExceptionFilter()); in main.ts bootstrap
+	
+	
 	
 	
 

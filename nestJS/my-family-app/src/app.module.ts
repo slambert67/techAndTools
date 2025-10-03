@@ -5,6 +5,7 @@ import { DbModule } from './modules/db/db.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { ExceptionsModule } from './modules/exceptions/exceptions.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { JwtModule } from '@nestjs/jwt';
     
     DbModule,
     AuthModule,
+    ExceptionsModule,
     JwtModule.register({
       global: true,
       secret: 'squoink',

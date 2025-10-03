@@ -153,6 +153,37 @@ nest g service auth
 		
 		
 
+Exception filters
+-----------------
+Exception Layer
+
+	global exception filter
+		Handles exceptions not handled by application
+		handles exceptions of type HttpException (and subclasses of it)
+		if unrecognized
+			{
+			  "statusCode": 500,
+			  "message": "Internal server error"
+			}	
+
+		partially supports the http-errors library
+		Basically, any thrown exception containing the statusCode and message properties will be properly populated and sent back as a response
+		
+		HttpStatus. This is a helper enum imported from the @nestjs/common package.
+		throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+		
+		The HttpException constructor takes two required arguments which determine the response:
+			The response argument defines the JSON response body. It can be a string or an object as described below.
+			The status argument defines the HTTP status code.
+
+		By default, the JSON response body contains two properties:
+			statusCode: defaults to the HTTP status code provided in the status argument
+			message: a short description of the HTTP error based on the status
+			
+		
+		BUILT-IN Exceptions aren't logged - part of normal application flow
+		Can write custom exceptions
+		
 
 
 Interceptors
