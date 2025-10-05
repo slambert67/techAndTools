@@ -19,14 +19,18 @@ const admin_schema_1 = require("./schemas/admin.schema");
 const mongoose_2 = require("mongoose");
 const member_schema_1 = require("./schemas/member.schema");
 const jwt_1 = require("@nestjs/jwt");
+const logging_service_1 = require("../logging/logging.service");
 let DbService = class DbService {
     adminModel;
     memberModel;
     jwtService;
-    constructor(adminModel, memberModel, jwtService) {
+    loggingService;
+    constructor(adminModel, memberModel, jwtService, loggingService) {
         this.adminModel = adminModel;
         this.memberModel = memberModel;
         this.jwtService = jwtService;
+        this.loggingService = loggingService;
+        this.loggingService.setContext('DbService');
     }
     async findValidAdmin(username, pass) {
         const validAdmin = await this.adminModel.findOne({ "name": username, "password": pass });
@@ -64,6 +68,8 @@ let DbService = class DbService {
         return deleted;
     }
     async findAllMembers() {
+        this.loggingService.customLog();
+        this.loggingService.customLog2('log supplied by caller');
         return this.memberModel.find().exec();
     }
     async createMember(createMemberDto) {
@@ -99,6 +105,7 @@ exports.DbService = DbService = __decorate([
     __param(1, (0, mongoose_1.InjectModel)(member_schema_1.MyMember.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
         mongoose_2.Model,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        logging_service_1.LoggingService])
 ], DbService);
 //# sourceMappingURL=db.service.js.map

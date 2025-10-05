@@ -131,7 +131,16 @@ Exception Filters
 			app.useGlobalFilters(new MyExceptionFilter()); in main.ts bootstrap
 	
 	
+Logging
+	Define new logging module and class : 
+		@Injectable( {scope: Scope.TRANSIENT} )     // ensures 1 instance per module
+		export class LoggingService extends ConsoleLogger{	
+		
+	Import into dependent modules
 	
+	
+Interceptors
+
 	
 
 

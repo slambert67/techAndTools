@@ -10,13 +10,17 @@ import { CreateMemberDto } from './dtos/create-member.dto';
 import { UpdateMemberDto } from './dtos/update-member.dto';
 import { DeleteMemberDto } from './dtos/delete-member.dto';
 import { JwtService } from '@nestjs/jwt';
+import { LoggingService } from '../logging/logging.service';
 
 @Injectable()
 export class DbService {
 
     constructor(    @InjectModel(MyAdmin.name) private adminModel: Model<MyAdmin>,
                     @InjectModel(MyMember.name) private memberModel: Model<MyMember>,
-                    private jwtService: JwtService) {
+                    private jwtService: JwtService,
+                    private loggingService: LoggingService) {
+
+        this.loggingService.setContext('DbService');
     }
 
 
@@ -75,6 +79,9 @@ export class DbService {
 
 
     async findAllMembers(): Promise<MyMember[]> {
+        this.loggingService.customLog();
+        this.loggingService.customLog2('log supplied by caller');
+
         return this.memberModel.find().exec();
     }
 

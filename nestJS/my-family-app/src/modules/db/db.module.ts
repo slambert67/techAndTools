@@ -6,6 +6,7 @@ import { DbService } from './db.service';
 import { MyMember, MyMemberSchema } from './schemas/member.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
+import { LoggingModule } from '../logging/logging.module';
 
 @Module({
     imports: [
@@ -24,6 +25,7 @@ import { jwtConstants } from './constants';
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '300s' },
         }),
+        LoggingModule
     ],
     controllers: [DbController],
     providers: [DbService],

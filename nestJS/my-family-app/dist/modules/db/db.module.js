@@ -15,6 +15,7 @@ const db_service_1 = require("./db.service");
 const member_schema_1 = require("./schemas/member.schema");
 const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("./constants");
+const logging_module_1 = require("../logging/logging.module");
 let DbModule = class DbModule {
 };
 exports.DbModule = DbModule;
@@ -29,6 +30,7 @@ exports.DbModule = DbModule = __decorate([
                 secret: constants_1.jwtConstants.secret,
                 signOptions: { expiresIn: '300s' },
             }),
+            logging_module_1.LoggingModule
         ],
         controllers: [db_controller_1.DbController],
         providers: [db_service_1.DbService],

@@ -184,6 +184,66 @@ Exception Layer
 		BUILT-IN Exceptions aren't logged - part of normal application flow
 		Can write custom exceptions
 		
+	Exception Filters
+		Give full control
+		eg. add logging
+		
+		
+
+Logging
+-------
+Logger class in @nestjs/common
+Customize passing object during app creation in main.ts - const app = await NestFactory.create(AppModule, {});
+	logger: false
+	logger: ['log', 'fatal', 'error', 'warn', 'debug', 'verbose']
+
+alternative:
+const app = await NestFactory.create(AppModule, {
+  logger: new ConsoleLogger({
+    colors: false,
+  }),
+});
+
+Because nestjs has a pluggable logging system
+
+logger: false					configures Nest's internal logger setup
+								Nest automatically instantiates it's own ConsoleLogger
+						
+logger: new ConsoleLogger		injecting own logging instance
+								can be subclassed or replaced entirely. see WinstonLogger, PinoLogger
+								
+services can use logging in 2 ways
+	built in static logger that uses Logger class
+	
+		Nest creates a default ConsoleLogger internally.
+		The service uses Logger, which automatically delegates to that default logger.
+		
+		import { Logger } from '@nestjs/common';
+		private readonly logger = new Logger(AppService.name);				manual creation. Still delegates to Nest's shared global logger configured via NestFactory
+		this.logger.log('Hello called');
+	
+	
+	custom injected logger instance	that implements LoggerService
+		
+		import { ConsoleLogger } from '@nestjs/common';
+		constructor(private readonly logger: ConsoleLogger) {}				dependency injection. Can register globally or per module
+		this.logger.log('Custom log from MyLogger');
+
+
+Why You Might Want a Unique (Transient) Logger Instance
+
+1. Automatic Context Isolation
+	If you give each module or service its own instance, that logger can automatically set and remember its context (the class/module name).
+	ConsoleLogger.setContext
+	
+2. Module-level configuration
+	Each instance can hold metadata or configuration specific to its module or service.
+	
+3. Better Debugging and Tracing
+	With transient loggers, you can easily inject a new one for a specific request, job, or module
+
+
+do more research
 
 
 Interceptors
@@ -269,4 +329,52 @@ app.get<AppController>(AppController)
 	
 	
 	
+
+NestJS Lifecycle
+================
+1. Middleware
+Runs before the request hits a controller.
+Framework-level, not NestJS-specific (they’re like Express/Fastify middleware).
+Good for: logging, CORS, request body parsing, authentication checks.
+Can modify request/response objects directly.
+Analogy: security guard at the building entrance.
+
+
+2. Pipes
+Run after route selection but before the controller method executes.
+Work on method arguments (e.g. @Body(), @Param()).
+Responsible for validation and transformation.
+Analogy: the receptionist checking your paperwork is correct before letting you in.
+
+
+3. Exception Filters
+Run when an exception is thrown anywhere in the request/response cycle.
+Catch errors and shape the outgoing error response.
+Analogy: the customer service desk that handles problems.
+
+
+4. Interceptors
+Run before and after the controller method is called.
+Can:
+Transform the incoming request (like middleware, but Nest-specific).
+Transform the outgoing response.
+Add logic around method execution (e.g. timing, logging).
+Implement cross-cutting concerns (caching, serialization, metrics, etc.).
+Analogy: a tour guide who not only introduces you at the start but also gives feedback and wraps things up at the end.
+
+
+Why interceptors are needed
+Because none of the other three cover the “around” case:
+
+Middleware → only before controller.
+Pipes → only before controller, and only at the argument level.
+Filters → only when an error occurs.
+Interceptors → before and after controller, always.
+This makes interceptors ideal for:
+Logging & performance profiling (time a request took).
+Response transformation (e.g., hide sensitive fields).
+Response mapping (like converting entities into DTOs automatically).
+Caching results (skip controller execution if response is already cached).
+
+
 

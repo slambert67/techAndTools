@@ -8,11 +8,13 @@ import { CreateMemberDto } from './dtos/create-member.dto';
 import { UpdateMemberDto } from './dtos/update-member.dto';
 import { DeleteMemberDto } from './dtos/delete-member.dto';
 import { JwtService } from '@nestjs/jwt';
+import { LoggingService } from '../logging/logging.service';
 export declare class DbService {
     private adminModel;
     private memberModel;
     private jwtService;
-    constructor(adminModel: Model<MyAdmin>, memberModel: Model<MyMember>, jwtService: JwtService);
+    private loggingService;
+    constructor(adminModel: Model<MyAdmin>, memberModel: Model<MyMember>, jwtService: JwtService, loggingService: LoggingService);
     findValidAdmin(username: string, pass: string): Promise<MyAdmin | null>;
     findAll(): Promise<MyAdmin[]>;
     create(createAdminDto: CreateAdminDto): Promise<MyAdmin>;

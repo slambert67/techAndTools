@@ -39,16 +39,16 @@ export class DbController {
     }
 
 
-    @UseGuards(DbGuard)
-    @ApiBearerAuth('access-token')  // 👈 matches the name from addBearerAuth
+    //@UseGuards(DbGuard)
+    //@ApiBearerAuth('access-token')  // 👈 matches the name from addBearerAuth
     @Get('/members')
     async findAllMembers(): Promise<MyMember[]> {
         return this.dbService.findAllMembers();
     }
 
 
-    @UseGuards(DbGuard)
-    @ApiBearerAuth('access-token')  // 👈 matches the name from addBearerAuth
+    //@UseGuards(DbGuard)
+    //@ApiBearerAuth('access-token')  // 👈 matches the name from addBearerAuth
     @Post('/members')    
     async createMember(@Body() createMemberDto: CreateMemberDto): Promise<MyMember> {
         return this.dbService.createMember(createMemberDto);
