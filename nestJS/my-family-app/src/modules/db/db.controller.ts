@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { DbService } from './db.service';
 import { MyAdmin } from './schemas/admin.schema';
 import { CreateAdminDto } from './dtos/create-admin.dto';
@@ -10,7 +10,10 @@ import { CreateMemberDto } from './dtos/create-member.dto';
 import { DeleteMemberDto } from './dtos/delete-member.dto';
 import { DbGuard } from './db.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { LoggingInterceptor } from '../interception/logging.interceptor';
 
+// could also instantiate class - @UseInterceptors(new LoggingInterceptor())
+@UseInterceptors(LoggingInterceptor)
 @Controller('db')
 export class DbController {
     constructor(private dbService: DbService) {

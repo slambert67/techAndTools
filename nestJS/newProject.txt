@@ -4,29 +4,30 @@ My Project
 done / partial
 --------------
 mongo database
-	admin users												done
+	admin users								done
 		id: number
 		name: string
 		password: string
-	family members	me, julie, andy							done
+	family members	me, julie, andy			done
 		id: number
 		firstName: string
 		lastName: string
 		relationship: string
 	
-Auth module for admin users									done
-rest endpoints												partial
-DTOs														partial
-pipes - validation											partial
-guards														done
-exception filters											done
+Auth module for admin users					done
+rest endpoints								partial
+DTOs										partial
+pipes - validation							partial
+guards										done
+exception filters							done
+logging										done
 
 
 todo
 ====
 graphql endpoints 	src/cats/cats.resolver.ts
 unit testing
-logging
+
 track activity
 middleware - add surname for search
 
@@ -140,7 +141,15 @@ Logging
 	
 	
 Interceptors
+	interceptors can be controller-scoped, method-scoped, or global-scoped.
+	Create an interceptor module
+	Create an interceptor class
+	Bind the interceptor with @UseInterceptors decorator
+	In order to set up a global interceptor, we use the useGlobalInterceptors() method of the Nest application instance:
 
+	
+	
+	
 	
 
 

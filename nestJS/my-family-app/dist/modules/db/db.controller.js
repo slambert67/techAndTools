@@ -21,6 +21,7 @@ const delete_admin_dto_1 = require("./dtos/delete-admin.dto");
 const update_member_dto_1 = require("./dtos/update-member.dto");
 const create_member_dto_1 = require("./dtos/create-member.dto");
 const delete_member_dto_1 = require("./dtos/delete-member.dto");
+const logging_interceptor_1 = require("../interception/logging.interceptor");
 let DbController = class DbController {
     dbService;
     constructor(dbService) {
@@ -107,6 +108,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], DbController.prototype, "deleteMember", null);
 exports.DbController = DbController = __decorate([
+    (0, common_1.UseInterceptors)(logging_interceptor_1.LoggingInterceptor),
     (0, common_1.Controller)('db'),
     __metadata("design:paramtypes", [db_service_1.DbService])
 ], DbController);

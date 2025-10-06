@@ -376,5 +376,9 @@ Response transformation (e.g., hide sensitive fields).
 Response mapping (like converting entities into DTOs automatically).
 Caching results (skip controller execution if response is already cached).
 
+interceptors can be controller-scoped, method-scoped, or global-scoped.
+In order to set up a global interceptor, we use the useGlobalInterceptors() method of the Nest application instance:
+
+
 
 

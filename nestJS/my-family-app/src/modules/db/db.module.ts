@@ -7,6 +7,7 @@ import { MyMember, MyMemberSchema } from './schemas/member.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { LoggingModule } from '../logging/logging.module';
+import { InterceptionModule } from '../interception/interception.module';
 
 @Module({
     imports: [
@@ -25,7 +26,8 @@ import { LoggingModule } from '../logging/logging.module';
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '300s' },
         }),
-        LoggingModule
+        LoggingModule,
+        InterceptionModule
     ],
     controllers: [DbController],
     providers: [DbService],
