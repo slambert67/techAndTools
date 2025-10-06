@@ -17,7 +17,14 @@ const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("./constants");
 const logging_module_1 = require("../logging/logging.module");
 const interception_module_1 = require("../interception/interception.module");
+const middleware_module_1 = require("../middleware/middleware.module");
+const logger_middleware_1 = require("../middleware/logger.middleware");
 let DbModule = class DbModule {
+    configure(consumer) {
+        consumer
+            .apply(logger_middleware_1.LoggerMiddleware)
+            .forRoutes('db');
+    }
 };
 exports.DbModule = DbModule;
 exports.DbModule = DbModule = __decorate([
@@ -32,7 +39,8 @@ exports.DbModule = DbModule = __decorate([
                 signOptions: { expiresIn: '300s' },
             }),
             logging_module_1.LoggingModule,
-            interception_module_1.InterceptionModule
+            interception_module_1.InterceptionModule,
+            middleware_module_1.MiddlewareModule
         ],
         controllers: [db_controller_1.DbController],
         providers: [db_service_1.DbService],

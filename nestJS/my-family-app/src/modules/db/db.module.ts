@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MyAdmin, MyAdminSchema } from './schemas/admin.schema';
 import { DbController } from './db.controller';
@@ -8,6 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { LoggingModule } from '../logging/logging.module';
 import { InterceptionModule } from '../interception/interception.module';
+import { MiddlewareModule } from '../middleware/middleware.module';
+import { LoggerMiddleware } from '../middleware/logger.middleware';
 
 @Module({
     imports: [
@@ -27,10 +29,18 @@ import { InterceptionModule } from '../interception/interception.module';
             signOptions: { expiresIn: '300s' },
         }),
         LoggingModule,
-        InterceptionModule
+        InterceptionModule,
+        MiddlewareModule
     ],
     controllers: [DbController],
     providers: [DbService],
     exports: [DbService]
 })
-export class DbModule {}
+export class DbModule {
+
+    configure( consumer: MiddlewareConsumer) {
+        consumer
+            .apply(LoggerMiddleware)    // comma separated for multiple middleware
+            .forRoutes('db');
+    }
+}

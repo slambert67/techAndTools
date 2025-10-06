@@ -250,7 +250,16 @@ Interceptors
 ------------
 
 
-
+Middleware
+----------
+Middleware is a function which is called before the route handler. 
+Middleware functions have access to the request and response objects
+execute any code.
+make changes to the request and the response objects.
+end the request-response cycle.
+call the next middleware function in the stack.
+You implement custom Nest middleware in either a function, or in a class with an @Injectable() decorator
+There is no place for middleware in the @Module() decorator
 
 package.json
 ------------

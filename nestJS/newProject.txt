@@ -21,6 +21,7 @@ pipes - validation							partial
 guards										done
 exception filters							done
 logging										done
+interceptors								done
 
 
 todo
@@ -31,7 +32,7 @@ unit testing
 track activity
 middleware - add surname for search
 
-interceptors
+
 configuration
 websockets
 kafka
@@ -148,6 +149,12 @@ Interceptors
 	In order to set up a global interceptor, we use the useGlobalInterceptors() method of the Nest application instance:
 
 	
+Middleware
+	create middleware module
+	create middleware class
+	There is no place for middleware in the @Module() decorator
+	Configure middleware in dependent module
+	app.use to apply middleware globally
 	
 	
 	
