@@ -1,0 +1,58 @@
+type UserKeys = keyof User;
+
+
+function getProperty<T, K extends keyof T>(obj: T, key: K): T[K] {
+    return obj[key];
+}
+
+
+function safeGet<T extends object>(obj: T, key: string) {
+    if (key in obj) {
+        return obj[key as keyof T];  *1
+    } else {
+        throw new Error(`Invalid key: ${key}`);
+    }
+}
+*1
+TypeScript’s type system does not know that a runtime check (key in obj) narrows a string to keyof T.
+key is only string but needs to be narrowed to keyof T
+
+
+// mapped types
+type ReadOnly<T> = { readonly [k in keyof T]: T[k]; };
+type Optional<T> = { [k in keyof T]?: T[k] };
+type Nullable<T> = { [k in keyof T]: T[k] | null};
+
+
+
+function logLength<T extends { length: number }>(item: T): void {
+  console.log(item.length);
+}
+
+
+(() => {
+
+    type OnlyStrings<T> = {
+        [K in keyof T as T[K] extends string ? K : never]: T[K];  // 
+    };
+
+    interface Example {
+        id: number;
+        name: string;
+        active: boolean;
+        role: string;
+    }
+
+    type Result = OnlyStrings<Example>; 
+    // should be { name: string; role: string; }
+})();   
+
+
+const butlerCount = (myAbode as Mansion).butlers;
+
+
+1	Generics	                    <T>(value: T): T	                                Identity function
+2	Mapped types	                [P in keyof T]?: T[P]	                            Optional properties
+3	keyof + generics	            <T, K extends keyof T>(obj: T, key: K): T[K]	    Type-safe property access
+4	Conditional + key remapping	    [K in keyof T as T[K] extends string ? K : never]	Filter properties
+5	Conditional + infer	            T extends (infer U)[] ? Flatten<U> : T	            Recursive flattening

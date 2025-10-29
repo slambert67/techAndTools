@@ -22,7 +22,7 @@ guards										done
 exception filters							done
 logging										done
 interceptors								done
-
+middleware									done
 
 todo
 ====
@@ -30,9 +30,6 @@ graphql endpoints 	src/cats/cats.resolver.ts
 unit testing
 
 track activity
-middleware - add surname for search
-
-
 configuration
 websockets
 kafka

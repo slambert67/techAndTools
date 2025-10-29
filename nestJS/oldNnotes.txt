@@ -1,0 +1,916 @@
+Checklist
+---------
+linting
+formatting
+
+
+What version of node do I have installed?
+-----------------------------------------
+
+
+What npm packages do I have installed globally?
+-----------------------------------------------
+npm list -g --depth 0
+
+
+
+
+
+
+
+Provider
+--------
+services, repositories, factories, helpers can be treated as providers
+Key idea is that can be injected
+Typically have a lifetime scope.
+Each provider gets instantiated on bootstrap.
+Can be request scoped. Lifetime tied to request
+Must be registered with a module
+
+
+Service
+-------
+nest g service <name>
+
+
+
+Middleware
+----------
+Called before route handler
+
+
+
+Pipes
+-----
+
+
+
+
+Guards
+------
+Authentication
+npm install --save @nestjs/jwt
+nest g module auth
+nest g controller auth
+nest g service auth
+
+	controller
+		@Post('login')
+		constructs access token based on 
+			a payload. ie. the token contains user's information (claims)
+			a secret - used when registering JwtModule as an import
+		returns the access token {"access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiam9obiIsImlhdCI6MTc1ODg5MzI2MywiZXhwIjoxNzU4ODkzMzIzfQ.nxJb0pnvZw7XQBFroNC0uVJAXxFq7qoHwEWWKaDoOVs"}
+		
+		
+		@UseGuards(AppGuard)
+		@Get('profile')
+		AppGuard (implements CanActivate) checks if correct access token has been supplied (token + secret)
+		
+		
+
+Exception filters
+-----------------
+Exception Layer
+
+	global exception filter
+		Handles exceptions not handled by application
+		handles exceptions of type HttpException (and subclasses of it)
+		if unrecognized
+			{
+			  "statusCode": 500,
+			  "message": "Internal server error"
+			}	
+
+		partially supports the http-errors library
+		Basically, any thrown exception containing the statusCode and message properties will be properly populated and sent back as a response
+		
+		HttpStatus. This is a helper enum imported from the @nestjs/common package.
+		throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+		
+		The HttpException constructor takes two required arguments which determine the response:
+			The response argument defines the JSON response body. It can be a string or an object as described below.
+			The status argument defines the HTTP status code.
+
+		By default, the JSON response body contains two properties:
+			statusCode: defaults to the HTTP status code provided in the status argument
+			message: a short description of the HTTP error based on the status
+			
+		
+		BUILT-IN Exceptions aren't logged - part of normal application flow
+		Can write custom exceptions
+		
+	Exception Filters
+		Give full control
+		eg. add logging
+		
+		
+
+Logging
+-------
+Logger class in @nestjs/common
+Customize passing object during app creation in main.ts - const app = await NestFactory.create(AppModule, {});
+	logger: false
+	logger: ['log', 'fatal', 'error', 'warn', 'debug', 'verbose']
+
+alternative:
+const app = await NestFactory.create(AppModule, {
+  logger: new ConsoleLogger({
+    colors: false,
+  }),
+});
+
+Because nestjs has a pluggable logging system
+
+logger: false					configures Nest's internal logger setup
+								Nest automatically instantiates it's own ConsoleLogger
+						
+logger: new ConsoleLogger		injecting own logging instance
+								can be subclassed or replaced entirely. see WinstonLogger, PinoLogger
+								
+services can use logging in 2 ways
+	built in static logger that uses Logger class
+	
+		Nest creates a default ConsoleLogger internally.
+		The service uses Logger, which automatically delegates to that default logger.
+		
+		import { Logger } from '@nestjs/common';
+		private readonly logger = new Logger(AppService.name);				manual creation. Still delegates to Nest's shared global logger configured via NestFactory
+		this.logger.log('Hello called');
+	
+	
+	custom injected logger instance	that implements LoggerService
+		
+		import { ConsoleLogger } from '@nestjs/common';
+		constructor(private readonly logger: ConsoleLogger) {}				dependency injection. Can register globally or per module
+		this.logger.log('Custom log from MyLogger');
+
+
+Why You Might Want a Unique (Transient) Logger Instance
+
+1. Automatic Context Isolation
+	If you give each module or service its own instance, that logger can automatically set and remember its context (the class/module name).
+	ConsoleLogger.setContext
+	
+2. Module-level configuration
+	Each instance can hold metadata or configuration specific to its module or service.
+	
+3. Better Debugging and Tracing
+	With transient loggers, you can easily inject a new one for a specific request, job, or module
+
+
+do more research
+
+
+Interceptors
+------------
+
+
+Middleware
+----------
+Middleware is a function which is called before the route handler. 
+Middleware functions have access to the request and response objects
+execute any code.
+make changes to the request and the response objects.
+end the request-response cycle.
+call the next middleware function in the stack.
+You implement custom Nest middleware in either a function, or in a class with an @Injectable() decorator
+There is no place for middleware in the @Module() decorator
+
+package.json
+------------
+
+dependencies
+	npm install <pkg> -- save
+	packages app need at runtime
+
+devDependencies
+	npm install <pkg> -- save-dev
+	package app does not need at runtime
+	
+	
+development
+	npm install
+	both dependencies and devDependencies are installed
+
+
+production
+	npm install --production
+	only dependencies will be installed
+	
+
+
+NestJS Application Structure
+============================
+main.ts
+	bootstrap
+	creates NestJS application (app) based on AppModule imported/exported from app.module
+	see @nestjs/core/nest-application.interface.d.ts
+	listens on port 3000
+	
+
+app.module.ts
+	root module
+	ties together controllers and providers etc
+	
+
+New Project
+===========
+Install NestJS globally
+	npm install -g @nestjs/cli
+	
+Create new NestJS application
+	nest new my-nest-app
+		node_modules is populated
+		
+Execute new NestJS project
+	npm run start:dev
+	
+	
+	
+Jest Testing
+============
+import { Test, TestingModule } from '@nestjs/testing';
+	provides helpers to build a NestJS application context for testing
+	
+import { AppController } from './app.controller';
+	the controller we're testing
+	
+import { AppService } from './app.service';
+	the service dependency used by the controller
+	
+Jest’s describe groups related tests.
+beforeEach runs before every test in the describe
+
+Test.createTestingModule({...})
+	Creates a temporary NestJS module for testing purposes.
+	
+.compile()
+	Builds (compiles) the testing module → Nest does DI (dependency injection), wiring everything up just like in a real app. No mocking
+	
+app.get<AppController>(AppController)
+	Retrieves an instance of AppController from the testing container
+	This is now a fully functional controller, with its AppService dependency injected
+	
+	
+	
+websockets
+==========
+a communication protocol that provides a persistent, bidirectional communication channel between a client and a server over a single Transmission Control Protocol (TCP) connection
+
+
+
+
+
+
+NestJS Lifecycle
+================
+1. Middleware
+Runs before the request hits a controller.
+Framework-level, not NestJS-specific (they’re like Express/Fastify middleware).
+Good for: logging, CORS, request body parsing, authentication checks.
+Can modify request/response objects directly.
+Analogy: security guard at the building entrance.
+
+
+2. Pipes
+Run after route selection but before the controller method executes.
+Work on method arguments (e.g. @Body(), @Param()).
+Responsible for validation and transformation.
+Analogy: the receptionist checking your paperwork is correct before letting you in.
+
+
+3. Exception Filters
+Run when an exception is thrown anywhere in the request/response cycle.
+Catch errors and shape the outgoing error response.
+Analogy: the customer service desk that handles problems.
+
+
+4. Interceptors
+Run before and after the controller method is called.
+Can:
+Transform the incoming request (like middleware, but Nest-specific).
+Transform the outgoing response.
+Add logic around method execution (e.g. timing, logging).
+Implement cross-cutting concerns (caching, serialization, metrics, etc.).
+Analogy: a tour guide who not only introduces you at the start but also gives feedback and wraps things up at the end.
+
+
+Why interceptors are needed
+Because none of the other three cover the “around” case:
+
+Middleware → only before controller.
+Pipes → only before controller, and only at the argument level.
+Filters → only when an error occurs.
+Interceptors → before and after controller, always.
+This makes interceptors ideal for:
+Logging & performance profiling (time a request took).
+Response transformation (e.g., hide sensitive fields).
+Response mapping (like converting entities into DTOs automatically).
+Caching results (skip controller execution if response is already cached).
+
+interceptors can be controller-scoped, method-scoped, or global-scoped.
+In order to set up a global interceptor, we use the useGlobalInterceptors() method of the Nest application instance:
+
+
+
+
+Kafka
+=====
+cluster = multiple brokers
+broker = server
+purpose of broker is to serve data
+each broker in a cluster is also a bootstrap server
+3 brokers is usual
+kafka broker discovery. uses metadata in servers
+consumer = client
+data stored in topics
+topics are persisted on disk
+
+Producer
+--------
+A Kafka producer is a client or application that sends (publishes) messages to Kafka topics.
+It connects to a Kafka broker (a Kafka server node).
+It specifies a topic (like order.created or payment.processed).
+Kafka decides which partition in that topic to write the message to.
+The message is stored durably in Kafka — ready for consumers to read.
+If you call .emit() → you’re a Kafka Producer
+
+
+Consumer
+--------
+A Kafka consumer → listens for messages from Kafka (reads from a topic)
+A consumer subscribed to "order.created" receives the message.
+The consumer processes it (for example: send an email, charge payment, update DB).
+If you use @MessagePattern() → you’re a Kafka Consumer
+
+
+Client
+------
+A Kafka client is any application or library that communicates with a Kafka cluster, either to:
+Produce messages (send/publish to topics)
+Consume messages (read/subscribe from topics)
+The “client” is the umbrella term for anyone interacting with Kafka.
+
+
+why are the producer and consumer created in different ways
+-----------------------------------------------------------
+Microservice (Consumer)
+const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+  transport: Transport.KAFKA,
+  options: {
+    client: { clientId: 'payments', brokers: ['kafka:9092'] },
+    consumer: { groupId: 'payments-consumer' },
+  },
+});
+
+
+NestJS creates a Kafka microservice instance.
+This is primarily for consuming messages (Kafka consumer).
+NestJS automatically maps message patterns (from @MessagePattern()) to your handlers.
+NestJS internally manages the Kafka consumer lifecycle, including connecting, subscribing to topics, handling retries, and listening.
+So the microservice is “consumer-centric”: its main job is to receive messages, not to send them.
+
+
+
+Kafka Client (Producer)
+ClientsModule.register([
+  {
+    name: 'PAYMENTS_PRODUCER',
+    transport: Transport.KAFKA,
+    options: {
+      client: { clientId: 'payments-producer', brokers: ['kafka:9092'] },
+      producer: {},
+    },
+  },
+]);
+
+
+This creates a standalone Kafka client.
+Its main purpose is to send messages to Kafka topics (emit or send).
+It does not automatically subscribe to topics — it only produces messages.
+You have to inject it into a service and call .connect() manually (or via OnModuleInit) before sending messages.
+
+
+NestJS separates these roles because Kafka producers and consumers have different responsibilities:
+
+| Aspect               | Microservice (Consumer)                           | ClientKafka (Producer)                |
+| -------------------- | ------------------------------------------------- | ------------------------------------- |
+| Primary role         | Receive messages                                  | Send messages                         |
+| Lifecycle management | Automatic with `NestFactory.createMicroservice`   | You manage `.connect()`               |
+| Message handling     | `@MessagePattern()`                               | `.emit()` / `.send()`                 |
+| Multiple instances   | Each microservice can have its own consumer group | Multiple producers can share a broker |
+
+
+
+Why they’re “different ways”
+Consumer: You need a NestJS microservice, because consuming involves automatically handling topics, partitions, groups, and lifecycle.
+Producer: Sending messages is simpler — you just need a Kafka client that knows the broker info. You don’t need the full microservice machinery for that.
+
+
+NestJS essentially gives you two abstractions:
+Microservice → for consumers
+ClientKafka → for producers
+
+
+NestJS terminology
+
+NestFactory.createMicroservice → creates a microservice that is primarily a consumer. It automatically listens to Kafka topics and routes messages to handlers.
+ClientKafka → creates a client object that allows you to produce messages (emit/send) to Kafka.
+Even though the class is called ClientKafka, in practice:
+It is producer-focused.
+You can technically use it in request-response patterns, where it also consumes a reply, but it doesn’t subscribe to arbitrary topics like a “real” consumer does.
+
+NestJS separates them because the lifecycle and responsibilities of producers and consumers are different:
+| NestJS Concept | Kafka Concept | Responsibility                                                                            |
+| -------------- | ------------- | ----------------------------------------------------------------------------------------- |
+| Microservice   | Consumer      | Subscribes, receives messages, handles partitions, manages offsets automatically          |
+| ClientKafka    | Producer      | Sends messages, optionally waits for a reply, does not manage subscriptions automatically |
+
+
+Key takeaway
+The name is misleading, but the behavior is intentional: ClientKafka is producer-centric, even though technically Kafka producers are also “clients.”
+If you need a true consumer, NestJS expects you to use a microservice (or manually create a KafkaJS consumer outside NestJS abstractions).
+In short: NestJS treats producers and consumers differently, so the naming doesn’t fully align with Kafka semantics.
+
+
+=============================================
+KafkaJS vs NestJS: What’s the difference?
+
+KafkaJS is a low-level client library for interacting with Kafka directly (producers, consumers, etc.).
+
+NestJS is a framework that provides higher-level abstractions — including one built on top of KafkaJS (or other transport layers).
+
+In NestJS, the Kafka integration is part of its microservices module, which provides two main roles:
+
+Role	KafkaJS equivalent	NestJS abstraction	Purpose
+Producer	kafka.producer()	ClientKafka	Send messages/events
+Consumer	kafka.consumer()	@MessagePattern() handler in a @Controller() with a Microservice	Receive messages
+
+So — yes — while in KafkaJS you create both the producer and consumer from the same Kafka instance, in NestJS these are split into two separate mechanisms, because NestJS handles the consumer lifecycle internally in the microservice layer.
+
+⚙️ 2. How NestJS sets this up
+Producer side (using ClientKafka)
+
+In your app module or service:
+
+import { ClientKafka, ClientsModule, Transport } from '@nestjs/microservices';
+
+@Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'KAFKA_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'my-producer',
+            brokers: ['localhost:9092'],
+          },
+          consumer: {
+            groupId: 'my-producer-group', // still needed internally
+          },
+        },
+      },
+    ]),
+  ],
+})
+export class AppModule {}
+
+
+Then inject and use it:
+
+@Injectable()
+export class AppService {
+  constructor(@Inject('KAFKA_SERVICE') private kafkaClient: ClientKafka) {}
+
+  async onModuleInit() {
+    await this.kafkaClient.connect();
+  }
+
+  sendMessage() {
+    this.kafkaClient.emit('test-topic', { value: 'Hello from producer!' });
+  }
+}
+
+Consumer side (using Microservice)
+
+In your main.ts (for a microservice instance):
+
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { Transport } from '@nestjs/microservices';
+
+async function bootstrap() {
+  const app = await NestFactory.createMicroservice(AppModule, {
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'my-consumer',
+        brokers: ['localhost:9092'],
+      },
+      consumer: {
+        groupId: 'test-group',
+      },
+    },
+  });
+
+  await app.listen();
+}
+bootstrap();
+
+
+And your consumer logic lives in a controller:
+
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+
+@Controller()
+export class AppController {
+  @MessagePattern('test-topic')
+  consume(@Payload() message: any) {
+    console.log('Received message:', message.value);
+  }
+}
+
+🧠 3. So what’s happening conceptually
+
+KafkaJS: You explicitly create both producer and consumer manually.
+
+NestJS:
+
+A microservice instance handles consuming.
+
+A ClientKafka instance handles producing.
+
+Each has its own lifecycle and connection pool, managed by NestJS.
+
+Even though both under the hood use KafkaJS, NestJS separates them for clarity, scalability, and lifecycle management (especially across distributed services).
+
+🔸 TL;DR
+Concept	KafkaJS	NestJS
+How you make a producer	kafka.producer()	ClientKafka
+How you make a consumer	kafka.consumer()	Microservice + @MessagePattern()
+Connection management	Manual	Managed by NestJS
+Factory object	new Kafka()	Handled internally by NestJS
+
+Would you like me to show a diagram comparing NestJS vs raw KafkaJS architecture (producer/consumer setup and data flow)? It helps make this distinction visually clear.
+
+
+
+consumer and producer lifecycles
+--------------------------------
+just means how those clients are created, connected, used, and shut down over the life of your app.
+
+The “lifecycle” of a Kafka client
+
+Every Kafka producer and consumer goes through these phases:
+
+
+| Phase                       | Description                                                                      | Example                                                       |
+| --------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Creation**                | You create a client instance (via KafkaJS or NestJS abstraction).                | `const producer = kafka.producer()`                           |
+| **Connection**              | It opens one or more network connections to Kafka brokers and joins the cluster. | `await producer.connect()`                                    |
+| **Usage**                   | It does its main job — send or consume messages.                                 | `await producer.send(...)` / `await consumer.run(...)`        |
+| **Disconnection / Cleanup** | It gracefully closes sockets, commits offsets, leaves consumer groups, etc.      | `await producer.disconnect()` / `await consumer.disconnect()` |
+
+Those four phases make up the client lifecycle.
+If you skip or mismanage one, you’ll get resource leaks, uncommitted offsets, or lost messages.
+
+
+Producer lifecycle explained
+----------------------------
+const producer = kafka.producer();
+
+await producer.connect();  // ⬅️ connects to brokers
+
+await producer.send({
+  topic: 'my-topic',
+  messages: [{ value: 'Hello Kafka!' }],
+});
+
+await producer.disconnect();  // ⬅️ flushes and closes connections
+
+Key lifecycle behaviors:
+
+connect() establishes socket connections to Kafka brokers and fetches metadata.
+
+You must connect before sending messages.
+
+disconnect() gracefully closes connections and ensures in-flight messages are sent.
+
+Repeatedly connecting/disconnecting is expensive — usually, you connect once on startup and disconnect on shutdown.
+
+In a NestJS app, that typically means:
+Connect the producer in onModuleInit() or AppService.onApplicationBootstrap().
+Disconnect in onModuleDestroy() or beforeApplicationShutdown().
+
+
+Consumer lifecycle explained
+----------------------------
+const consumer = kafka.consumer({ groupId: 'my-group' });
+
+await consumer.connect();                     // join consumer group
+await consumer.subscribe({ topic: 'my-topic' });
+await consumer.run({ eachMessage: async (...) => { ... } });
+// ⬆️ this keeps running until you disconnect
+
+await consumer.disconnect();  // leaves group, commits offsets, closes sockets
+
+
+Key lifecycle behaviors:
+
+connect() registers the consumer in a consumer group.
+
+run() starts an infinite event loop — it keeps fetching messages.
+
+You typically never “await” run(), because it keeps running forever.
+
+disconnect() stops the loop, commits final offsets, and leaves the group.
+
+So, in a NestJS service:
+
+Start your consumer in onModuleInit().
+
+Don’t block — just launch run() and handle messages asynchronously.
+
+Clean up in onModuleDestroy().
+
+
+Why lifecycles matter in NestJS
+
+
+| Nest Hook                                           | When It Runs                 | Good For                                         |
+| --------------------------------------------------- | ---------------------------- | ------------------------------------------------ |
+| `onModuleInit()`                                    | When a module is initialized | `producer.connect()`, `consumer.connect()`       |
+| `onApplicationBootstrap()`                          | After all modules are ready  | `consumer.run()`                                 |
+| `onModuleDestroy()` / `beforeApplicationShutdown()` | On shutdown                  | `producer.disconnect()`, `consumer.disconnect()` |
+
+
+Using these ensures:
+Your Kafka connections open only once (not per request).
+Your consumers and producers shut down cleanly when the app stops.
+No dangling connections or locked consumer group sessions.
+
+
+App startup
+ ├── create Kafka clients
+ ├── producer.connect()
+ ├── consumer.connect()
+ └── consumer.run() → (infinite loop)
+
+App running
+ ├── producer.send() (on demand)
+ └── consumer processes messages continuously
+
+App shutdown
+ ├── consumer.disconnect()
+ └── producer.disconnect()
+
+TL;DR
+
+Producer lifecycle
+
+Connect → Send → Disconnect
+(usually connect once, send many times, disconnect once)
+
+Consumer lifecycle
+
+Connect → Subscribe → Run (infinite loop) → Disconnect
+
+In NestJS, you map those to the application’s own lifecycle hooks so Kafka connections open and close with the app itself — not per request.
+
+
+=============================================
+You only need a Producer module (ClientKafka) because:
+
+The producer is an injectable client you use in your app to send messages.
+
+The consumer, on the other hand, is the NestJS microservice itself — created by NestFactory.createMicroservice() or app.connectMicroservice() — not a simple injectable class.
+
+So:
+
+✅ Producers → live inside modules as injectable clients
+🧠 Consumers → live at the application level (as a Nest microservice)
+
+
+
+Producers vs. Consumers in NestJS architecture
+| Concept      | Typical Implementation                                                  | Managed By                                              |
+| ------------ | ----------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Producer** | `ClientKafka` inside an app module (via `ClientsModule.register`)       | Your app logic (you call `emit()` or `send()`)          |
+| **Consumer** | Entire **microservice instance** created by Nest (`createMicroservice`) | NestJS framework (handles connect, subscribe, run loop) |
+
+
+
+A producer is a component (you create one per module or service that needs to send events).
+A consumer is a runtime environment (the whole process that listens to Kafka topics).
+
+Why the difference exists
+
+🔸 Producer (ClientKafka)
+ClientKafka is designed to be:
+Injected into your services
+Used imperatively (emit() / send())
+Controlled by your application’s lifecycle
+So it fits naturally into a Nest module, just like any other dependency:
+
+You inject and use it in a service:
+constructor(@Inject('KAFKA_SERVICE') private kafka: ClientKafka) {}
+
+
+Consumer (Nest microservice)
+Consumers are not injected — they host message handlers (@MessagePattern) and run their own connection loop.
+That’s why you don’t build a “consumer module”; instead, you start a microservice:
+
+The consumer logic lives inside controllers:
+
++----------------------+          +-----------------------------+
+|   Producer Module    |          |     Consumer Microservice   |
+|----------------------|          |-----------------------------|
+|  @Inject(ClientKafka)|          |  @MessagePattern('topic')   |
+|  kafka.emit('topic') |   --->   |  handleMessage(payload)     |
+|                      |          |  auto-managed by Nest       |
++----------------------+          +-----------------------------+
+
+
+Mental model:
+
+KafkaProducerModule = just a helper module that gives your app a producer client.
+
+Kafka consuming is not a module at all — it’s an app runtime role that NestJS takes over.
+
+
+
+---
+[Nest] 1  - 10/28/2025, 10:15:47 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:47.639Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:47 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:47.640Z","logger":"kafkajs","retryCount":0,"retryTime":302}
+
+[Nest] 1  - 10/28/2025, 10:15:47 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:47.946Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:47 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:47.946Z","logger":"kafkajs","retryCount":1,"retryTime":536}
+
+[Nest] 1  - 10/28/2025, 10:15:48 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:48.486Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:48 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:48.487Z","logger":"kafkajs","retryCount":2,"retryTime":1022}
+
+[Nest] 1  - 10/28/2025, 10:15:49 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:49.511Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:49 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:49.512Z","logger":"kafkajs","retryCount":3,"retryTime":1944}
+
+[Nest] 1  - 10/28/2025, 10:15:51 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:51.459Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:51 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:51.460Z","logger":"kafkajs","retryCount":4,"retryTime":4034}
+
+[Nest] 1  - 10/28/2025, 10:15:55 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:55.498Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:55 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:55.498Z","logger":"kafkajs","retryCount":5,"retryTime":8990}
+
+node:internal/process/promises:394
+
+
+docker compose exec kafka bash -c "kafka-configs --bootstrap-server kafka:9092 --entity-type topics --entity-name orders-topic --alter --add-config retention.ms=0 && sleep 2 && kafka-configs --bootstrap-server kafka:9092 --entity-type topics --entity-name orders-topic --alter --delete-config retention.ms"
+
+
+# Delete the topic
+docker compose exec kafka kafka-topics --bootstrap-server kafka:9092 --delete --topic orders-topic
+
+# Recreate the topic
+docker compose exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic orders-topic --partitions 1 --replication-factor 1
+
+
+
+kafka - process message once only
+
+Ensuring a Kafka message is processed exactly once is one of the trickiest and most important aspects of building robust Kafka applications. Let’s go carefully step by step.
+
+1️⃣ Understand Kafka’s Delivery Semantics
+
+Kafka itself provides at-least-once delivery by default:
+
+At-least-once: Consumers may see a message multiple times if they fail before committing offsets.
+
+At-most-once: Messages may be lost if offsets are committed before processing.
+
+Exactly-once: A combination of idempotent writes, transactions, and offset management ensures each message affects your system only once.
+
+2️⃣ Use Idempotent Producers
+
+If a producer retries sending a message due to a network failure, you don’t want duplicates. Kafka supports idempotent producers:
+
+const { Kafka } = require('kafkajs');
+const kafka = new Kafka({ brokers: ['localhost:9092'] });
+
+const producer = kafka.producer({ idempotent: true });
+await producer.connect();
+await producer.send({
+  topic: 'my-topic',
+  messages: [{ key: '1', value: 'hello' }],
+});
+
+
+✅ Ensures the same message isn’t written twice even if the producer retries.
+
+3️⃣ Transactions for Atomic Processing
+
+If you want end-to-end exactly-once (message consumed, processed, and written to another topic or DB):
+
+Enable transactions in the producer:
+
+const producer = kafka.producer({
+  idempotent: true,
+  transactionalId: 'my-transactional-id',
+});
+await producer.connect();
+
+
+Wrap your processing and offset commit in a transaction:
+
+const transaction = await producer.transaction();
+
+try {
+  // Send processed message to output topic
+  await transaction.send({
+    topic: 'output-topic',
+    messages: [{ key: '1', value: 'processed' }],
+  });
+
+  // Commit consumer offsets as part of the same transaction
+  await transaction.sendOffsets({ 
+    consumerGroupId: 'my-group',
+    topics: [{ topic: 'input-topic', partition: 0, offset: '5' }],
+  });
+
+  await transaction.commit();
+} catch (err) {
+  await transaction.abort();
+}
+
+
+✅ Guarantees atomicity: either both the output message and offset commit happen, or neither.
+
+4️⃣ Manual Offset Management (if not using transactions)
+
+If you don’t use transactions:
+
+Disable auto-commit: enable.auto.commit = false
+
+Only commit offsets after successful processing:
+
+for await (const message of consumer) {
+  await process(message);       // your processing logic
+  await consumer.commitOffsets([
+    { topic: 'input-topic', partition: message.partition, offset: message.offset + 1 }
+  ]);
+}
+
+
+⚠️ Risk: If your processing fails after committing, messages can be lost. Transactions eliminate this risk.
+
+5️⃣ Idempotent Processing on the Consumer Side
+
+Even with at-least-once delivery, you can make your system effectively exactly-once by making your processing idempotent:
+
+Assign a unique key or ID to each message.
+
+Store processed IDs in a database.
+
+Skip any message whose ID is already processed.
+
+Example (pseudo-code):
+
+if (!db.hasProcessed(message.key)) {
+  db.saveProcessed(message.key);
+  doProcessing(message.value);
+} else {
+  // Skip duplicate
+}
+
+
+This ensures duplicates have no effect.
+
+6️⃣ Kafka Streams Option
+
+If you use Kafka Streams:
+
+Set processing.guarantee = exactly_once_v2
+
+Streams handles:
+
+Idempotent writes
+
+Transactional offset commits
+
+State management
+
+You get true exactly-once semantics between input and output topics automatically.
+
+✅ Summary
+Layer	How to Ensure Exactly Once
+Producer	idempotent=true + retries
+Consumer	Manual offset commit after processing
+Processing	Make operations idempotent
+Cross-topic	Use Kafka transactions
+Stream processing	Use Kafka Streams exactly-once mode
+
+If you want, I can draw a diagram showing exactly-once processing: how messages flow from producer → topic → consumer → output topic or DB with transactions. It makes it much easier to visualize where duplicates can happen.

@@ -130,8 +130,112 @@ Asynchronous → when you want resilience, decoupling, or background tasks
 
 
 
+Scaling Notes
+=============
+Transaction
+	ACID
+		Atomicity			completely succeeds or completely fails
+		Consistency			valid state -> valid state
+		Isolation			Isolated from other transactions
+		Durability			data remains in case of system failure
+
+
+Vertical Scaling
+	more CPU, RAM etc
+	lack of redundancy
+
+
+Horizontal Scaling
+	Often more suitable
+	more servers
+	load balancer (reverse proxy) - nginx, haproxy
+		software, hardware, cloud based.
+		directs traffic
+		handles redundancy - health checks
+		
+		7 strategies
+			round robin					rotates between servers
+			least connections			to server with fewest active connections. variable length sessions
+			least response time			lowest response time /active connections
+			IP hash						based on hash of client ip address
+			weighted algorithms			variants of above
+			geographical algorithms
+			consistent hashing			most popular.
+			
+	
+SPOF - single point of failure
+	e.g. load balancer, db
+	
+system design concepts
+----------------------
+horizontal scaling
+caching - reduces load from database
+	cache invalidation
+	client side caching
+	server side caching
+	database caching
+	
+API Design
+	REST
+	gRPC
+	graphql
+	websockets
+	json
+	etc
+	security
+	
+database
+	horizontal scaling
+		replication		master/slave
+		sharding		different subsets of data across multiple servers
+						range based
+						
+CAP theorem
+only 2 of these 3
+	Consistency
+	Availability
+	Partition
+	
+	
+	
+Key Takeaways
+
+REST → Best for CRUD APIs and public HTTP endpoints. Easy to cache, debug, and integrate.
+
+WebSockets → Best for bidirectional real-time communication, like chat apps or collaborative tools.
+
+SSE → Best for unidirectional live updates (from server to client) with minimal setup, e.g., notifications, dashboards.
+
+gRPC → Best for internal microservices needing high performance, streaming, and type safety. Excellent for polyglot services.
+
+Message Brokers → Best for asynchronous decoupled services, reliable event delivery, retries, and scalability. Supports event-driven architecture.
+
+
+Practical NestJS Example Mapping
+NestJS Integration	Notes
+REST	Standard @Controller, @Get/@Post endpoints
+WebSockets	@WebSocketGateway(), @SubscribeMessage()
+SSE	@Sse() decorator with RxJS Observable
+gRPC	@GrpcMethod() with .proto definitions and generated clients
+Message Broker	@nestjs/microservices module using Kafka, RabbitMQ, or NATS transport
+
+
+
+Decision Guide
+
+Need synchronous API for clients? → REST
+
+Need real-time bidirectional updates? → WebSockets
+
+Need server-to-client streaming updates? → SSE
+
+Need high-performance, typed inter-service calls? → gRPC
+
+Need decoupled async communication or event sourcing? → Message Broker
 
 
 
 
 
+
+	

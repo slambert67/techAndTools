@@ -73,3 +73,24 @@ handlebars - templating
 ----------
 npm install express-handlebars
 
+
+
+
+event loop
+----------
+series of turns or 'ticks'
+
+1	run main JS code				top level code
+2	run process.nextTick()			node only microtasks
+3	run microtasks (promises)		standard js microtasks
+4	run macrotasks (handle timers)	settimeout/setinterval
+5	handle pending callbacks		deferred i/o, tcp etc
+6	poll for i/o events				waiting for async ops
+7	run setImmediate				explicit 'after poll'
+8	close callbacks					socket close etc
+
+when to use nextTick
+	allow listeners to attach to events
+	etc
+
+todo - play with nexttick
