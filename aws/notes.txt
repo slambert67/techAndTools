@@ -1,0 +1,242 @@
+Root user = your initial login (super admin, risky)
+IAM user = your “daily use account” (safe, still admin if you attach AdministratorAccess)
+AWS wants you to create a user so you can work safely and follow best practices.
+Think of it like this:
+Root user is like the master key to your house.
+IAM user is like a daily-use key you can carry around safely.
+
+--
+aws home page
+https://aws.amazon.com/
+sign in to console
+select root
+email/Aws!
+
+account id: 869036203214
+
+admin user login
+https://869036203214.signin.aws.amazon.com/console
+514725myadmin!
+
+
+Lambda Functions
+================
+An AWS Lambda function is a piece of code that runs in the cloud without you managing any servers.
+You write the code → upload it → AWS runs it automatically when something triggers it.
+
+
+
+docker notes
+============
+When deploying to AWS:		docker build → to build your container images
+							Push the image to AWS ECR
+							ECS/Fargate → to run your containers in the cloud
+							
+AWS ECR
+-------
+c.f. docker hub inside AWS
+It is AWS’s private Docker container registry.
+You use it to store and manage your Docker images so AWS services (like ECS or Fargate) can pull and run them.
+
+| Tool                    | Purpose                             |
+| ----------------------- | ----------------------------------- |
+| **Dockerfile**          | Defines how to build your container |
+| **docker build**        | Creates the container image         |
+| **Docker Hub / ECR**    | Stores the image                    |
+| **ECS / Fargate / EKS** | Runs the image                      |
+
+
+Docker Compose = local container orchestrator
+🟧 ECS/Fargate = cloud container orchestrator
+
+
+Install AWS CLI
+===============
+Allows
+	Upload files to S3
+	Invoke Lambda functions
+	Deploy infrastructure
+	Manage IAM users/roles
+	Create/stop EC2 instances
+	Run scripts/automations
+	Check logs
+
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+Download and run .msi
+
+Configure
+---------
+Access key: AKIA4UVUYDTHO63MKOD2
+Secret access key: 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
+
+
+AWS SDK
+=======
+| Tool        | Purpose                            |
+| ----------- | ---------------------------------- |
+| **AWS CLI** | You control AWS from the terminal  |
+| **AWS SDK** | Your **Node.js code** talks to AWS |
+
+Don't bother for now
+
+
+AWS SAM CLI (Highly recommended for serverless work)
+====================================================
+SAM (Serverless Application Model) helps you:
+
+Run Lambda functions locally
+Deploy serverless apps easily
+Package CloudFormation for you
+
+Windows: MSI installer
+
+
+Visual Studio Code extensions
+=============================
+AWS Toolkit for VS Code
+YAML (for CloudFormation/SAM templates)
+JavaScript extensions depending on your language
+
+
+1. Create an ECR (Elastic Container Registry) repository
+========================================================
+ECR is where your Docker image will live.
+Go to the AWS Console → ECR → Create repository
+Repository name: my-first-aws-app
+Visibility: Private
+Leave other defaults → Create repository
+Copy the repository URI, e.g.: 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-first-aws-app
+
+
+2. Tag & push your Docker image to ECR
+======================================
+
+
+# Log in to ECR
+works because of aws configure - don't need to specify my credentials
+aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 869036203214.dkr.ecr.eu-north-1.amazonaws.com - login succeeded
+
+
+# Build your Docker image (if not done already)
+docker build -t my-first-aws-app -f apps/aws/Dockerfile . - done
+
+# Tag the image for ECR
+docker tag my-first-aws-app:latest 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-first-aws-app:latest - done
+
+
+# Push the image
+docker push 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-first-aws-app:latest - done
+
+
+3. Create an ECS cluster (Fargate)
+==================================
+ECS - Elastic Container Service
+Fully managed container orchestration service by AWS
+	Lets you run Docker containers without managing servers (especially with Fargate)
+	Handles scheduling, scaling, networking, and monitoring of your containers
+	Think of ECS as AWS’s “container manager”.
+
+ECS Cluster
+	An ECS cluster is a logical grouping of resources that can run your containerized applications.
+	It’s not a server itself, especially if you use Fargate (serverless mode)
+	It keeps track of:
+		Tasks → single running containers based on a task definition
+		Services → long-running or scalable groups of tasks
+		Networking (VPC, subnets, security groups)
+		You can have multiple clusters for different environments (dev, staging, prod)
+
+Need ECS service linked role
+
+
+Go to ECS → Clusters → Create Cluster → Networking only (Fargate)
+Name it: my-first-aws-app-cluster2 - first attempt with my-first-aws-app-cluster failed
+Leave other settings default → Create
+
+
+4. Create a Task Definition
+===========================
+Task definitions describe what containers to run.
+ECS → Task Definitions → Create new Task Definition
+
+Launch type: Fargate
+
+Task size:
+
+vCPU: 0.5 (sufficient for small apps)
+
+Memory: 1 GB
+
+Container definitions → Add container
+
+Name: my-first-aws-app
+
+Image: Paste your ECR image URI (869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-first-aws-app)
+
+Port mappings: 3009 TCP
+
+Port name: doesn't matter. my-first-aws-app
+
+Environment variables: optional for now
+
+Click Add → Create - task definition successfully created
+
+
+5. Create a Fargate service
+===========================
+
+ECS → Clusters → Select your cluster → Create → Service
+
+Launch type: Fargate
+
+Task definition: select the one you just created
+
+Service name: my-first-aws-app-service
+
+Number of tasks: 1 (can scale later)
+
+Networking:
+
+Cluster VPC: choose default VPC
+
+Subnets: at least 2 public subnets
+
+Auto-assign public IP: ENABLED
+
+Security group: allow inbound TCP 3009 (or 80 if you want HTTP)
+
+Click Next → Create Service
+
+
+6. Access your app
+==================
+
+Go to ECS → Cluster → Service → Tasks → Click task → Public IP
+
+Open in browser:
+http://<public-ip>:3009
+
+
+===
+Container port
+
+Definition: The port inside the Docker container that your application listens on.
+
+Example: In your Dockerfile/NestJS app, you exposed port 3009:
+
+app.listen(3009);
+
+
+So your container port = 3009.
+
+ECS/Fargate needs to know this so it can route traffic correctly inside the container.
+
+
+Container port = port your app listens to inside the container (Dockerfile / app code). see main.ts
+
+Port mapping = how the container port is exposed to the outside world (host / task ENI / load balancer)
+
+For a simple single-container test, just set both to 3009 TCP, no need for fancy networking yet.
+							
+
+
+

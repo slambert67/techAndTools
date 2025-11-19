@@ -1,0 +1,10 @@
+services:
+  aws:
+    build: 
+      context: .
+      dockerfile: ./apps/aws/Dockerfile
+    ports:
+      - "3009:3009"
+
+
+  

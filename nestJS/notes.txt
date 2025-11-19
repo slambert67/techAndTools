@@ -1,9 +1,163 @@
+todo
+====
+service discovery
+linting
+formatting
+devtools - https://docs.nestjs.com/devtools/overview
+config / schema validation with joi
+custom validation with class-transformer and class-validator
+config available in microservices and yaml
+logging
+caching
+dtos
+daos
+queues - @nestjs/bullmq and @nestjs/bull
+events
+axios
+jest
+cors
+csrf
+health checks
+nginx
+repl
+cqrs	Command and Query Responsibility Segregation
+	usual:
+	The controllers layer handles HTTP requests and delegates tasks to the services layer.
+	The services layer is where most of the business logic lives.
+	Services use repositories / DAOs to change / persist entities. DAO = a class dedicated to data persistence operations.
+	Entities act as containers for the values, with setters and getters.
+	
+	not suitable for more complex applications
+	cqrs
+		Separation of concerns. The model separates the read and write operations into separate models.
+		Scalability. The read and write operations can be scaled independently.
+		Flexibility. The model allows for the use of different data stores for read and write operations.
+		Performance. The model allows for the use of different data stores optimized for read and write operations.
+		
+	
+
+Step-by-step explanation
+
+Middleware
+
+Runs first, before NestJS handles the request.
+
+Think: "pre-processing, logging, body parsing, authentication checks that happen outside NestJS guards."
+
+Can modify req/res.
+
+Guards
+	Run after middleware, before the route handler.
+	Responsible for authorization or permission checks.
+	Return true/false (or throw ForbiddenException).
+
+Pipes
+	Run after guards, before route handler.
+	Transform and validate input (e.g., DTO validation with class-validator).
+
+Interceptors (before)
+	Run before and after the route handler.
+	Can modify request or response, implement caching, logging, or timeouts.
+	Wraps the route handler with an observable (RxJS next.handle()).
+
+Route handler
+	
+
+Interceptors (after)
+	
+
+Exception filters
+	Run if an exception is thrown in any of the above stages.
+	Can catch and handle errors globally or per-route.
+
+| Stage               | Executes When                       |
+| ------------------- | ----------------------------------- |
+| Middleware          | Before Nest handles request         |
+| Guards              | Before route handler                |
+| Pipes               | Before route handler (after guards) |
+| Interceptors (pre)  | Before route handler                |
+| Route handler       | Your controller method executes     |
+| Interceptors (post) | After route handler                 |
+| Exception filters   | If any exception is thrown          |
+
+
+Key Notes
+
+Middleware is outside NestJS context, so it cannot inject services with DI.
+Guards and Pipes can be route, controller, or global.
+Interceptors wrap the route handler completely.
+Exception filters only run if something throws an exception.
+================================================================================
+
+
+
 CLI
 ===
+nest new <my-nest-app>
+nest generate module <name>
 nest generate controller <name>
 nest generate controller <name> --project <name>
-nest generate module <name>
+nest generate service <name>
 
+What version of node do I have installed?
+-----------------------------------------
+
+
+What npm packages do I have installed globally?
+-----------------------------------------------
+npm list -g --depth 0
+
+dependencies
+	npm install <pkg> -- save
+	packages app need at runtime
+
+devDependencies
+	npm install <pkg> -- save-dev
+	package app does not need at runtime
+	
+	
+development
+	npm install
+	both dependencies and devDependencies are installed
+
+
+production
+	npm install --production
+	only dependencies will be installed
+
+
+Install NestJS globally
+	npm install -g @nestjs/cli
+	
+Create new NestJS application
+	nest new my-nest-app
+		node_modules is populated
+		
+Execute new NestJS project
+	npm run start:dev
+
+Install NestJS globally
+	npm install -g @nestjs/cli
+	
+Create new NestJS application
+	nest new my-family-app
+	
+Execute new NestJS project
+	npm run start:dev
+	
+Test initial endpoint
+	localhost:3000
+
+Create a shared library:
+nest generate library common
+
+
+Each app builds to its own dist folder:
+
+npm run start:dev orders
+npm run start:dev gateway
+
+================================================================================
 
 
 
@@ -13,12 +167,44 @@ Modules
 
 imports: 		other modules to use
 controllers: 	controllers that handle incoming requests
-providers: 		services or values available via DI
-exports: 		providers that should be visible to importing modules
+providers: 		what this module creates and manages: services, DAOs, repositories etc
+exports: 		providers that should be visible to importing modules i.e subset of providers
+				exceptions
+					re export of contents of impoprted module
 
 Singletons by default
 Every module is automatically a shared module
 Eagerly loaded by default
+Every app has a root module so NestJS can build the Application Graph
+
+Global Modules
+--------------
+@Global()
+	exported providers don't need to be imported by other modules i.e they are global in scope
+	only use for cross cutting concerns
+		Config module
+		Logger module
+		Cache module
+		Database Module
+		
+Dynamic Modules
+---------------
+Can be configured at runtime
+forRoot() = “initialize this module with specific configuration.”
+	this is a convention and not a keyword!
+	
+export class DatabaseModule {
+	static forRoot(entities = [], options?): DynamicModule {}
+}
+
+@Module({
+  imports: [DatabaseModule.forRoot([User])],
+})
+
+
+
+================================================================================
+
 
 
 Controllers
@@ -119,8 +305,1150 @@ Response				@Res() / @Response()							raw response
 Next					@Next()											middleware-style next()
 Uploaded files			@UploadedFile() / @UploadedFiles				via interceptors
 
-
-
-
-
 We can use the library-specific (e.g., Express) response object
+
+
+
+================================================================================
+
+
+
+Providers
+=========
+@Injectable()
+services, repositories, factories, and helpers
+
+
+Constructor Based Injection
+---------------------------
+export class CatsController {
+	// injected through class constructor
+	constructor(private catsService: CatsService) {}	// declares a dependency on the CatsService token
+}
+
+Providers have a lifetime/scope		- see Injection Scopes chapter
+
+
+Custom providers
+----------------
+Registration
+	In module associate the token CatsService with the class CatsService from the cats.service.ts
+Injection
+	constructor(private catsService: CatsService) {}	// declares a dependency on the CatsService token
+
+IOC
+---
+	Instantiated Controller
+	Finds CatsService dependency
+	Performs a lookup on CatsService token
+	Returns CatsService class
+	If CatsService is SINGLETON scope
+		return if cached else instantiate, cache and return
+	
+
+Standard Providers
+------------------
+	@Module({
+	  controllers: [CatsController],
+	  providers: [CatsService],			// shorthand!
+	})
+
+	longhand:
+	providers: [
+	  {
+		provide: CatsService,		// token
+		useClass: CatsService,		// actual class
+	  },
+	];
+	
+	Can use useClass conditionally e.g.
+	
+
+	const configServiceProvider = {
+	  provide: ConfigService,
+	  useClass:
+		process.env.NODE_ENV === 'development'
+		  ? DevelopmentConfigService
+		  : ProductionConfigService,
+	};
+
+	@Module({
+	  providers: [configServiceProvider],
+	})
+	export class AppModule {}
+
+
+Custom Providers
+----------------
+	You want to create a custom instance instead of having Nest instantiate (or return a cached instance of) a class
+	You want to re-use an existing class in a second dependency
+	You want to override a class with a mock version for testing
+
+
+	Value providers
+	---------------
+		providers: [
+		{
+		  provide: CatsService,
+		  useValue: mockCatsService,	// not a class but a mock object
+		},],
+
+
+	Non-class-based provider tokens
+	-------------------------------
+		import { connection } from './connection';
+
+		@Module({
+		  providers: [
+			{
+			  provide: 'CONNECTION',
+			  useValue: connection,
+			},
+		  ],
+		})
+		export class AppModule {}
+
+
+		@Injectable()
+		export class CatsRepository {
+		  constructor(@Inject('CONNECTION') connection: Connection) {}
+		}
+
+
+Factory Providers
+-----------------
+useFactory - When this provider is requested, call this function to create it.”
+allows for creating providers dynamically. The actual provider will be supplied by the value returned from a factory function
+dynamic config, runtime construction, async initialisation
+
+	{
+	  provide: 'APP_CONFIG',
+	  useFactory: () => ({
+		port: 3000,
+		debug: true,
+	  }),
+	}
+	
+	Nest will call the function and inject the returned object whenever 'APP_CONFIG' is requested.
+
+	async version
+
+	{
+	  provide: 'ASYNC_CONNECTION',
+	  useFactory: async () => {
+		const connection = await createConnection(options);
+		return connection;
+	  },
+	}
+
+
+Alias Providers
+---------------
+useExisting
+
+
+
+Optional providers	
+------------------				
+@Optional()
+
+
+
+Property Based Injection - aka Field Injection
+------------------------
+@Inject()
+injected directly into a class property, instead of being passed via the constructor.
+
+@Injectable()
+export class UsersService {
+  constructor(private readonly repo: UsersRepository) {}
+}
+
+vs
+
+@Injectable()
+export class UsersService {
+  @Inject(UsersRepository)
+  private readonly repo: UsersRepository;
+}
+
+less common but sometimes useful
+e.g. circular dependencies
+
+@Injectable()
+export class ServiceA {
+  @Inject(forwardRef(() => ServiceB))
+  private serviceB: ServiceB;
+}
+
+@Injectable()
+export class ServiceB {
+  constructor(private serviceA: ServiceA) {}
+}
+
+
+Manual Instantiation
+--------------------
+see Module Reference chapter
+see standalone Applications chapter
+
+
+
+================================================================================
+
+
+
+Injection Scopes
+================
+
+Provider Scope
+--------------
+DEFAULT			A single instance of the provider is shared across the entire application
+REQUEST			@Injectable({ scope: Scope.REQUEST })
+				A new instance of the provider is created exclusively for each incoming request. The instance is garbage-collected after the request has completed processing.
+TRANSIENT		@Injectable({ scope: Scope.TRANSIENT })
+				Transient providers are not shared across consumers. Each consumer that injects a transient provider will receive a new, dedicated instance.
+
+
+Controller Scope
+----------------
+@Controller({path: 'cats',scope: Scope.REQUEST,})
+
+
+Durable Provider
+----------------
+Advanced
+
+
+
+================================================================================
+
+
+
+Middleware
+==========
+Runs before the request hits a controller.
+Framework-level, not NestJS-specific (they’re like Express/Fastify middleware).
+Good for: logging, CORS, request body parsing, authentication checks.
+Can modify request/response objects directly.
+Analogy: security guard at the building entrance.
+
+There is no place for middleware in the @Module() decorator. Instead, we set them up using the configure() method of the module class
+
+NestJS specific middleware
+@Module({
+  imports: [CatsModule],
+})
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {					// can be made asynchronous
+    consumer
+      .apply(LoggerMiddleware, AnotherMiddleware)
+      .forRoutes({ path: 'cats', method: RequestMethod.GET });
+  }
+}
+
+
+@Injectable()
+export class LoggerMiddleware implements NestMiddleware {
+  use(req: Request, res: Response, next: NextFunction) {
+    console.log('Request...');
+    next();
+  }
+}
+
+
+Global Middleware
+-----------------
+main.ts
+const app = await NestFactory.create(AppModule);
+app.use(logger);
+await app.listen(process.env.PORT ?? 3000);
+
+
+| Middleware Type                  | Where Defined                         | Uses `configure()`? | Scope                   |
+| -------------------------------- | ------------------------------------- | ------------------- | ----------------------- |
+| **Route-specific middleware**    | In a module implementing `NestModule` | ✅ Yes               | Limited (chosen routes) |
+| **Global middleware (app-wide)** | In `main.ts` with `app.use()`         | ❌ No                | Entire app              |
+| **3rd-party middleware**         | In `main.ts` or imported module       | ❌ No                | Entire app or module    |
+| **Functional middleware**        | Inside `configure()`                  | ✅ Yes               | Custom routes           |
+
+
+main.ts
+-------
+app.use - all routes - even those not handled by a controller
+
+const expressApp = app.getHttpAdapter().getInstance();
+expressApp.get - defined express routes e.g. health check
+
+module.ts
+---------
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(Middleware1, Middleware2)
+      .forRoutes('*');
+  } - nestjs routes
+
+
+
+
+
+App
+	module.ts
+		module.configure	- nestjs controller middleware		registers middleware on same express app instance
+		
+	main.ts
+		app.use() 			- nestjs global middleware			registers middleware on same express app instance
+																Global middleware registered via app.use() runs for all requests that reach the Nest adapter
+																For Nest-handled routes it always executes before guards, interceptors, pipes, and controllers. 
+																For raw Express routes, its execution depends on registration order.
+																
+																	Helmet: Sets HTTP headers to protect against common vulnerabilities.
+																		app.use(require('helmet')());
+																	
+																	CORS: Enables cross-origin resource sharing.
+																		app.use(require('cors')());
+
+																	Rate limiting / throttling: Protects endpoints from abuse or DDoS.
+																		app.use(require('express-rate-limit')({ windowMs: 60000, max: 100 }));
+
+																	logging
+																	
+																	Request Parsing
+																		app.use(express.json());
+																		app.use(express.urlencoded({ extended: true }));
+
+																	Authentication or Authorization Hooks - Sometimes you have cross-cutting auth logic that should run before guards:
+																		Example: attach a decoded JWT payload to the request object:
+																
+																
+		expressApp.get(/health)	- direct calls					- registers middleware on same express app instance
+	
+
+
+
+	
+================================================================================
+
+
+
+Exception Filters
+=================
+throw standard exceptions
+
+@Get()
+async findAll() {
+  throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+}
+
+@UseFilters( new MyCustomHttpExceptionFilter() )
+
+
+Exception Layer
+
+	global exception filter
+		Handles exceptions not handled by application
+		handles exceptions of type HttpException (and subclasses of it)
+		if unrecognized
+			{
+			  "statusCode": 500,
+			  "message": "Internal server error"
+			}	
+
+		partially supports the http-errors library
+		Basically, any thrown exception containing the statusCode and message properties will be properly populated and sent back as a response
+		
+		HttpStatus. This is a helper enum imported from the @nestjs/common package.
+		throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+		
+		The HttpException constructor takes two required arguments which determine the response:
+			The response argument defines the JSON response body. It can be a string or an object as described below.
+			The status argument defines the HTTP status code.
+
+		By default, the JSON response body contains two properties:
+			statusCode: defaults to the HTTP status code provided in the status argument
+			message: a short description of the HTTP error based on the status
+			
+		
+		BUILT-IN Exceptions aren't logged - part of normal application flow
+		Can write custom exceptions
+		
+	Exception Filters
+		Give full control
+		eg. add logging
+		
+		
+		
+HttpException class, exposed from the @nestjs/common
+Run when an exception is thrown anywhere in the request/response cycle.
+Catch errors and shape the outgoing error response.
+	Bind to 
+		route level
+		controller level
+		global level
+			app.useGlobalFilters(new MyExceptionFilter()); in main.ts bootstrap
+
+
+@Get()
+async findAll() {
+  throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+}
+
+
+Custom Exception Filters
+------------------------
+
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+import { Request, Response } from 'express';
+
+@Catch(HttpException)
+export class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+    const status = exception.getStatus();
+
+    response
+      .status(status)
+      .json({
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      });
+  }
+}
+
+
+
+@Post()
+@UseFilters(new HttpExceptionFilter())
+async create(@Body() createCatDto: CreateCatDto) {
+  throw new ForbiddenException();
+}
+
+
+
+================================================================================
+
+
+
+Pipes
+=====
+Run after route selection but before the controller method executes.
+Work on method arguments (e.g. @Body(), @Param()).
+Responsible for validation and transformation.
+Analogy: the receptionist checking your paperwork is correct before letting you in.
+
+	npm i --save class-validator class-transformer
+	ValidationPipe
+		global or per route
+		BadRequestException if fails
+		Use to validate controller dto
+		main.ts
+			  app.useGlobalPipes(
+				new ValidationPipe({
+				  whitelist: true,              // strip unknown fields
+				  //forbidNonWhitelisted: true,   // throw if unknown fields are present
+				  transform: true,              // auto-transform to DTO instances
+				})
+			  );
+			  
+
+
+================================================================================			  
+
+
+
+Guards
+======
+Authentication
+npm install --save @nestjs/jwt
+nest g controller auth
+nest g service auth
+
+	controller
+		@Post('login')
+		constructs access token based on 
+			a payload. ie. the token contains user's information (claims)
+			a secret - used when registering JwtModule as an import
+		returns the access token {"access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiam9obiIsImlhdCI6MTc1ODg5MzI2MywiZXhwIjoxNzU4ODkzMzIzfQ.nxJb0pnvZw7XQBFroNC0uVJAXxFq7qoHwEWWKaDoOVs"}
+		
+		
+		@UseGuards(AppGuard)
+		@Get('profile')
+		AppGuard (implements CanActivate) checks if correct access token has been supplied (token + secret)
+
+
+
+================================================================================
+
+
+
+Interceptors
+============
+Run before and after the controller method is called.
+Can:
+Transform the incoming request (like middleware, but Nest-specific).
+Transform the outgoing response.
+Add logic around method execution (e.g. timing, logging).
+Implement cross-cutting concerns (caching, serialization, metrics, etc.).
+Analogy: a tour guide who not only introduces you at the start but also gives feedback and wraps things up at the end.
+
+interceptors can be controller-scoped, method-scoped, or global-scoped.
+	
+controller-scoped, method-scoped
+	Create an interceptor module
+	Create an interceptor class
+	Bind the interceptor with @UseInterceptors decorator
+	
+global scoped - runs on every request automatically
+	import { APP_INTERCEPTOR } from '@nestjs/core'; in app.module.ts
+	add to providers
+		{
+		  provide: APP_INTERCEPTOR,
+		  useClass: LoggingInterceptor,
+		},
+	
+	
+	
+	
+	
+	In order to set up a global interceptor, we use the useGlobalInterceptors() method of the Nest application instance:
+
+
+
+================================================================================
+
+
+
+Custom Decorators
+=================
+
+
+
+================================================================================
+
+
+
+NestJS Lifecycle
+================
+1. Middleware
+
+
+
+2. Pipes
+Run after route selection but before the controller method executes.
+Work on method arguments (e.g. @Body(), @Param()).
+Responsible for validation and transformation.
+Analogy: the receptionist checking your paperwork is correct before letting you in.
+
+
+3. Exception Filters
+Run when an exception is thrown anywhere in the request/response cycle.
+Catch errors and shape the outgoing error response.
+Analogy: the customer service desk that handles problems.
+
+
+4. Interceptors
+Run before and after the controller method is called.
+Can:
+Transform the incoming request (like middleware, but Nest-specific).
+Transform the outgoing response.
+Add logic around method execution (e.g. timing, logging).
+Implement cross-cutting concerns (caching, serialization, metrics, etc.).
+Analogy: a tour guide who not only introduces you at the start but also gives feedback and wraps things up at the end.
+
+
+Why interceptors are needed
+Because none of the other three cover the “around” case:
+
+Middleware → only before controller.
+Pipes → only before controller, and only at the argument level.
+Filters → only when an error occurs.
+Interceptors → before and after controller, always.
+This makes interceptors ideal for:
+Logging & performance profiling (time a request took).
+Response transformation (e.g., hide sensitive fields).
+Response mapping (like converting entities into DTOs automatically).
+Caching results (skip controller execution if response is already cached).
+
+In order to set up a global interceptor, we use the useGlobalInterceptors() method of the Nest application instance:
+
+
+
+================================================================================
+
+
+
+Execution Context
+=================
+| Context Type | Switch Method                  | Common Accessors                                      | Typical Objects                        |
+| ------------ | ------------------------------ | ----------------------------------------------------- | -------------------------------------- |
+| HTTP         | `switchToHttp()`               | `getRequest()`, `getResponse()`, `getNext()`          | Express/Fastify request & response     |
+| WebSocket    | `switchToWs()`                 | `getClient()`, `getData()`                            | Socket.io or WS client and payload     |
+| RPC          | `switchToRpc()`                | `getData()`, `getContext()`                           | Message data and transport context     |
+| GraphQL      | `GqlExecutionContext.create()` | `getRoot()`, `getArgs()`, `getContext()`, `getInfo()` | Resolver arguments and GraphQL context |
+
+
+
+================================================================================
+
+
+
+Lifecycle Events
+================
+
+
+
+================================================================================
+
+
+
+Configuration
+=============
+A good approach for using this technique in Nest is to create a ConfigModule that exposes a ConfigService which loads the appropriate .env file. 
+npm install dotenv				loads variables from a .env file into process.env.
+npm install @nestjs/config		Nest’s built-in module for managing configuration (it automatically uses dotenv under the hood).
+
+
+load and parse a .env file from the default location (the project root directory)
+merge key/value pairs from the .env file with environment variables assigned to process.env
+store the result in a private structure that you can access through the ConfigService ?
+The forRoot() method registers the ConfigService provider, which provides a get() method for reading these parsed/merged configuration variables
+
+app.module.ts
+-------------
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+@Module({
+  imports: [ConfigModule.forRoot(
+	{
+		envFilePath: ['whatever1', 'whatever2],
+		isGlobal: true									// no need to import
+		cache: true
+	}
+  )],
+})
+export class AppModule {}
+
+
+constructor(private configService: ConfigService) {}
+const dbUser = this.configService.get<string>('DATABASE_USER', 'default);
+
+
+
+
+forRoot()
+=========
+ConfigModule.forRoot({ /* options */ })
+	initialising ConfigModule
+		reads .env files
+		loads configuration sources
+		sets up ConfigService
+		
+	But by default, the ConfigModule (and its ConfigService) is only available to the module that imported it.
+	So if you have multiple feature modules or microservices, they won’t automatically see it unless you:
+		Import ConfigModule in each module again, or
+		Make it global. isGlobal:true
+		
+So why does forRoot() even exist if we can make it global?
+Because forRoot() serves two separate roles
+	Bootstrapping — loading environment variables and configuration.
+	Registering the module (optionally globally).
+	
+
+
+
+
+
+
+
+
+
+config - 04/11 - start
+==============
+npm install @nestjs/config
+nest generate library config
+
+
+The right approach: one shared pattern, not one shared schema
+
+You can keep a shared configuration module (for consistent behavior),
+but let each app define its own configuration loaders.
+
+
+
+config - 04/11 - end
+==============
+
+
+
+new config notes
+----------------
+process.env is a global object containing all environment variables loaded into the process’s runtime environment.
+NestJS (via @nestjs/config) doesn’t magically populate it — something has to load those .env files before or during app bootstrap.
+In a monorepo with multiple microservices, each microservice runs in its own Node.js process — so each one can have its own .env file that gets loaded independently.
+	so each has it's own process.env
+
+2 options for loading .env but this option recommended
+import { ConfigModule } from '@nestjs/config';
+import configuration from '@myorg/common/config/configuration'; // optional shared loader
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env', '.env.local'], // can be absolute or relative
+      load: [configuration],
+    }),
+  ],
+})
+export class AppModule {}
+
+NestJS internally uses dotenv to read the .env files listed in envFilePath.
+Each key/value pair in that file is loaded into process.env.
+Then those values are also available via ConfigService.
+
+
+First Principles: What ConfigModule.forRoot() actually does
+NestJS:
+	Loads .env files (via dotenv)
+	Populates process.env
+	Registers a global ConfigService
+	Makes the loaded values available to all providers in that same process
+	So you only need to call .forRoot() once per Node.js process.
+	All other modules can simply import ConfigModule (without .forRoot()).
+
+Option B — Each app calls .forRoot(), using shared config factory
+
+This is the most flexible and enterprise-safe approach for a true multi-app monorepo.
+
+
+What load: [configuration] Does
+
+When you initialize the ConfigModule in NestJS like this:
+
+ConfigModule.forRoot({
+  isGlobal: true,
+  envFilePath: ['.env'],
+  load: [configuration],
+});
+
+
+The load property expects one or more factory functions that return an object.
+These functions are called configuration loaders, and they let you define your app’s configuration structure in code.
+
+So:
+
+load: [configuration]
+
+
+means:
+
+“Run the function called configuration, get an object from it, and merge that into the config system alongside the .env variables.”
+
+⚙️ Example: configuration.ts
+
+Let’s say you create this file in a shared library, like:
+
+libs/common/src/config/configuration.ts
+
+export default () => ({
+  app: {
+    name: process.env.APP_NAME || 'My App',
+    port: parseInt(process.env.PORT ?? '3000', 10),
+  },
+  database: {
+    url: process.env.DATABASE_URL,
+  },
+  rabbitmq: {
+    url: process.env.RABBITMQ_URL,
+  },
+});
+
+
+This function:
+
+Reads raw values from process.env
+
+Organizes them into a structured object
+
+Optionally casts types (like parseInt for numbers)
+
+🧠 Why use this instead of process.env everywhere?
+
+Because it gives you:
+
+Centralized config (everything in one predictable place)
+
+Type safety and autocompletion (if you define types)
+
+Environment abstraction — you can merge .env values, defaults, and computed logic
+
+Reusable config across apps (share this loader in your monorepo)
+
+So instead of this scattered pattern:
+
+const port = parseInt(process.env.PORT ?? '3000', 10);
+
+
+You can do this anywhere:
+
+const port = configService.get<number>('app.port');
+
+
+Same value, but now:
+
+It’s type-safe.
+
+It comes from a validated, normalized config tree.
+
+You can share the same config logic across services.
+
+
+TL;DR
+
+Shared loader → only common config (NODE_ENV, logging, maybe API version)
+
+Service-specific loader → each microservice loads its own keys and structure
+
+Combine them in ConfigModule.forRoot({ load: [shared, serviceSpecific] })
+
+Typed with registerAs → keeps type safety without forcing every service to have identical config
+
+
+
+---
+monorepo/multiple microservices
+	Put ConfigModule.forRoot() once in a shared Core or Common library that all apps can import,
+	and NOT inside each microservice’s module directly.
+	e.g. libs/common/src/config/[config.module.ts, config.service.ts, configuration.ts]
+
+
+
+
+
+@nestjs/config
+	Centralized config
+		Instead of sprinkling process.env throughout your code, it uses a dedicated service that loads and validates configuration once at startup.	
+	Environment agnostic
+		It loads variables from .env files, environment variables, or other sources, with support for different files per environment.
+	Validation
+		It integrates a schema (for example, via Joi) to ensure required variables are present and correctly typed, failing fast if misconfigured.
+	Config Namespacing
+		It organizes related settings into logical groups (for example, database, auth, third-party APIs) via configuration factories.
+	Injection
+		It injects a ConfigService to read config values in services or modules, with type safety when using custom typed wrappers.
+		
+npm install @nestjs/config
+npm install joi    # if you plan to validate via Joi schemas
+
+
+================================================================================
+
+
+
+Swagger
+=======
+Create Swagger
+	npm install --save @nestjs/swagger
+	
+	main.ts
+		  const config = new DocumentBuilder()
+			.setTitle('Admin example')
+			.setDescription('The Admin API description')
+			.setVersion('1.0')
+			.addTag('admin')
+			.build();
+		  const documentFactory = () => SwaggerModule.createDocument(app, config);
+		  SwaggerModule.setup('api', app, documentFactory);
+		  
+	localhost:3000/api
+	
+	
+
+================================================================================
+
+
+
+DTOs
+====
+| Purpose               | Description                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------ |
+| **1. Validation**     | Ensure incoming data meets expectations (e.g., correct types, formats, constraints). |
+| **2. Type safety**    | Leverage TypeScript to guarantee predictable structures.                             |
+| **3. Transformation** | Convert plain JSON objects into typed class instances (and vice versa).              |
+| **4. Decoupling**     | Separate external API contracts from internal domain models or database entities.    |
+
+
+1. Request enters controller
+2. NestJS automatically creates a DTO instance from JSON body
+3. The ValidationPipe (if enabled) validates it using class-validator
+4. If valid, it’s passed to the route handler as a typed DTO
+5. If invalid, a 400 Bad Request is thrown automatically
+
+NestJS integrates two libraries:
+	class-validator → for validation decorators like @IsEmail(), @MinLength()
+	class-transformer → for converting plain JSON objects to DTO class instances
+
+Together, they allow you to:
+	Validate shape and content
+	Transform types automatically (e.g. strings to numbers, booleans)
+	Strip out extra, unwanted properties (if configured)
+	
+You can (and often should) have two sets of DTOs:
+	Input DTOs for data coming into the system (validation, creation, updates)
+	Output DTOs for data leaving the system (response shaping, serialization)
+	
+
+DTO vs Entity vs DAO vs Model
+| Layer                | Purpose                                         | Example                            |
+| -------------------- | ----------------------------------------------- | ---------------------------------- |
+| **DTO**              | Defines data shape at boundaries (input/output) | `CreateUserDto`, `UserResponseDto` |
+| **Entity**           | Represents a database table (ORM layer)         | `UserEntity` (TypeORM, Prisma)     |
+| **DAO / Repository** | Performs persistence logic                      | `UserDao`                          |
+| **Service**          | Business logic                                  | `UserService`                      |
+
+
+
+Best Practices
+
+✅ 1. Always use classes (not interfaces)
+Interfaces are erased at runtime, but classes allow runtime validation and transformation.
+
+✅ 2. Keep DTOs flat and simple
+They should mirror request/response structure, not complex domain logic.
+
+✅ 3. Use separate DTOs for input and output
+This prevents leaking sensitive data and makes versioning easier.
+
+✅ 4. Leverage validation decorators liberally
+They’re cheap, declarative, and protect your endpoints.
+
+✅ 5. Use whitelist: true in production
+Strips out unexpected data and helps mitigate injection attacks.
+
+✅ 6. Use PartialType and OmitType
+NestJS provides helpers to avoid repeating DTO fields.
+
+Example:
+
+import { PartialType } from '@nestjs/mapped-types';
+export class UpdateUserDto extends PartialType(CreateUserDto) {}
+
+
+This automatically makes all fields optional — perfect for PATCH endpoints.
+
+
+[Client]
+   ↓ sends HTTP POST /users
+[Controller]
+   ↓ (ValidationPipe)
+CreateUserDto ← validates request shape & data
+   ↓
+[Service]
+   ↓
+[DAO / Repository]
+   ↓
+[Database]
+   ↓
+Entity → transformed to Output DTO
+   ↓
+[Controller returns]
+UserResponseDto → sent to client
+
+
+| Aspect           | Description                                                          |
+| ---------------- | -------------------------------------------------------------------- |
+| **What**         | DTO = Data Transfer Object, defines shape of data in/out of your app |
+| **Used for**     | Validation, transformation, typing, and decoupling                   |
+| **Common tools** | `class-validator`, `class-transformer`, `ValidationPipe`             |
+| **Where**        | Controllers (HTTP, WS, GraphQL, microservices)                       |
+| **Why**          | Security, maintainability, readability, testability                  |
+| **Output DTOs**  | Prevent exposing sensitive or internal data                          |
+| **Helpers**      | `PartialType`, `OmitType`, `PickType` for reuse                      |
+
+
+
+Project structure
+=================
+my-monorepo/
+├── nest-cli.json
+├── package.json
+├── tsconfig.base.json
+├── tsconfig.json
+├── .env
+│
+├── apps/
+│   ├── gateway/                 # HTTP API Gateway (REST + WS)
+│   │   ├── src/
+│   │   │   ├── main.ts
+│   │   │   ├── app.module.ts
+│   │   │   ├── modules/
+│   │   │   │   ├── auth/
+│   │   │   │   ├── users/
+│   │   │   │   └── ...
+│   │   │   ├── common/
+│   │   │   │   ├── filters/
+│   │   │   │   ├── interceptors/
+│   │   │   │   ├── pipes/
+│   │   │   │   └── guards/
+│   │   │   └── main.http.ts
+│   │   ├── test/
+│   │   └── tsconfig.app.json
+│   │
+│   ├── user-service/            # Dedicated microservice
+│   │   ├── src/
+│   │   │   ├── main.ts          # Starts Nest microservice only
+│   │   │   ├── user.module.ts
+│   │   │   ├── controllers/
+│   │   │   ├── handlers/        # Message or event handlers
+│   │   │   ├── services/
+│   │   │   ├── daos/
+│   │   │   ├── entities/
+│   │   │   └── infra/
+│   │   └── tsconfig.app.json
+│   │
+│   ├── order-service/           # Another microservice (RabbitMQ, Kafka, etc.)
+│   │   ├── src/
+│   │   │   ├── main.ts
+│   │   │   ├── order.module.ts
+│   │   │   ├── controllers/
+│   │   │   ├── handlers/
+│   │   │   └── ...
+│   │   └── tsconfig.app.json
+│   │
+│   ├── billing-hybrid/          # Hybrid app (HTTP + microservice)
+│   │   ├── src/
+│   │   │   ├── main.ts          # Creates both HTTP & microservice listeners
+│   │   │   ├── billing.module.ts
+│   │   │   ├── controllers/
+│   │   │   ├── handlers/
+│   │   │   ├── services/
+│   │   │   └── ...
+│   │   └── tsconfig.app.json
+│   │
+│   └── admin-frontend/          # Optional Next.js or React admin (if full monorepo)
+│       └── ...
+│
+├── libs/
+│   ├── config/                  # Shared configuration modules
+│   │   ├── src/
+│   │   │   ├── config.module.ts
+│   │   │   ├── configuration.ts
+│   │   │   ├── env/
+│   │   │   │   ├── config.dev.yaml
+│   │   │   │   ├── config.prod.yaml
+│   │   │   │   └── ...
+│   │   │   └── validation/
+│   │   │       ├── config.schema.ts
+│   │   │       └── ...
+│   │   └── tsconfig.lib.json
+│   │
+│   ├── common/                  # Shared utilities, base classes, interceptors, exceptions
+│   │   ├── src/
+│   │   │   ├── exceptions/
+│   │   │   ├── interceptors/
+│   │   │   ├── decorators/
+│   │   │   ├── guards/
+│   │   │   ├── helpers/
+│   │   │   └── constants/
+│   │   └── tsconfig.lib.json
+│   │
+│   ├── dto/                     # Shared DTOs (typed data contracts)
+│   │   ├── src/
+│   │   │   ├── user/
+│   │   │   │   ├── create-user.dto.ts
+│   │   │   │   ├── update-user.dto.ts
+│   │   │   │   └── user-response.dto.ts
+│   │   │   ├── order/
+│   │   │   └── ...
+│   │   └── tsconfig.lib.json
+│   │
+│   ├── entities/                # Shared ORM entities (if multiple services use them)
+│   │   ├── src/
+│   │   │   ├── user.entity.ts
+│   │   │   ├── order.entity.ts
+│   │   │   └── ...
+│   │   └── tsconfig.lib.json
+│   │
+│   ├── infra/                   # Infrastructure modules (database, messaging, cache)
+│   │   ├── src/
+│   │   │   ├── database/
+│   │   │   │   ├── ormconfig.ts
+│   │   │   │   └── database.module.ts
+│   │   │   ├── messaging/
+│   │   │   │   ├── rabbitmq.module.ts
+│   │   │   │   ├── kafka.module.ts
+│   │   │   │   └── interfaces/
+│   │   │   ├── cache/
+│   │   │   └── logger/
+│   │   └── tsconfig.lib.json
+│   │
+│   ├── interfaces/              # Shared TypeScript interfaces
+│   │   ├── src/
+│   │   │   ├── index.ts
+│   │   │   ├── user.interface.ts
+│   │   │   ├── order.interface.ts
+│   │   │   └── ...
+│   │   └── tsconfig.lib.json
+│   │
+│   └── testing/                 # Shared testing utilities / mocks
+│       ├── src/
+│       │   ├── mocks/
+│       │   ├── factories/
+│       │   └── utils/
+│       └── tsconfig.lib.json
+│
+└── tools/                       # Build/deploy scripts, CLI tools
+    ├── docker/
+    ├── scripts/
+    └── ...
+
+
+Can have feature models in app layer or domain layer
+only app layer exposes endpoints
+
+Best Practices
+✅ Use @nestjs/cli monorepo mode for automatic build support.
+✅ Keep apps small; move shared logic into libs/.
+✅ Make DTOs the single source of truth for inter-service contracts.
+✅ Use YAML + ConfigModule for consistent config across all apps.
+✅ Keep transport adapters (RabbitMQ, Kafka, Redis) inside libs/infra.
+✅ Use tsconfig path aliases (@libs/...) to simplify imports.
+✅ Avoid direct cross-app imports. Communicate through queues, not code.
+✅ Add lint rules (e.g. Nx or ESLint project boundaries) to enforce separation.
+
+
+backup dev notes
+Summary
+=======
+1   Create a new Nest monorepo app
+2   Create api gateway
+3   Create items microservice
+4   Initial config - see oldNotes.txt for chatgpt discussion
+
+
+
+
+
+Detail
+======
+1   nest new my-nestjs-monorepo-app
+    delete src and test folders
+    add "monorepo": true to nest-cli.json
+
+2   nest generate app gateway
+    creates apps directory
+    creates apps/gateway
+    adds projects property to nest-cli.json
+    npm run start:dev gateway
+    localhost:3000
+
+3   nest generate app items
+    npm run start:dev items
+    localhost:3001
+
+4   npm install @nestjs/config
+    create a shared library - nest generate library common. specify namespace e.g. @myApp

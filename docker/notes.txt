@@ -22,3 +22,31 @@ Then, with a single command, you create and start all the services from your con
 Docker Desktop
 ==============
 The Images view displays a list of your Docker images and allows you to run an image as a container, pull the latest version of an image from Docker Hub, and inspect images.
+
+
+Commands
+========
+docker build <myapp>			reads Dockerfile and creates a fully built image that can run anywhere (local, AWS, etc.)
+
+
+
+
+
+
+docker compose					reads docker-compose.yml to run multiple containers together as a system
+								Run your full app locally
+								
+								
+								
+    docker-compose up -d [postgres | pgadmin]
+    docker compose down -v
+    docker system prune -af
+    docker compose up --build
+	docker compose --env-file ./apps/gateway/.env up --build	// what about when I have multiple microservices???
+
+
+
+
+	
+	
+								

@@ -1,0 +1,1807 @@
+Kafka
+=====
+cluster = multiple brokers
+broker = server
+purpose of broker is to serve data
+each broker in a cluster is also a bootstrap server
+3 brokers is usual
+kafka broker discovery. uses metadata in servers
+consumer = client
+data stored in topics
+topics are persisted on disk
+
+Producer
+--------
+A Kafka producer is a client or application that sends (publishes) messages to Kafka topics.
+It connects to a Kafka broker (a Kafka server node).
+It specifies a topic (like order.created or payment.processed).
+Kafka decides which partition in that topic to write the message to.
+The message is stored durably in Kafka — ready for consumers to read.
+If you call .emit() → you’re a Kafka Producer
+
+
+Consumer
+--------
+A Kafka consumer → listens for messages from Kafka (reads from a topic)
+A consumer subscribed to "order.created" receives the message.
+The consumer processes it (for example: send an email, charge payment, update DB).
+If you use @MessagePattern() → you’re a Kafka Consumer
+
+
+Client
+------
+A Kafka client is any application or library that communicates with a Kafka cluster, either to:
+Produce messages (send/publish to topics)
+Consume messages (read/subscribe from topics)
+The “client” is the umbrella term for anyone interacting with Kafka.
+
+
+why are the producer and consumer created in different ways
+-----------------------------------------------------------
+Microservice (Consumer)
+const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+  transport: Transport.KAFKA,
+  options: {
+    client: { clientId: 'payments', brokers: ['kafka:9092'] },
+    consumer: { groupId: 'payments-consumer' },
+  },
+});
+
+
+NestJS creates a Kafka microservice instance.
+This is primarily for consuming messages (Kafka consumer).
+NestJS automatically maps message patterns (from @MessagePattern()) to your handlers.
+NestJS internally manages the Kafka consumer lifecycle, including connecting, subscribing to topics, handling retries, and listening.
+So the microservice is “consumer-centric”: its main job is to receive messages, not to send them.
+
+
+
+Kafka Client (Producer)
+ClientsModule.register([
+  {
+    name: 'PAYMENTS_PRODUCER',
+    transport: Transport.KAFKA,
+    options: {
+      client: { clientId: 'payments-producer', brokers: ['kafka:9092'] },
+      producer: {},
+    },
+  },
+]);
+
+
+This creates a standalone Kafka client.
+Its main purpose is to send messages to Kafka topics (emit or send).
+It does not automatically subscribe to topics — it only produces messages.
+You have to inject it into a service and call .connect() manually (or via OnModuleInit) before sending messages.
+
+
+NestJS separates these roles because Kafka producers and consumers have different responsibilities:
+
+| Aspect               | Microservice (Consumer)                           | ClientKafka (Producer)                |
+| -------------------- | ------------------------------------------------- | ------------------------------------- |
+| Primary role         | Receive messages                                  | Send messages                         |
+| Lifecycle management | Automatic with `NestFactory.createMicroservice`   | You manage `.connect()`               |
+| Message handling     | `@MessagePattern()`                               | `.emit()` / `.send()`                 |
+| Multiple instances   | Each microservice can have its own consumer group | Multiple producers can share a broker |
+
+
+
+Why they’re “different ways”
+Consumer: You need a NestJS microservice, because consuming involves automatically handling topics, partitions, groups, and lifecycle.
+Producer: Sending messages is simpler — you just need a Kafka client that knows the broker info. You don’t need the full microservice machinery for that.
+
+
+NestJS essentially gives you two abstractions:
+Microservice → for consumers
+ClientKafka → for producers
+
+
+NestJS terminology
+
+NestFactory.createMicroservice → creates a microservice that is primarily a consumer. It automatically listens to Kafka topics and routes messages to handlers.
+ClientKafka → creates a client object that allows you to produce messages (emit/send) to Kafka.
+Even though the class is called ClientKafka, in practice:
+It is producer-focused.
+You can technically use it in request-response patterns, where it also consumes a reply, but it doesn’t subscribe to arbitrary topics like a “real” consumer does.
+
+NestJS separates them because the lifecycle and responsibilities of producers and consumers are different:
+| NestJS Concept | Kafka Concept | Responsibility                                                                            |
+| -------------- | ------------- | ----------------------------------------------------------------------------------------- |
+| Microservice   | Consumer      | Subscribes, receives messages, handles partitions, manages offsets automatically          |
+| ClientKafka    | Producer      | Sends messages, optionally waits for a reply, does not manage subscriptions automatically |
+
+
+Key takeaway
+The name is misleading, but the behavior is intentional: ClientKafka is producer-centric, even though technically Kafka producers are also “clients.”
+If you need a true consumer, NestJS expects you to use a microservice (or manually create a KafkaJS consumer outside NestJS abstractions).
+In short: NestJS treats producers and consumers differently, so the naming doesn’t fully align with Kafka semantics.
+
+
+=============================================
+KafkaJS vs NestJS: What’s the difference?
+
+KafkaJS is a low-level client library for interacting with Kafka directly (producers, consumers, etc.).
+
+NestJS is a framework that provides higher-level abstractions — including one built on top of KafkaJS (or other transport layers).
+
+In NestJS, the Kafka integration is part of its microservices module, which provides two main roles:
+
+Role	KafkaJS equivalent	NestJS abstraction	Purpose
+Producer	kafka.producer()	ClientKafka	Send messages/events
+Consumer	kafka.consumer()	@MessagePattern() handler in a @Controller() with a Microservice	Receive messages
+
+So — yes — while in KafkaJS you create both the producer and consumer from the same Kafka instance, in NestJS these are split into two separate mechanisms, because NestJS handles the consumer lifecycle internally in the microservice layer.
+
+⚙️ 2. How NestJS sets this up
+Producer side (using ClientKafka)
+
+In your app module or service:
+
+import { ClientKafka, ClientsModule, Transport } from '@nestjs/microservices';
+
+@Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'KAFKA_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'my-producer',
+            brokers: ['localhost:9092'],
+          },
+          consumer: {
+            groupId: 'my-producer-group', // still needed internally
+          },
+        },
+      },
+    ]),
+  ],
+})
+export class AppModule {}
+
+
+Then inject and use it:
+
+@Injectable()
+export class AppService {
+  constructor(@Inject('KAFKA_SERVICE') private kafkaClient: ClientKafka) {}
+
+  async onModuleInit() {
+    await this.kafkaClient.connect();
+  }
+
+  sendMessage() {
+    this.kafkaClient.emit('test-topic', { value: 'Hello from producer!' });
+  }
+}
+
+Consumer side (using Microservice)
+
+In your main.ts (for a microservice instance):
+
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { Transport } from '@nestjs/microservices';
+
+async function bootstrap() {
+  const app = await NestFactory.createMicroservice(AppModule, {
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'my-consumer',
+        brokers: ['localhost:9092'],
+      },
+      consumer: {
+        groupId: 'test-group',
+      },
+    },
+  });
+
+  await app.listen();
+}
+bootstrap();
+
+
+And your consumer logic lives in a controller:
+
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+
+@Controller()
+export class AppController {
+  @MessagePattern('test-topic')
+  consume(@Payload() message: any) {
+    console.log('Received message:', message.value);
+  }
+}
+
+🧠 3. So what’s happening conceptually
+
+KafkaJS: You explicitly create both producer and consumer manually.
+
+NestJS:
+
+A microservice instance handles consuming.
+
+A ClientKafka instance handles producing.
+
+Each has its own lifecycle and connection pool, managed by NestJS.
+
+Even though both under the hood use KafkaJS, NestJS separates them for clarity, scalability, and lifecycle management (especially across distributed services).
+
+🔸 TL;DR
+Concept	KafkaJS	NestJS
+How you make a producer	kafka.producer()	ClientKafka
+How you make a consumer	kafka.consumer()	Microservice + @MessagePattern()
+Connection management	Manual	Managed by NestJS
+Factory object	new Kafka()	Handled internally by NestJS
+
+Would you like me to show a diagram comparing NestJS vs raw KafkaJS architecture (producer/consumer setup and data flow)? It helps make this distinction visually clear.
+
+
+
+consumer and producer lifecycles
+--------------------------------
+just means how those clients are created, connected, used, and shut down over the life of your app.
+
+The “lifecycle” of a Kafka client
+
+Every Kafka producer and consumer goes through these phases:
+
+
+| Phase                       | Description                                                                      | Example                                                       |
+| --------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Creation**                | You create a client instance (via KafkaJS or NestJS abstraction).                | `const producer = kafka.producer()`                           |
+| **Connection**              | It opens one or more network connections to Kafka brokers and joins the cluster. | `await producer.connect()`                                    |
+| **Usage**                   | It does its main job — send or consume messages.                                 | `await producer.send(...)` / `await consumer.run(...)`        |
+| **Disconnection / Cleanup** | It gracefully closes sockets, commits offsets, leaves consumer groups, etc.      | `await producer.disconnect()` / `await consumer.disconnect()` |
+
+Those four phases make up the client lifecycle.
+If you skip or mismanage one, you’ll get resource leaks, uncommitted offsets, or lost messages.
+
+
+Producer lifecycle explained
+----------------------------
+const producer = kafka.producer();
+
+await producer.connect();  // ⬅️ connects to brokers
+
+await producer.send({
+  topic: 'my-topic',
+  messages: [{ value: 'Hello Kafka!' }],
+});
+
+await producer.disconnect();  // ⬅️ flushes and closes connections
+
+Key lifecycle behaviors:
+
+connect() establishes socket connections to Kafka brokers and fetches metadata.
+
+You must connect before sending messages.
+
+disconnect() gracefully closes connections and ensures in-flight messages are sent.
+
+Repeatedly connecting/disconnecting is expensive — usually, you connect once on startup and disconnect on shutdown.
+
+In a NestJS app, that typically means:
+Connect the producer in onModuleInit() or AppService.onApplicationBootstrap().
+Disconnect in onModuleDestroy() or beforeApplicationShutdown().
+
+
+Consumer lifecycle explained
+----------------------------
+const consumer = kafka.consumer({ groupId: 'my-group' });
+
+await consumer.connect();                     // join consumer group
+await consumer.subscribe({ topic: 'my-topic' });
+await consumer.run({ eachMessage: async (...) => { ... } });
+// ⬆️ this keeps running until you disconnect
+
+await consumer.disconnect();  // leaves group, commits offsets, closes sockets
+
+
+Key lifecycle behaviors:
+
+connect() registers the consumer in a consumer group.
+
+run() starts an infinite event loop — it keeps fetching messages.
+
+You typically never “await” run(), because it keeps running forever.
+
+disconnect() stops the loop, commits final offsets, and leaves the group.
+
+So, in a NestJS service:
+
+Start your consumer in onModuleInit().
+
+Don’t block — just launch run() and handle messages asynchronously.
+
+Clean up in onModuleDestroy().
+
+
+Why lifecycles matter in NestJS
+
+
+| Nest Hook                                           | When It Runs                 | Good For                                         |
+| --------------------------------------------------- | ---------------------------- | ------------------------------------------------ |
+| `onModuleInit()`                                    | When a module is initialized | `producer.connect()`, `consumer.connect()`       |
+| `onApplicationBootstrap()`                          | After all modules are ready  | `consumer.run()`                                 |
+| `onModuleDestroy()` / `beforeApplicationShutdown()` | On shutdown                  | `producer.disconnect()`, `consumer.disconnect()` |
+
+
+Using these ensures:
+Your Kafka connections open only once (not per request).
+Your consumers and producers shut down cleanly when the app stops.
+No dangling connections or locked consumer group sessions.
+
+
+App startup
+ ├── create Kafka clients
+ ├── producer.connect()
+ ├── consumer.connect()
+ └── consumer.run() → (infinite loop)
+
+App running
+ ├── producer.send() (on demand)
+ └── consumer processes messages continuously
+
+App shutdown
+ ├── consumer.disconnect()
+ └── producer.disconnect()
+
+TL;DR
+
+Producer lifecycle
+
+Connect → Send → Disconnect
+(usually connect once, send many times, disconnect once)
+
+Consumer lifecycle
+
+Connect → Subscribe → Run (infinite loop) → Disconnect
+
+In NestJS, you map those to the application’s own lifecycle hooks so Kafka connections open and close with the app itself — not per request.
+
+
+=============================================
+You only need a Producer module (ClientKafka) because:
+
+The producer is an injectable client you use in your app to send messages.
+
+The consumer, on the other hand, is the NestJS microservice itself — created by NestFactory.createMicroservice() or app.connectMicroservice() — not a simple injectable class.
+
+So:
+
+✅ Producers → live inside modules as injectable clients
+🧠 Consumers → live at the application level (as a Nest microservice)
+
+
+
+Producers vs. Consumers in NestJS architecture
+| Concept      | Typical Implementation                                                  | Managed By                                              |
+| ------------ | ----------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Producer** | `ClientKafka` inside an app module (via `ClientsModule.register`)       | Your app logic (you call `emit()` or `send()`)          |
+| **Consumer** | Entire **microservice instance** created by Nest (`createMicroservice`) | NestJS framework (handles connect, subscribe, run loop) |
+
+
+
+A producer is a component (you create one per module or service that needs to send events).
+A consumer is a runtime environment (the whole process that listens to Kafka topics).
+
+Why the difference exists
+
+🔸 Producer (ClientKafka)
+ClientKafka is designed to be:
+Injected into your services
+Used imperatively (emit() / send())
+Controlled by your application’s lifecycle
+So it fits naturally into a Nest module, just like any other dependency:
+
+You inject and use it in a service:
+constructor(@Inject('KAFKA_SERVICE') private kafka: ClientKafka) {}
+
+
+Consumer (Nest microservice)
+Consumers are not injected — they host message handlers (@MessagePattern) and run their own connection loop.
+That’s why you don’t build a “consumer module”; instead, you start a microservice:
+
+The consumer logic lives inside controllers:
+
++----------------------+          +-----------------------------+
+|   Producer Module    |          |     Consumer Microservice   |
+|----------------------|          |-----------------------------|
+|  @Inject(ClientKafka)|          |  @MessagePattern('topic')   |
+|  kafka.emit('topic') |   --->   |  handleMessage(payload)     |
+|                      |          |  auto-managed by Nest       |
++----------------------+          +-----------------------------+
+
+
+Mental model:
+
+KafkaProducerModule = just a helper module that gives your app a producer client.
+
+Kafka consuming is not a module at all — it’s an app runtime role that NestJS takes over.
+
+
+
+---
+[Nest] 1  - 10/28/2025, 10:15:47 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:47.639Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:47 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:47.640Z","logger":"kafkajs","retryCount":0,"retryTime":302}
+
+[Nest] 1  - 10/28/2025, 10:15:47 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:47.946Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:47 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:47.946Z","logger":"kafkajs","retryCount":1,"retryTime":536}
+
+[Nest] 1  - 10/28/2025, 10:15:48 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:48.486Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:48 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:48.487Z","logger":"kafkajs","retryCount":2,"retryTime":1022}
+
+[Nest] 1  - 10/28/2025, 10:15:49 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:49.511Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:49 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:49.512Z","logger":"kafkajs","retryCount":3,"retryTime":1944}
+
+[Nest] 1  - 10/28/2025, 10:15:51 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:51.459Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:51 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:51.460Z","logger":"kafkajs","retryCount":4,"retryTime":4034}
+
+[Nest] 1  - 10/28/2025, 10:15:55 AM   ERROR [ServerKafka] ERROR [Connection] Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:55.498Z","logger":"kafkajs","broker":"kafka:9092","clientId":"orders-consumer-server","stack":"Error: connect ECONNREFUSED 172.18.0.3:9092\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1637:16)"}
+
+[Nest] 1  - 10/28/2025, 10:15:55 AM   ERROR [ServerKafka] ERROR [BrokerPool] Failed to connect to seed broker, trying another broker from the list: Connection error: connect ECONNREFUSED 172.18.0.3:9092 {"timestamp":"2025-10-28T10:15:55.498Z","logger":"kafkajs","retryCount":5,"retryTime":8990}
+
+node:internal/process/promises:394
+
+
+docker compose exec kafka bash -c "kafka-configs --bootstrap-server kafka:9092 --entity-type topics --entity-name orders-topic --alter --add-config retention.ms=0 && sleep 2 && kafka-configs --bootstrap-server kafka:9092 --entity-type topics --entity-name orders-topic --alter --delete-config retention.ms"
+
+
+# Delete the topic
+docker compose exec kafka kafka-topics --bootstrap-server kafka:9092 --delete --topic orders-topic
+
+# Recreate the topic
+docker compose exec kafka kafka-topics --bootstrap-server kafka:9092 --create --topic orders-topic --partitions 1 --replication-factor 1
+
+
+
+kafka - process message once only
+
+Ensuring a Kafka message is processed exactly once is one of the trickiest and most important aspects of building robust Kafka applications. Let’s go carefully step by step.
+
+1️⃣ Understand Kafka’s Delivery Semantics
+
+Kafka itself provides at-least-once delivery by default:
+
+At-least-once: Consumers may see a message multiple times if they fail before committing offsets.
+
+At-most-once: Messages may be lost if offsets are committed before processing.
+
+Exactly-once: A combination of idempotent writes, transactions, and offset management ensures each message affects your system only once.
+
+2️⃣ Use Idempotent Producers
+
+If a producer retries sending a message due to a network failure, you don’t want duplicates. Kafka supports idempotent producers:
+
+const { Kafka } = require('kafkajs');
+const kafka = new Kafka({ brokers: ['localhost:9092'] });
+
+const producer = kafka.producer({ idempotent: true });
+await producer.connect();
+await producer.send({
+  topic: 'my-topic',
+  messages: [{ key: '1', value: 'hello' }],
+});
+
+
+✅ Ensures the same message isn’t written twice even if the producer retries.
+
+3️⃣ Transactions for Atomic Processing
+
+If you want end-to-end exactly-once (message consumed, processed, and written to another topic or DB):
+
+Enable transactions in the producer:
+
+const producer = kafka.producer({
+  idempotent: true,
+  transactionalId: 'my-transactional-id',
+});
+await producer.connect();
+
+
+Wrap your processing and offset commit in a transaction:
+
+const transaction = await producer.transaction();
+
+try {
+  // Send processed message to output topic
+  await transaction.send({
+    topic: 'output-topic',
+    messages: [{ key: '1', value: 'processed' }],
+  });
+
+  // Commit consumer offsets as part of the same transaction
+  await transaction.sendOffsets({ 
+    consumerGroupId: 'my-group',
+    topics: [{ topic: 'input-topic', partition: 0, offset: '5' }],
+  });
+
+  await transaction.commit();
+} catch (err) {
+  await transaction.abort();
+}
+
+
+✅ Guarantees atomicity: either both the output message and offset commit happen, or neither.
+
+4️⃣ Manual Offset Management (if not using transactions)
+
+If you don’t use transactions:
+
+Disable auto-commit: enable.auto.commit = false
+
+Only commit offsets after successful processing:
+
+for await (const message of consumer) {
+  await process(message);       // your processing logic
+  await consumer.commitOffsets([
+    { topic: 'input-topic', partition: message.partition, offset: message.offset + 1 }
+  ]);
+}
+
+
+⚠️ Risk: If your processing fails after committing, messages can be lost. Transactions eliminate this risk.
+
+5️⃣ Idempotent Processing on the Consumer Side
+
+Even with at-least-once delivery, you can make your system effectively exactly-once by making your processing idempotent:
+
+Assign a unique key or ID to each message.
+
+Store processed IDs in a database.
+
+Skip any message whose ID is already processed.
+
+Example (pseudo-code):
+
+if (!db.hasProcessed(message.key)) {
+  db.saveProcessed(message.key);
+  doProcessing(message.value);
+} else {
+  // Skip duplicate
+}
+
+
+This ensures duplicates have no effect.
+
+6️⃣ Kafka Streams Option
+
+If you use Kafka Streams:
+
+Set processing.guarantee = exactly_once_v2
+
+Streams handles:
+
+Idempotent writes
+
+Transactional offset commits
+
+State management
+
+You get true exactly-once semantics between input and output topics automatically.
+
+✅ Summary
+Layer	How to Ensure Exactly Once
+Producer	idempotent=true + retries
+Consumer	Manual offset commit after processing
+Processing	Make operations idempotent
+Cross-topic	Use Kafka transactions
+Stream processing	Use Kafka Streams exactly-once mode
+
+If you want, I can draw a diagram showing exactly-once processing: how messages flow from producer → topic → consumer → output topic or DB with transactions. It makes it much easier to visualize where duplicates can happen.
+
+
+
+================================================
+
+
+
+Docker Setup
+
+Each app has its own Dockerfile.
+
+apps/orders/Dockerfile
+
+FROM node:22-alpine
+WORKDIR /app
+COPY ../../package*.json ./
+RUN npm install
+COPY ../../ .
+WORKDIR /app/apps/orders
+RUN npm run build
+CMD ["node", "dist/main.js"]
+
+
+apps/payments/Dockerfile
+
+FROM node:22-alpine
+WORKDIR /app
+COPY ../../package*.json ./
+RUN npm install
+COPY ../../ .
+WORKDIR /app/apps/payments
+RUN npm run build
+CMD ["node", "dist/main.js"]
+
+
+
+
+
+Docker Compose
+
+docker-compose.yml
+
+version: '3.8'
+services:
+  orders:
+    build: ./apps/orders
+    ports:
+      - "3001:3001"
+
+  payments:
+    build: ./apps/payments
+    ports:
+      - "3002:3002"
+
+
+Then run:
+
+docker compose up --build
+
+
+✅ You’ll have:
+
+Orders service on http://localhost:3001/orders
+
+Payments service on http://localhost:3002/payments
+
+Both use shared DTOs from /libs/common.
+
+🎯 What You Learned
+Concept	Description
+Monorepo layout	apps/ for microservices, libs/ for shared code
+Shared DTOs	Shared compile-time types via @app/common
+Independent services	Each builds separately and runs on its own port
+Containerization	Each microservice has its own Dockerfile
+Common dependency	One node_modules, but isolated apps
+
+Would you like me to extend this example next by:
+
+Adding Kafka or RabbitMQ for async communication between Orders and Payments?
+That’s a great next step to evolve this monorepo into a true event-driven system.
+
+
+
+
+Let’s extend the previous NestJS monorepo into a Kafka-based, event-driven system.
+We’ll wire up the Orders Service to publish events, and the Payments Service to consume them.
+
+
+
+
+Architecture Overview
+[ Orders Service ] ---> (Kafka Topic: orders.created) ---> [ Payments Service ]
+
+
+When a new order is created, the Orders microservice publishes a Kafka message.
+
+The Payments microservice subscribes to that topic and processes payments asynchronously.
+
+Both use DTOs from /libs/common.
+
+
+
+Add Dependencies
+
+At the root of your monorepo:
+
+npm install kafkajs @nestjs/microservices
+
+
+If you’re using Docker Compose, also add Kafka and Zookeeper.
+
+
+
+
+
+docker-compose.yml (updated)
+
+Add Kafka + Zookeeper services to your existing Docker Compose:
+
+version: '3.8'
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - '2181:2181'
+
+  kafka:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+    ports:
+      - '9092:9092'
+
+  orders:
+    build: ./apps/orders
+    ports:
+      - "3001:3001"
+    depends_on:
+      - kafka
+
+  payments:
+    build: ./apps/payments
+    ports:
+      - "3002:3002"
+    depends_on:
+      - kafka
+
+
+✅ This sets up Kafka + Zookeeper alongside your services.
+
+
+
+
+Orders Service – Kafka Producer
+
+apps/orders/src/main.ts
+
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Create a Kafka microservice client
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: ['kafka:9092'], // Docker network hostname
+      },
+      producerOnlyMode: true,
+    },
+  });
+
+  await app.startAllMicroservices();
+  await app.listen(3001);
+  console.log('Orders service running on http://localhost:3001');
+}
+bootstrap();
+
+
+orders.service.ts
+
+import { Injectable } from '@nestjs/common';
+import { CreateOrderDto } from '@app/common';
+import { ClientKafka } from '@nestjs/microservices';
+import { Inject } from '@nestjs/common';
+
+@Injectable()
+export class OrdersService {
+  constructor(
+    @Inject('ORDERS_SERVICE') private readonly kafkaClient: ClientKafka
+  ) {}
+
+  async createOrder(order: CreateOrderDto) {
+    console.log('Order created:', order);
+
+    // Emit an event to Kafka
+    await this.kafkaClient.emit('orders.created', order);
+    return { status: 'Order accepted', order };
+  }
+}
+
+
+orders.module.ts
+
+import { Module } from '@nestjs/common';
+import { OrdersService } from './orders.service';
+import { OrdersController } from './orders.controller';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+
+@Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: 'ORDERS_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'orders',
+            brokers: ['kafka:9092'],
+          },
+          producerOnlyMode: true,
+        },
+      },
+    ]),
+  ],
+  controllers: [OrdersController],
+  providers: [OrdersService],
+})
+export class AppModule {}
+
+
+
+
+
+
+Payments Service – Kafka Consumer
+
+apps/payments/src/main.ts
+
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+
+async function bootstrap() {
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        brokers: ['kafka:9092'],
+      },
+      consumer: {
+        groupId: 'payments-consumer', // Unique group ID
+      },
+    },
+  });
+
+  await app.listen();
+  console.log('Payments microservice listening for Kafka events...');
+}
+bootstrap();
+
+
+payments.service.ts
+
+import { Injectable, Logger } from '@nestjs/common';
+import { CreateOrderDto } from '@app/common';
+import { EventPattern, Payload } from '@nestjs/microservices';
+
+@Injectable()
+export class PaymentsService {
+  private readonly logger = new Logger(PaymentsService.name);
+
+  @EventPattern('orders.created')
+  handleOrderCreated(@Payload() order: CreateOrderDto) {
+    this.logger.log(`Processing payment for order ${order.id}`);
+    // simulate payment logic
+  }
+}
+
+
+
+
+
+Testing It All Together
+
+Start all containers:
+
+docker compose up --build
+
+
+Wait until you see:
+
+Orders service running on http://localhost:3001
+Payments microservice listening for Kafka events...
+
+
+Send a POST request to create an order:
+
+curl -X POST http://localhost:3001/orders \
+-H "Content-Type: application/json" \
+-d '{"id":"ORD123","amount":100,"description":"Test order"}'
+
+
+✅ Expected logs:
+
+Orders Service:
+Order created: { id: 'ORD123', amount: 100, description: 'Test order' }
+
+Payments Service:
+Processing payment for order ORD123
+
+
+🎉 You now have a working Kafka-based event-driven microservice system inside a NestJS monorepo!
+
+🧠 What You Learned
+Concept	Description
+Kafka transport	Transport.KAFKA used in NestJS
+EventPattern	Handles Kafka topic subscriptions
+ClientKafka	Used to emit or produce Kafka events
+Multi-service setup	Independent Nest apps sharing DTOs
+Docker integration	Kafka, Zookeeper, and services all in one environment
+
+
+
+
+
+Would you like me to extend this setup next by adding a database layer (e.g., PostgreSQL for orders + payments)
+and show how transactional events can be handled safely between Kafka and the DB (outbox pattern)?
+
+You said:
+yes. mongodb
+ChatGPT said:
+
+Excellent choice 💪 — MongoDB is a great fit for microservices due to its schema flexibility and ease of scaling.
+
+Let’s extend the Kafka-based NestJS monorepo we built earlier so that both microservices (Orders + Payments) persist and react to data in MongoDB.
+
+
+
+
+
+
+Architecture Overview (updated)
++-----------------------+       Kafka Topic: orders.created       +-------------------------+
+|     Orders Service    |  ------------------------------------>  |     Payments Service     |
+|  REST + Mongo + Kafka |                                         |  Kafka + Mongo (read)    |
++-----------------------+                                         +-------------------------+
+           |                                                               |
+           ↓                                                               ↓
+     [ orders-db ]                                                   [ payments-db ]
+          MongoDB                                                         MongoDB
+
+
+Orders Service:
+
+Receives HTTP requests (/orders)
+
+Persists orders in MongoDB
+
+Publishes orders.created Kafka events
+
+Payments Service:
+
+Listens for orders.created
+
+Stores payment details in MongoDB
+
+
+
+
+Update Dependencies
+
+At the root of your monorepo:
+
+npm install @nestjs/mongoose mongoose
+
+
+
+
+Update docker-compose.yml
+
+Add two MongoDB containers, one for each service:
+
+version: '3.8'
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - '2181:2181'
+
+  kafka:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+    ports:
+      - '9092:9092'
+
+  orders-db:
+    image: mongo
+    container_name: orders-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - orders_data:/data/db
+
+  payments-db:
+    image: mongo
+    container_name: payments-db
+    ports:
+      - "27018:27017"
+    volumes:
+      - payments_data:/data/db
+
+  orders:
+    build: ./apps/orders
+    ports:
+      - "3001:3001"
+    depends_on:
+      - kafka
+      - orders-db
+
+  payments:
+    build: ./apps/payments
+    ports:
+      - "3002:3002"
+    depends_on:
+      - kafka
+      - payments-db
+
+volumes:
+  orders_data:
+  payments_data:
+  
+  
+  
+  
+Orders Service – Mongo + Kafka Producer
+orders.module.ts
+import { Module } from '@nestjs/common';
+import { OrdersService } from './orders.service';
+import { OrdersController } from './orders.controller';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { Order, OrderSchema } from './schemas/order.schema';
+
+@Module({
+  imports: [
+    MongooseModule.forRoot('mongodb://orders-db:27017/orders'),
+    MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),
+    ClientsModule.register([
+      {
+        name: 'ORDERS_KAFKA',
+        transport: Transport.KAFKA,
+        options: {
+          client: { brokers: ['kafka:9092'] },
+          producerOnlyMode: true,
+        },
+      },
+    ]),
+  ],
+  controllers: [OrdersController],
+  providers: [OrdersService],
+})
+export class AppModule {}
+
+order.schema.ts
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+@Schema()
+export class Order extends Document {
+  @Prop({ required: true })
+  id: string;
+
+  @Prop({ required: true })
+  amount: number;
+
+  @Prop()
+  description: string;
+}
+
+export const OrderSchema = SchemaFactory.createForClass(Order);
+
+orders.service.ts
+import { Injectable, Inject } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Order } from './schemas/order.schema';
+import { ClientKafka } from '@nestjs/microservices';
+
+@Injectable()
+export class OrdersService {
+  constructor(
+    @InjectModel(Order.name) private orderModel: Model<Order>,
+    @Inject('ORDERS_KAFKA') private readonly kafkaClient: ClientKafka,
+  ) {}
+
+  async create(orderDto: Partial<Order>) {
+    const order = new this.orderModel(orderDto);
+    await order.save();
+    await this.kafkaClient.emit('orders.created', order.toObject());
+    return order;
+  }
+
+  async findAll() {
+    return this.orderModel.find().exec();
+  }
+}
+
+orders.controller.ts
+import { Controller, Post, Body, Get } from '@nestjs/common';
+import { OrdersService } from './orders.service';
+
+@Controller('orders')
+export class OrdersController {
+  constructor(private readonly ordersService: OrdersService) {}
+
+  @Post()
+  create(@Body() order: any) {
+    return this.ordersService.create(order);
+  }
+
+  @Get()
+  getAll() {
+    return this.ordersService.findAll();
+  }
+}
+
+
+
+
+
+Payments Service – Mongo + Kafka Consumer
+payments.module.ts
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { PaymentsService } from './payments.service';
+import { Payment, PaymentSchema } from './schemas/payment.schema';
+
+@Module({
+  imports: [
+    MongooseModule.forRoot('mongodb://payments-db:27017/payments'),
+    MongooseModule.forFeature([{ name: Payment.name, schema: PaymentSchema }]),
+  ],
+  providers: [PaymentsService],
+})
+export class AppModule {}
+
+payment.schema.ts
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+@Schema()
+export class Payment extends Document {
+  @Prop({ required: true })
+  orderId: string;
+
+  @Prop({ required: true })
+  amount: number;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
+}
+
+export const PaymentSchema = SchemaFactory.createForClass(Payment);
+
+payments.service.ts
+import { Injectable, Logger } from '@nestjs/common';
+import { EventPattern, Payload } from '@nestjs/microservices';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Payment } from './schemas/payment.schema';
+
+@Injectable()
+export class PaymentsService {
+  private readonly logger = new Logger(PaymentsService.name);
+
+  constructor(@InjectModel(Payment.name) private paymentModel: Model<Payment>) {}
+
+  @EventPattern('orders.created')
+  async handleOrderCreated(@Payload() order: any) {
+    this.logger.log(`Processing payment for order ${order.id}`);
+
+    const payment = new this.paymentModel({
+      orderId: order.id,
+      amount: order.amount,
+    });
+
+    await payment.save();
+    this.logger.log(`Payment record created for order ${order.id}`);
+  }
+}
+
+
+
+
+
+Testing the System
+
+Start everything:
+
+docker compose up --build
+
+
+Create a new order:
+
+curl -X POST http://localhost:3001/orders \
+-H "Content-Type: application/json" \
+-d '{"id":"ORD123","amount":99.99,"description":"Keyboard"}'
+
+
+Check your MongoDBs:
+
+Orders: connect to mongodb://localhost:27017/orders
+
+Payments: connect to mongodb://localhost:27018/payments
+
+✅ Expected behavior:
+
+The Orders service stores the new order and emits an event.
+
+The Payments service consumes the event and stores a payment record.
+
+🧠 You’ve Now Built:
+
+✅ Event-driven microservices using Kafka
+✅ Independent persistence using MongoDB per service
+✅ Decoupled communication (no direct HTTP calls)
+✅ Scalable setup with Docker Compose
+
+
+
+
+
+
+Do Microservices Share a Single Database?
+
+No — they shouldn’t.
+
+Each microservice should have its own database, which only it owns and manages.
+
+✅ Correct approach:
++------------------+         +-------------------+
+| Orders Service   |         | Payments Service  |
+| MongoDB (orders) |         | MongoDB (payments)|
++------------------+         +-------------------+
+
+
+Each service:
+
+Owns its data schema
+
+Manages its migrations
+
+Can choose its own database technology (e.g., MongoDB, Postgres, Redis, etc.)
+
+Exposes data to other services only via APIs or messages (Kafka, RabbitMQ, etc.)
+
+❌ Anti-pattern (shared database):
+           +-----------------------------+
+           |     Shared database         |
+           |  orders, payments, users... |
+           +-----------------------------+
+              ↑               ↑
+      Orders Service   Payments Service
+
+
+This violates service boundaries and couples services together:
+
+Changing one schema may break another service
+
+Harder to scale independently
+
+Violates “independent deployability,” one of the key goals of microservices
+
+
+
+
+
+
+
+
+Does the Database Run as a Microservice?
+
+Not really.
+A database is a dependency, not a microservice.
+
+Microservices are independent deployable applications with business logic, APIs, and message handling.
+A database is just a stateful resource that supports one of those services.
+
+Example:
+
+Your docker-compose.yml might look like this:
+
+services:
+  orders:
+    build: ./orders
+    ports:
+      - "3001:3001"
+    depends_on:
+      - orders-db
+
+  payments:
+    build: ./payments
+    ports:
+      - "3002:3002"
+    depends_on:
+      - payments-db
+
+  orders-db:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+  payments-db:
+    image: mongo
+    ports:
+      - "27018:27017"
+
+
+Here:
+
+orders-db and payments-db are containers (infrastructure services),
+not microservices.
+
+They don’t contain application logic — they just persist data.
+
+💡 3️⃣ How Services Share or Query Each Other’s Data
+
+Since they can’t query each other’s databases directly, they communicate using:
+
+HTTP APIs (REST or GraphQL)
+
+Event streams (Kafka, RabbitMQ, NATS)
+
+gRPC (binary RPC communication)
+
+Example (event-driven):
+
+Orders Service → [orders.created] → Kafka → Payments Service
+
+
+Payments learns about new orders by consuming the event,
+not by querying the Orders database.
+
+🧠 Summary
+Question	Answer
+Do microservices share a single DB?	❌ No — each has its own.
+Is a DB a microservice?	❌ No — it’s a data store, not an independent service.
+How do they share data?	✅ Through APIs or events, never direct DB access.
+Benefit	✅ Loose coupling, independent scaling & deployment.
+
+
+
+
+Ways to Handle Lost Updates
+
+1️⃣ Database-Level Concurrency Control
+a. Transactions with Isolation Levels
+
+If you use SQL databases, you can use transaction isolation levels such as:
+
+REPEATABLE READ
+
+SERIALIZABLE
+
+Example (PostgreSQL / MySQL):
+
+BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+SELECT balance FROM accounts WHERE id = 1; -- returns 100
+UPDATE accounts SET balance = balance + 10 WHERE id = 1;
+
+COMMIT;
+
+
+If another transaction tries to modify the same row concurrently, the database will:
+
+block it, or
+
+throw a serialization error that you can retry.
+
+🧠 NestJS can handle this by using TypeORM or Prisma with transaction blocks.
+
+b. Optimistic Concurrency Control (OCC)
+
+This is the most microservice-friendly approach because it avoids DB-level locks.
+
+You add a version field (or timestamp) to your record.
+
+Example:
+
+interface Account {
+  id: number;
+  balance: number;
+  version: number;
+}
+
+
+Flow:
+
+Service A reads account (balance=100, version=1)
+
+Service B reads account (balance=100, version=1)
+
+Service A updates → sends {balance:110, version:1}
+
+DB checks: is current version still 1?
+
+✅ yes → update and increment to 2
+
+Service B updates → sends {balance:95, version:1}
+
+❌ version mismatch → reject (lost update prevented)
+
+SQL example:
+
+UPDATE accounts
+SET balance = 95, version = version + 1
+WHERE id = 1 AND version = 1;
+
+
+If rows affected = 0, it means someone else updated it first — you can then re-read and retry.
+
+
+
+2️⃣ Application-Level Coordination
+If multiple microservices work on the same data model, you can coordinate updates:
+
+Use a message broker (Kafka, RabbitMQ) and funnel all updates for a record through a single consumer.
+
+That consumer ensures serial processing of events per entity key (e.g., one account ID at a time).
+
+Kafka, for instance, guarantees message order within a partition → this can effectively serialize updates.
+
+
+Distributed Locking (Advanced)
+Sometimes you can’t avoid concurrent writes, and you need an external lock manager.
+
+Use Redis Redlock, etcd, or Zookeeper to acquire a lock before modifying data.
+
+Lock lifetime is short (e.g., a few seconds).
+
+Only one service can hold the lock for a given resource.
+
+Example (using Redis):
+
+const lock = await redlock.acquire(['lock:account:1'], 2000);
+try {
+  // safely modify account 1
+} finally {
+  await lock.release();
+}
+
+
+This prevents concurrent modifications across service instances.
+
+
+
+4️⃣ Domain-Driven Design (Data Ownership)
+
+At a higher architectural level, microservices should not normally share write access to the same data.
+
+Instead:
+
+Each service owns its own data (own DB).
+
+Other services communicate via events (e.g., OrderPlaced, UserBalanceUpdated).
+
+This avoids race conditions entirely, since no two services are updating the same record directly.
+
+If another service needs that data, it keeps a read replica (eventual consistency).
+
+
+Summary
+Strategy								      Layer					      Prevents Lost Update					Notes
+DB transactions							  Database			    	✅ Yes									      Simplest for monoliths or small microservices
+Optimistic concurrency				Application			  	✅ Yes									      Ideal for stateless microservices
+Distributed locking						Infrastructure			✅ Yes									      Adds complexity, use when needed
+Event-driven design						Architecture		  	✅ By design							    Best long-term strategy
+
+
+
+
+
+For monorepos
+
+When you later have multiple apps in one repo, nest-cli.json can include a projects section:
+
+{
+  "monorepo": true,
+  "projects": {
+    "gateway": {
+      "type": "application",
+      "root": "apps/gateway",
+      "sourceRoot": "apps/gateway/src",
+      "entryFile": "main",
+      "compilerOptions": {
+        "tsConfigPath": "apps/gateway/tsconfig.app.json"
+      }
+    }
+  }
+}
+
+
+monorepo: true → tells Nest you have multiple projects.
+
+projects → maps project names to their folder paths and build configs.
+
+Nest CLI uses this when you run commands like:
+
+nest build gateway
+
+
+
+So instead of guessing folder locations, Nest knows exactly where the project lives and how to compile it.
+
+🔹 TL;DR
+
+nest-cli.json is Nest CLI configuration.
+
+It tells Nest:
+
+Where source code lives (sourceRoot)
+
+How to compile the app (compilerOptions)
+
+Project names and locations in monorepos (projects)
+
+Nest CLI commands read this file to know how to build/run/generate files.
+
+
+Nest CLI uses nest-cli.json to locate TypeScript configs
+
+When you run a command like:
+
+nest build
+
+
+Nest CLI:
+
+Reads nest-cli.json at the root of the project.
+
+Determines which project to build:
+
+If no project is specified: builds the “default” root project.
+
+If --project <name> is specified: builds that project.
+
+Reads the tsConfigPath under the project in nest-cli.json to find the TypeScript configuration file (usually tsconfig.app.json).
+
+Example
+
+Your nest-cli.json in the monorepo has:
+
+"projects": {
+  "gateway": {
+    "type": "application",
+    "root": "apps/gateway",
+    "sourceRoot": "apps/gateway/src",
+    "compilerOptions": {
+      "tsConfigPath": "apps/gateway/tsconfig.app.json"
+    }
+  }
+}
+
+
+gateway → project name
+
+root → folder for source files
+
+tsConfigPath → exact path to TypeScript configuration
+
+When you run:
+
+nest build gateway
+
+
+Nest CLI uses apps/gateway/tsconfig.app.json to compile the project.
+✅ If you run nest build without specifying the project, it defaults to the root project defined in nest-cli.json (apps/my-nestjs-monorepo-app in your case). That’s why Docker kept failing — it tried to find apps/my-nestjs-monorepo-app/tsconfig.app.json instead of apps/gateway/tsconfig.app.json.
+
+
+Why Docker was failing
+
+Dockerfile set:
+
+WORKDIR /app/apps/gateway
+RUN npm run build
+
+
+npm run build runs the script from root package.json, which internally calls nest build.
+
+Nest CLI sees no project specified, so it tries to build the root project (apps/my-nestjs-monorepo-app).
+
+Inside the container, that folder exists, but the tsconfig.app.json path it looks for is wrong, causing:
+
+
+
+4. Summary
+
+nest-cli.json defines your monorepo’s projects and TS configs.
+
+Nest CLI always uses project names from nest-cli.json to find tsconfig.app.json.
+
+Docker errors were caused by running nest build without specifying the correct project name, so it defaulted to the root project.
+
+The fix is to explicitly build the gateway project either via npx nest build gateway or by configuring the project in package.json scripts.
+
+
+
+Reverse proxy
+-------------
+Your clients (mobile/web apps) will only talk to the gateway, e.g.
+POST /users/login
+GET /orders/123
+GET /products
+
+
+Just using nestjs
+-----------------
+You can do this entirely in NestJS, using:
+
+HttpModule (with @nestjs/axios) for making internal HTTP calls
+
+Controller routes to decide where to forward each path
+
+No need for external middleware or NGINX unless you want scaling / caching.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Alternatives
+------------
+3 main patterns
+  Use Nest’s built-in Microservices Transport Layer
+
+This doesn’t literally “forward ports”, but it forwards messages to TCP sockets on specific ports — Nest handles the connection.
+  If your microservices are not HTTP-based (e.g. they use TCP, Redis, RabbitMQ, or NATS), you can use Nest’s built-in microservice transport.
+
+// api-gateway.module.ts
+import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { GatewayController } from './gateway.controller';
+
+@Module({
+  imports: [
+    ClientsModule.register([
+      { name: 'USERS_SERVICE', transport: Transport.TCP, options: { port: 3001 } },
+      { name: 'ORDERS_SERVICE', transport: Transport.TCP, options: { port: 3002 } },
+    ]),
+  ],
+  controllers: [GatewayController],
+})
+export class ApiGatewayModule {}
+
+
+// gateway.controller.ts
+import { Controller, Get, Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+
+@Controller()
+export class GatewayController {
+  constructor(
+    @Inject('USERS_SERVICE') private usersService: ClientProxy,
+  ) {}
+
+  @Get('users')
+  getUsers() {
+    return this.usersService.send({ cmd: 'get_users' }, {});
+  }
+}
+
+
+
+
+  Use HTTP Proxy (for HTTP microservices)
+If your microservices expose HTTP REST APIs, you can proxy requests instead
+A popular solution: http-proxy-middleware
+npm install http-proxy-middleware
+
+// main.ts
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Forward /users/* requests to User Service
+  app.use(
+    '/users',
+    createProxyMiddleware({
+      target: 'http://localhost:3001',
+      changeOrigin: true,
+      pathRewrite: { '^/users': '' },
+    }),
+  );
+
+  // Forward /orders/* requests to Orders Service
+  app.use(
+    '/orders',
+    createProxyMiddleware({
+      target: 'http://localhost:3002',
+      changeOrigin: true,
+      pathRewrite: { '^/orders': '' },
+    }),
+  );
+
+  await app.listen(3000);
+}
+bootstrap();
+
+
+
+  Use API Gateway as an Aggregator
+
+
+
+
+
+
+  OAuth
+  =====
+  secure authorization framework that lets one application access another application's data on behalf of a user, without needing the user’s password.
+
+  Without OAuth, you’d have to do something like this:
+    Hey, give me your Facebook username and password so my app can read your posts.”
+    That’s bad — the third-party app gets full access to your account.
+
+  With OAuth, it becomes
+    Click here to let this app access your Facebook posts
+    Facebook handles the login, then gives the app a token that says,
+    You can read this user’s posts, but nothing else
+
+  monorepo structure
+  ------------------
+  apps/
+  orders/
+    src/
+      main.ts
+      orders.module.ts     <-- Root module
+  payments/
+    src/
+      main.ts
+      payments.module.ts   <-- Root module
+  api-gateway/
+    src/
+      main.ts
+      gateway.module.ts
+
+libs/
+  common/
+    src/
+      index.ts
+      logging/
+      dto/
+      utils/
+  kafka/
+    src/
+      kafka.module.ts
+  database/
+    src/
+      database.module.ts
+  features/
+    src/
+      orders/
+        orders-feature.module.ts
+      billing/
+        billing-feature.module.ts
+      customers/
+        customers-feature.module.ts
+

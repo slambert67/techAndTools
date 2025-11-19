@@ -1,0 +1,182 @@
+Perfect 👍 — here’s your **“minimum AWS skill checklist”** tailored for a **NestJS / TypeScript backend developer** who wants to meet typical job expectations *without* going full DevOps mode.
+
+Think of this as the **80/20 rule**: 20% of AWS knowledge that covers 80% of what interviews and real-world work expect.
+
+---
+
+## 🧭 Minimum AWS Skills Checklist for NestJS Developers
+
+### 🟩 1️⃣ Deploy your app to the cloud
+
+✅ **Goal:** Be able to deploy a running NestJS app accessible via a public URL.
+
+**Learn one of these:**
+
+* **Elastic Beanstalk (recommended)** → simplest for full web apps
+
+  * Handles Node.js automatically
+  * You upload a zip or push with the EB CLI
+  * AWS manages servers, scaling, load balancers for you
+
+  Example:
+
+  ```bash
+  eb init
+  eb create
+  eb deploy
+  ```
+
+  You’ll get a public URL like:
+  `http://my-nest-app.eu-west-1.elasticbeanstalk.com`
+
+**Know how to:**
+
+* Set environment variables (`process.env.DB_URL`)
+* Restart/redeploy your app
+* Read logs (`eb logs`)
+
+🧠 *Why this matters:* Every company wants developers who can ship code to production.
+
+---
+
+### 🟩 2️⃣ Connect to a database
+
+✅ **Goal:** Store app data in a managed database (instead of local Postgres).
+
+**Use:**
+
+* **Amazon RDS (Postgres or MySQL)**
+
+**What to learn:**
+
+* Launch an RDS instance (Postgres)
+* Connect using your NestJS `TypeOrmModule` config
+* Store credentials in environment variables
+* Understand security groups (allow your app’s EC2 to talk to the DB)
+
+🧠 *Why this matters:* Nearly every backend needs to connect to a production-grade database.
+
+---
+
+### 🟩 3️⃣ Manage files or uploads
+
+✅ **Goal:** Store uploaded files (images, PDFs, etc.) in the cloud.
+
+**Use:**
+
+* **Amazon S3**
+
+**What to learn:**
+
+* Create an S3 bucket
+* Generate signed URLs for upload/download
+* Make files private by default (public-read optional)
+* Store the file URL in your DB
+
+🧠 *Why this matters:* Many NestJS apps handle media — S3 is the industry standard for cloud storage.
+
+---
+
+### 🟩 4️⃣ Handle environment variables & secrets
+
+✅ **Goal:** Keep credentials (DB password, API keys) out of your source code.
+
+**Use:**
+
+* Elastic Beanstalk’s “Configuration → Software” settings, or
+* **AWS Systems Manager Parameter Store** for more advanced usage
+
+**What to learn:**
+
+* Add environment variables to your environment
+* Access them in your app using `process.env`
+
+🧠 *Why this matters:* You’ll need to deploy safely without committing secrets to GitHub.
+
+---
+
+### 🟩 5️⃣ View logs & monitor your app
+
+✅ **Goal:** Debug crashes and performance issues in production.
+
+**Use:**
+
+* **CloudWatch Logs**
+
+**What to learn:**
+
+* Find your app’s log group in the AWS Console
+* Filter logs by timestamp or keyword
+* Understand how NestJS logs appear in CloudWatch
+
+🧠 *Why this matters:* You can’t fix what you can’t see — logs are critical for debugging.
+
+---
+
+### 🟩 6️⃣ (Optional but valuable) Automate deployment
+
+✅ **Goal:** Push to GitHub → deploys automatically to AWS.
+
+**Use:**
+
+* **GitHub Actions** (easy)
+* Or **AWS CodePipeline / CodeBuild**
+
+**Learn:**
+
+* How to set up CI/CD so that `git push main` triggers a redeploy
+* Store AWS credentials securely in GitHub Secrets
+
+🧠 *Why this matters:* Automation shows you understand production workflows — a big plus in interviews.
+
+---
+
+### 🟩 7️⃣ (Optional bonus) Try Serverless once
+
+✅ **Goal:** Understand what “serverless” means and when to use it.
+
+**Use:**
+
+* **AWS Lambda + API Gateway**
+
+**Learn:**
+
+* Deploy a simple NestJS Lambda handler (or standalone function)
+* Understand cold starts, timeouts, and pricing
+
+🧠 *Why this matters:* Many modern companies run part of their stack on serverless — it’s a great résumé bullet.
+
+---
+
+## 🧰 Tool Summary
+
+| Skill           | AWS Service                   | Alternatives                          |
+| --------------- | ----------------------------- | ------------------------------------- |
+| Deploy App      | Elastic Beanstalk             | ECS (containers), Lambda (serverless) |
+| Database        | RDS (Postgres/MySQL)          | DynamoDB (NoSQL)                      |
+| File Storage    | S3                            | —                                     |
+| Config/Secrets  | Env vars, SSM Parameter Store | Secrets Manager                       |
+| Logs/Monitoring | CloudWatch                    | Datadog, NewRelic                     |
+| CI/CD           | GitHub Actions                | CodePipeline, CircleCI                |
+
+---
+
+## 🎯 TL;DR: If you can do these 3 things, you’re job-ready
+
+✅ Deploy a NestJS API to AWS (Elastic Beanstalk or Lambda)
+✅ Connect it to RDS (Postgres) and S3 (file storage)
+✅ View logs in CloudWatch and manage environment variables
+
+That’s *plenty* to list “AWS experience” confidently on your résumé and to answer interview questions like:
+
+> “Have you deployed your code to AWS before? Which services did you use?”
+
+---
+
+If you want, I can now give you a **step-by-step practical walkthrough** for the *first item* on this list:
+
+> 🚀 “Deploy a NestJS API to AWS Elastic Beanstalk (with RDS database)”
+
+— including exact AWS Console and CLI steps.
+
+Would you like that next?
