@@ -51,7 +51,7 @@ const api = (() => {
     function testSplit() {
         // convert string into array
         let s = 'foo';
-        let a = s.split('');    
+        let a = s.split(''); 
         console.log(a);         // ['f', 'o', 'o']
         a = a.reverse();        
         console.log(a);         // ['o', 'o', 'f']
@@ -70,6 +70,19 @@ const api = (() => {
             console.log(s[i]);
         }
     }
+
+
+    // I18N
+    // windows + .
+    
+    function i18n() {
+        const a = 'cafe';
+        const b = 'café';
+        console.log(`${a} - ${b}`);
+        console.log(a === b);
+        console.log(a.localeCompare(b, 'en', { sensitivity: 'base' }) === 0); // true
+    }
+
 
     // possible interview questions
 
@@ -121,7 +134,7 @@ const api = (() => {
         console.log(result.join(' '));
     }
     
-    return { stringObject, stringLiteral, testEquality, testLocaleCompare, testModify, iterateOverString, testSplit, isPalindrome, isPalindrome2, countVowels, capitalize };
+    return { stringObject, stringLiteral, testEquality, testLocaleCompare, testModify, iterateOverString, testSplit, isPalindrome, isPalindrome2, countVowels, capitalize, i18n };
 
 
 })();
@@ -137,3 +150,4 @@ const api = (() => {
 //api.isPalindrome2('H H H');
 //api.countVowels('a e z');
 //api.capitalize('aaa bbb ccc');
+api.i18n();

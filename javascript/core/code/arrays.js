@@ -308,25 +308,68 @@ const api = ( () => {
         console.log(arr2.toString()); // "1,2,3"
 
         // toLocaleString()
-        const ar3 = [1000, 2000, 3000];
+        const arr3 = [1000, 2000, 3000];
         console.log(arr3.toLocaleString("en-US")); // "1,000,2,000,3,000"
         console.log(arr3.toLocaleString("de-DE")); // "1.000,2.000,3.000"
     }
 
 
     function iterables() {
-        /*
-        ITERATORS (RETURN ITERABLES)
+        const arr = ['a', 'b', 'c'];
 
-entries()
+        const iterator = arr.entries();
 
-keys()
+        console.log(iterator.next().value); // [0, 'a']
+        console.log(iterator.next().value); // [1, 'b']
+        console.log(iterator.next().value); // [2, 'c']
 
-values()
-        */
+        console.log( 'entries()');
+        // Using for...of
+        for (const [index, value] of arr.entries()) {
+            console.log(index, value);
+        }
+        // Output:
+        // 0 'a'
+        // 1 'b'
+        // 2 'c'
+
+
+        console.log('keys');    // rarely used for arrays
+        const arr2 = ['a', 'b', 'c'];
+
+        const keysIterator = arr2.keys();
+
+        for (const key of keysIterator) {
+        console.log(key);
+        }
+        // Output:
+        // 0
+        // 1
+        // 2
+
+        // Convert to array
+        console.log(Array.from(arr2.keys())); // [0, 1, 2]
+
+
+        console.log('values');
+        const arr3 = ['a', 'b', 'c'];
+
+        const valuesIterator = arr3.values();
+
+        for (const value of valuesIterator) {
+            console.log(value);
+        }
+        // Output:
+        // 'a'
+        // 'b'
+        // 'c'
+
+        // Convert to array
+        console.log(Array.from(arr3.values())); // ['a', 'b', 'c']
+
     }
 
-    return { creating, checking_searching, accessing, iteration, add_remove_mutate, add_remove_non_mutate, sorting, transform };
+    return { creating, checking_searching, accessing, iteration, add_remove_mutate, add_remove_non_mutate, sorting, transform, iterables };
 })();
 
 //api.creating();
@@ -336,4 +379,5 @@ values()
 //api.add_remove_mutate();
 //api.add_remove_non_mutate();
 //api.sorting();
-api.transform();
+//api.transform();
+api.iterables();
