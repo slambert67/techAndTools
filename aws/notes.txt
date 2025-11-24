@@ -66,8 +66,8 @@ Download and run .msi
 
 Configure
 ---------
-Access key: AKIA4UVUYDTHO63MKOD2
-Secret access key: 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
+see desktop
+
 
 
 AWS SDK

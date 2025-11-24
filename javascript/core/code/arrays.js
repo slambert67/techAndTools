@@ -22,6 +22,10 @@ const api = ( () => {
         console.log(arr3);
 
 
+        // NB - 
+        //      array.from DOES NOT SKIP HOLES. Easy way to densify a sparse array!!!
+        //      array.filter DOES NOT SKIP HOLES. Easy way to compact a sparse array!!!
+        // c.f. const dense = sparse.filter(() => true); - compacts the array
         // from an iterable - string
         let arr4 = Array.from('hello world');
         console.log(arr4);
@@ -369,7 +373,26 @@ const api = ( () => {
 
     }
 
-    return { creating, checking_searching, accessing, iteration, add_remove_mutate, add_remove_non_mutate, sorting, transform, iterables };
+
+    function sparse_v_dense() {
+
+        // undefined vs hole behaves differently
+
+        const newArray = [];
+        newArray[10] = 10;                          // But indices 0-9 are not actual array elements. They are holes, not undefined.
+        console.log(newArray.length);               // 11
+        console.log(0 in newArray);                 // false
+        console.log(newArray[0]);                   // undefined
+        console.log(newArray.hasOwnProperty(0));    // false
+
+        // so newArray is a sparse array - the indices are missing entirely
+
+
+
+    }
+
+
+    return { creating, checking_searching, accessing, iteration, add_remove_mutate, add_remove_non_mutate, sorting, transform, iterables, sparse_v_dense };
 })();
 
 //api.creating();
@@ -380,4 +403,5 @@ const api = ( () => {
 //api.add_remove_non_mutate();
 //api.sorting();
 //api.transform();
-api.iterables();
+//api.iterables();
+api.sparse_v_dense();

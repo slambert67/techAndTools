@@ -38,8 +38,26 @@ States
 const promiseApi = ( () => {
 
 
-
     function createPromise() {
+
+        /*
+        JavaScript is calling the Promise constructor, and that constructor internally creates two functions:
+            resolve → marks the promise as fulfilled
+            reject → marks the promise as rejected
+
+        ✔ resolve(value)
+            Marks the promise as fulfilled
+            Stores value
+            Wakes up .then() handlers
+        ✔ reject(error)
+            Marks the promise as rejected
+            Stores the error
+            Wakes up .catch() handlers
+        */
+
+        // 
+        
+
 
         // Constructor is the only way to create a promise where you manually call resolve or reject.
 
@@ -128,11 +146,89 @@ const promiseApi = ( () => {
 
 
         // .then(), .catch() and .finally() always return a Promise. This new Promise resolves or rejects depending on what your callback does.
-    
     }
 
-    return {createPromise};
+
+    function handleErrors() {
+
+        // handle error with catch
+        const p1 = new Promise((resolve, reject) => {
+            setTimeout(() => reject("p1 rejected"), 1000);
+        }).catch( (data) => console.log(data) );
+
+        // handle error with then - can pass 2 callbacks
+        const p2 = new Promise((resolve, reject) => {
+            setTimeout(() => reject("p2 rejected"), 1000);
+        }).then( (data) => console.log(data),  (data) => console.log(data));
+    }
+
+
+    function promiseChain() {
+
+        const p1 = new Promise((resolve, reject) => {
+            setTimeout(() => resolve("p1 fulfilled"), 1000);
+        })
+        .then( () => console.log('first link') )
+        .then( () => console.log('second link') )
+        .then( () => console.log('third link') )
+        .finally( () => console.log('finally - fires on either fulfillment or rejection'));
+    }
+
+
+    function promiseTree() {
+
+        // The “tree” arises when you attach multiple .then() handlers to the SAME promise
+        // breadth first resolution
+
+        /*
+            Trees are conceptually important because:
+            ✔ Multiple consumers can attach to the same promise
+
+            The promise runs once, but any number of .then() handlers can listen.
+
+            ✔ Each branch is independent
+
+            One branch failing doesn’t break the others.
+
+            ✔ You can fan-out and fan-in
+
+            Tree structures allow:
+
+            fan-out: one promise → many .then() handlers
+
+            fan-in: many promises → Promise.all/race/any/allSettled
+
+
+            Example of a real-world promise tree
+            Imagine loading user data and then performing multiple independent tasks:
+
+                const user = fetchUser();
+
+                user
+                .then(u => log(u))
+                .then(() => updateAnalytics());
+
+                user
+                .then(u => renderProfile(u));
+
+                user
+                .then(u => notifyFriends(u));
+
+        */
+
+        const p1 = new Promise((resolve, reject) => {
+            setTimeout(() => resolve("p1 fulfilled"), 1000);
+        });
+
+        p1.then(a => console.log("branch A:", a)).then(() => console.log("branch A1:")).then(() => console.log("branch A1A:"));
+        p1.then(b => console.log("branch B:", b)).then(() => console.log("branch B1:")).then(() => console.log("branch B1A:"));
+    }
+
+    return {createPromise, handleErrors, promiseChain, promiseTree};
 
 })();
 
-promiseApi.createPromise();
+// promiseApi.createPromise();
+//promiseApi.handleErrors();
+promiseApi.promiseChain();
+//promiseApi.promiseTree();
