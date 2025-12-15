@@ -1,55 +1,234 @@
-Root user = your initial login (super admin, risky)
-IAM user = your “daily use account” (safe, still admin if you attach AdministratorAccess)
-AWS wants you to create a user so you can work safely and follow best practices.
-Think of it like this:
-Root user is like the master key to your house.
-IAM user is like a daily-use key you can carry around safely.
+AWS Home: https://aws.amazon.com/
 
---
-aws home page
-https://aws.amazon.com/
-sign in to console
-select root
-email/Aws!
+################################################################################
 
-account id: 869036203214
+root user: email/Aws!
+	owner of account / superuser
+	NOT an IAM user
+	MFA enabled
+	Billable
 
-admin user login
-https://869036203214.signin.aws.amazon.com/console
-514725myadmin!
+################################################################################
+
+No longer recommended. Setup SSO identiry
+IAM user: myadmin/myadmin!
+	account id: 869036203214
+	Identity and Access Management
+	Permissions controlled by IAM policies
+	
+	
+################################################################################
+
+SSO Identity
+	Go to IAM Identity Centre
+	Enable IAM Identity Center
+	the default AWS-managed directory is easiest.
+	This activates the identity system AWS uses instead of IAM users.
+	
+Create an SSO User (Identity Center User)
+	In IAM Identity Center, open Users.
+	Click Add user.
+	username: steve.lambert67@gmail.com - does not have to be an email/Aws
+	generate one time password
+	This user exists only in Identity Center, not in IAM, and does not have access keys.
+	
+	Sign in instructions generated and copied
+		AWS access portal URL: https://d-c367606348.awsapps.com/start
+		Username: steve.lambert67@gmail.com
+		One-time password: Lyv5s/PUD^Ch*tO3!5Eh8rrt32QFc<>m8NI2jN.GZNxMb -> AaP!
+		
+The AWS Access Portal is the web interface for AWS IAM Identity Center (formerly AWS SSO) where users log in to access AWS accounts and applications they have been granted permissions for.
+It acts as a single point of access for users—both humans and federated identities—so they can sign in without using IAM user credentials.
+	
+	Sign in for the first time
+	Authenticator App
+	
+	
+Create a Permission Set (defines permissions for the role)
+Go to IAM Identity Center → Permission sets.
+Click Create permission set.
+Choose one:
+AdministratorAccess (easy, broad)
 
 
-Lambda Functions
-================
-An AWS Lambda function is a piece of code that runs in the cloud without you managing any servers.
-You write the code → upload it → AWS runs it automatically when something triggers it.
+Assign the SSO User to an AWS Account and Permission Set
+This is the critical part—this assignment automatically creates the IAM role that the SSO user can assume.
+
+In IAM Identity Center, go to AWS accounts.
+	Select the AWS account you want to access.
+	Click Assign Users or Groups.
+	Choose your SSO user.
+	Choose the permission set you created.
+	Click Assign.
+
+AWS now:
+	Creates an IAM role behind the scenes
+	Sets up trust between SSO and that role
+	Links your SSO user to that role
+	No IAM user exists at any point.
+
+
+aws configure sso
+	SSO session name: default-sso
+	SSO start url: https://d-c367606348.awsapps.com/start <- IAM Identity Centre, settings
+	SSO Region: eu-north-1 <- IAM identity Centre top right
+	SSO Registration Scopes: sso:account:access <- default
+	
+
+Host on AWS
+===========
+1. Ensure production build works locally
+	npm install
+	npm run build
+	node dist/main.js
+
+
+2. Create a production Dockerfile
+
+3. Build the Docker Image Locally - from root
+docker build -t my-first-aws-app:latest -f apps/aws/Dockerfile .
+
+4. Run locally
+docker run -p 3009:3009 my-first-aws-app:latest
+
+5. Stops and removes the container so you can rerun or rebuild cleanly.
+docker stop my-aws-app
+docker rm my-aws-app
 
 
 
-docker notes
-============
-When deploying to AWS:		docker build → to build your container images
-							Push the image to AWS ECR
-							ECS/Fargate → to run your containers in the cloud
-							
-AWS ECR
--------
-c.f. docker hub inside AWS
-It is AWS’s private Docker container registry.
-You use it to store and manage your Docker images so AWS services (like ECS or Fargate) can pull and run them.
-
-| Tool                    | Purpose                             |
-| ----------------------- | ----------------------------------- |
-| **Dockerfile**          | Defines how to build your container |
-| **docker build**        | Creates the container image         |
-| **Docker Hub / ECR**    | Stores the image                    |
-| **ECS / Fargate / EKS** | Runs the image                      |
 
 
-Docker Compose = local container orchestrator
-🟧 ECS/Fargate = cloud container orchestrator
+todo
+----
+Once configured, authenticate:
+
+aws sso login
 
 
+A browser opens, you sign in as the SSO user, and AWS issues temporary credentials to the CLI.
+
+From there you can:
+
+aws ecr get-login-password ...
+docker login ...
+docker push ...
+
+
+Everything uses temporary role credentials.
+
+
+
+	
+################################################################################
+Summary
+=======
+ECR - Elastic Container Registry
+	Where my docker images live
+	AWS services (like ECS or Fargate) can pull and run them.
+	
+		Go to the AWS Console → ECR → Create repository
+		Repository name: my-aws-apps
+		Visibility: Private
+		Leave other defaults → Create repository
+		Copy the repository URI, e.g.: 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-aws-apps
+		
+ECS
+	cloud container orchestrators
+	Runs the image
+	c.f. Docker Compose = local container orchestrator
+	Think of ECS as AWS’s “container manager”.
+	Lets you run Docker containers without managing servers
+	Handles scheduling, scaling, networking, and monitoring of your containers
+	ECS does not run containers - just coordinates everything.
+	Uses Fargate to actually run the containers
+	Resources - Tasks and Services. c.f. Kubernetes pods
+	
+	
+ECS Cluster
+	An ECS cluster is a logical grouping of resources that can run your containerized applications.
+	Can run multiple separate applications in a single cluster
+	It keeps track of:
+		Tasks → single running containers based on a task definition
+		Services → long-running or scalable groups of tasks
+		Networking (VPC, subnets, security groups)
+		You can have multiple clusters for different environments (dev, staging, prod)
+	With Fargate	- just a place to keep your services/tasks together
+	With EC2		- a group of EC2 machines ready to run your containers
+	
+	
+ECS Task Definition
+	A task definition is like a recipe or blueprint for running a container.
+	
+	It specifies:
+		Which container image to use
+		How much CPU + memory it needs
+		What ports to open
+		What environment variables to set
+		IAM role, logging, etc.
+		You don’t run these directly — you use them to create tasks.
+		
+		
+ECS Task
+	A task is a running copy of a task definition.
+	
+	
+ECS Service
+	An ECS service is a controller that ensures a certain number of tasks are always running.
+	This is the aspect of ECS that is closer to Kubernetes
+	e.g.	Keep 3 tasks running at all times.
+			If 1 crashes then start another
+			
+			
+ECS example
+	Let’s say you want to run a web API.
+	Task Definition:
+		Use my-api:latest image
+		Give it 512 MB RAM
+		Open port 8080
+	Service:
+		“Run 4 copies of this API.”
+
+	Tasks:
+		ECS launches:
+		Task #1
+		Task #2
+		Task #3
+		Task #4
+
+	If Task #2 dies, the service immediately starts Task #5 to replace it.
+
+
+Fargate
+	Fargate is the compute power (the machines) that actually run your containers
+	You never have to set up, update, patch, or scale those machines. - AWS just runs the containers for you
+	
+	
+EC2
+	Alternative to Fargate.
+	More manual work required of developer
+	
+	
+EKS
+	AWS' own simple version of Kubernetes
+	
+
+
+################################################################################
+
+
+################################################################################
+Operations
+	Create repository in ECR - done
+	Create ECS Cluster
+	Create ECS Task Definition
+	Create ECS Service
+	Create ECS Task
+	
+
+
+	
+################################################################################
 Install AWS CLI
 ===============
 Allows
@@ -64,179 +243,13 @@ Allows
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 Download and run .msi
 
-Configure
----------
-see desktop
-
-
-
-AWS SDK
-=======
-| Tool        | Purpose                            |
-| ----------- | ---------------------------------- |
-| **AWS CLI** | You control AWS from the terminal  |
-| **AWS SDK** | Your **Node.js code** talks to AWS |
-
-Don't bother for now
-
-
-AWS SAM CLI (Highly recommended for serverless work)
-====================================================
-SAM (Serverless Application Model) helps you:
-
-Run Lambda functions locally
-Deploy serverless apps easily
-Package CloudFormation for you
-
-Windows: MSI installer
-
-
-Visual Studio Code extensions
-=============================
-AWS Toolkit for VS Code
-YAML (for CloudFormation/SAM templates)
-JavaScript extensions depending on your language
-
-
-1. Create an ECR (Elastic Container Registry) repository
-========================================================
-ECR is where your Docker image will live.
-Go to the AWS Console → ECR → Create repository
-Repository name: my-first-aws-app
-Visibility: Private
-Leave other defaults → Create repository
-Copy the repository URI, e.g.: 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-first-aws-app
-
-
-2. Tag & push your Docker image to ECR
-======================================
-
-
-# Log in to ECR
-works because of aws configure - don't need to specify my credentials
-aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 869036203214.dkr.ecr.eu-north-1.amazonaws.com - login succeeded
-
-
-# Build your Docker image (if not done already)
-docker build -t my-first-aws-app -f apps/aws/Dockerfile . - done
-
-# Tag the image for ECR
-docker tag my-first-aws-app:latest 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-first-aws-app:latest - done
-
-
-# Push the image
-docker push 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-first-aws-app:latest - done
-
-
-3. Create an ECS cluster (Fargate)
-==================================
-ECS - Elastic Container Service
-Fully managed container orchestration service by AWS
-	Lets you run Docker containers without managing servers (especially with Fargate)
-	Handles scheduling, scaling, networking, and monitoring of your containers
-	Think of ECS as AWS’s “container manager”.
-
-ECS Cluster
-	An ECS cluster is a logical grouping of resources that can run your containerized applications.
-	It’s not a server itself, especially if you use Fargate (serverless mode)
-	It keeps track of:
-		Tasks → single running containers based on a task definition
-		Services → long-running or scalable groups of tasks
-		Networking (VPC, subnets, security groups)
-		You can have multiple clusters for different environments (dev, staging, prod)
-
-Need ECS service linked role
-
-
-Go to ECS → Clusters → Create Cluster → Networking only (Fargate)
-Name it: my-first-aws-app-cluster2 - first attempt with my-first-aws-app-cluster failed
-Leave other settings default → Create
-
-
-4. Create a Task Definition
-===========================
-Task definitions describe what containers to run.
-ECS → Task Definitions → Create new Task Definition
-
-Launch type: Fargate
-
-Task size:
-
-vCPU: 0.5 (sufficient for small apps)
-
-Memory: 1 GB
-
-Container definitions → Add container
-
-Name: my-first-aws-app
-
-Image: Paste your ECR image URI (869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-first-aws-app)
-
-Port mappings: 3009 TCP
-
-Port name: doesn't matter. my-first-aws-app
-
-Environment variables: optional for now
-
-Click Add → Create - task definition successfully created
-
-
-5. Create a Fargate service
-===========================
-
-ECS → Clusters → Select your cluster → Create → Service
-
-Launch type: Fargate
-
-Task definition: select the one you just created
-
-Service name: my-first-aws-app-service
-
-Number of tasks: 1 (can scale later)
-
-Networking:
-
-Cluster VPC: choose default VPC
-
-Subnets: at least 2 public subnets
-
-Auto-assign public IP: ENABLED
-
-Security group: allow inbound TCP 3009 (or 80 if you want HTTP)
-
-Click Next → Create Service
-
-
-6. Access your app
-==================
-
-Go to ECS → Cluster → Service → Tasks → Click task → Public IP
-
-Open in browser:
-http://<public-ip>:3009
-
-
-===
-Container port
-
-Definition: The port inside the Docker container that your application listens on.
-
-Example: In your Dockerfile/NestJS app, you exposed port 3009:
-
-app.listen(3009);
-
-
-So your container port = 3009.
-
-ECS/Fargate needs to know this so it can route traffic correctly inside the container.
-
-
-Container port = port your app listens to inside the container (Dockerfile / app code). see main.ts
-
-Port mapping = how the container port is exposed to the outside world (host / task ENI / load balancer)
-
-For a simple single-container test, just set both to 3009 TCP, no need for fancy networking yet.
-							
-
-
-
+Access key: AKIA4UVUYDTHO63MKOD2
+Secret access key: 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
+
+It is used only for programmatic access:
+	AWS CLI
+	SDKs (Node.js, Python, Go, etc.)
+	CI/CD pipelines (GitHub Actions, GitLab CI, Jenkins)
+	Any system that needs to call AWS APIs
+	
+AWS scans github to detect if access keys have been exposed!

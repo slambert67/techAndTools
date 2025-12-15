@@ -1,24 +1,38 @@
-FROM node:22-alpine
+# -------- Build stage --------
+FROM node:22-alpine AS builder
 
-# 1️⃣ Set working directory to monorepo root
+# Set working directory
 WORKDIR /app
 
-# 2️⃣ Copy root package files
+# Copy root package.json and lockfile
 COPY package*.json ./
 
-# 3️⃣ Copy gateway package.json (if it exists)
-#COPY apps/aws/package*.json ./apps/aws/
+# Install dependencies
+RUN npm install
 
-# 4️⃣ Install dependencies
-#RUN npm install
-
-# 5️⃣ Copy the entire monorepo
+# Copy full repo
 COPY . .
 
-# 6️⃣ Build gateway project
-# RUN npx nest build apps/aws
-RUN npx nest build
+# Build the NestJS app from root
+RUN npx nest build apps/aws
 
-# 7️⃣ Run the compiled output
-#CMD ["node", "dist/apps/aws/main.js"]
-CMD ["node", "dist/main.js"]
+# -------- Production stage --------
+FROM node:22-alpine
+
+WORKDIR /app
+
+# Copy production dependencies only
+COPY package*.json ./
+RUN npm install --omit=dev
+
+# Copy compiled app from builder
+# Adjust this path if needed based on where Nest outputs the build
+COPY --from=builder /app/dist ./apps/aws/dist
+
+WORKDIR /app
+
+# Expose port
+EXPOSE 3009
+
+# Start the app
+CMD ["node", "apps/aws/dist/main.js"]

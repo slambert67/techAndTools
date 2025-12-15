@@ -1,0 +1,152 @@
+| Big-O      | Name         | Description                                            | Example                             |
+| ---------- | ------------ | ------------------------------------------------------ | ----------------------------------- |
+| O(1)       | Constant     | Time doesn’t grow with input                           | Accessing an array element by index |
+| O(log n)   | Logarithmic  | Time grows slowly, proportional to log of input        | Binary search                       |
+| O(n)       | Linear       | Time grows proportionally with input                   | Loop through an array               |
+| O(n log n) | Linearithmic | Slightly worse than linear, typical in efficient sorts | Merge sort, Heap sort               |
+| O(n²)      | Quadratic    | Time grows with square of input                        | Bubble sort, nested loops           |
+| O(2ⁿ)      | Exponential  | Doubles with each input increment                      | Recursive Fibonacci                 |
+| O(n!)      | Factorial    | Grows extremely fast                                   | Traveling salesman brute-force      |
+
+
+1. What is Big-O notation and why do we use it?
+
+Big-O describes how an algorithm’s time or space requirements grow as input size increases.
+We use it to compare scalability independent of hardware.
+
+2. Time complexity of:
+for i in range(n):
+    print(i)
+
+
+O(n) — Runs the loop n times.
+
+3. Difference between O(n) and O(1)?
+
+O(1): Constant time; does not depend on input size.
+
+O(n): Grows linearly with input size.
+
+4. Time complexity of accessing an array element?
+
+O(1) — Direct indexing.
+
+5. Worst-case time complexity of linear search?
+
+O(n) — May need to look at every element.
+
+⭐ Intermediate Answers
+6. Time complexity of binary search? Why?
+
+O(log n) — Each step halves the search space.
+
+7. Complexity of nested loops:
+for i in range(n):
+    for j in range(n):
+        print(i, j)
+
+
+O(n²) — n × n iterations.
+
+8. Time and space complexity of merge sort?
+
+Time: O(n log n)
+
+Space: O(n) (needs a temp array for merging)
+
+9. Time complexity of inserting into a balanced BST?
+
+O(log n) — Tree height remains log-n in balanced trees.
+
+10. Difference between time and space complexity?
+
+Time complexity: How long the algorithm runs.
+
+Space complexity: Extra memory required beyond input.
+
+11. Time complexity of iterating over a hash map?
+
+O(n) — Must visit each key/value pair.
+
+12. Can an algorithm have O(n) time but O(1) space? Example?
+
+Yes. Example:
+
+for x in arr:
+    sum += x
+
+
+Time: O(n)
+
+Space: O(1) (only uses a counter)
+
+🔥 Advanced Answers
+13. What is amortized time complexity? Example?
+
+Average cost per operation over a sequence of operations, even if some are expensive.
+
+Common example:
+Dynamic array push → Amortized O(1) (occasionally resizing costs O(n))
+
+14. Big-O of quicksort in average vs worst case?
+
+Average: O(n log n)
+
+Worst: O(n²) (when pivots are consistently bad)
+
+15. Complexity of:
+for i in range(n):
+    j = 1
+    while j < n:
+        j *= 2
+
+
+Outer loop: n
+Inner loop: log n
+Total = O(n log n)
+
+16. Space complexity of recursive DFS on a graph?
+
+O(h) where h is recursion depth.
+For DFS this is O(V) in worst case (a long chain).
+
+If graph is balanced, often O(log V).
+
+17. Time complexity of generating all subsets (power set)?
+
+There are 2ⁿ subsets.
+
+Thus:
+
+Time: O(2ⁿ)
+
+Space: O(2ⁿ) to store them
+
+18. Explain Big-O, Big-Theta, Big-Omega
+
+O(f(n)): Upper bound (worst case)
+
+Ω(f(n)): Lower bound (best case)
+
+Θ(f(n)): Tight bound (grows exactly like f(n))
+
+19. What determines the time complexity of a hash table?
+
+Main factors:
+
+Hash collisions
+
+Load factor
+
+Hash function quality
+
+Resizing strategy
+
+Average case: O(1)
+Worst case: O(n) if all elements collide.
+
+20. Time complexity of Dijkstra’s algorithm using a binary heap?
+
+O(E log V)
+
+Because each extract-min and update operation costs log V.

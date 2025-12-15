@@ -1,0 +1,228 @@
+# Node.js — Exhaustive Core Functionality for Interviews
+
+## 1. Architecture & Runtime
+- Built on V8 engine
+- Single-threaded JavaScript execution
+- Libuv for async I/O
+- Node API wraps C++ and OS-level features
+- Strengths and weaknesses for CPU-bound tasks
+
+## 2. Event Loop Mechanics
+### Event Loop Phases
+1. Timers
+2. Pending callbacks
+3. Idle/prepare
+4. Poll
+5. Check
+6. Close callbacks
+
+### Microtasks
+- Promises
+- process.nextTick()
+
+### Key Differences
+- nextTick() runs before microtasks
+- setImmediate() runs after poll
+- setTimeout() depends on timer drift
+
+## 3. Modules & Imports
+### CommonJS
+- require()
+- module.exports
+
+### ES Modules
+- import/export
+- Automatic strict mode
+- "type": "module" in package.json
+
+### Topics
+- require vs import
+- Module caching behavior
+
+## 4. Process & OS Interaction (process)
+- process.env
+- process.argv
+- process.exit()
+- Signals (SIGINT, SIGTERM)
+- process.cwd(), process.chdir()
+- CPU/memory usage methods
+- Important events: exit, uncaughtException, unhandledRejection
+
+## 5. Asynchronous Patterns
+- Callbacks
+- Promises
+- Async/await
+- EventEmitter
+- Streams
+
+## 6. Timers
+- setTimeout
+- setInterval
+- setImmediate
+- process.nextTick
+
+## 7. Streams
+### Types
+- Readable
+- Writable
+- Duplex
+- Transform
+
+### Methods & Concepts
+- pipe()
+- data events
+- pause and resume
+
+### Use Cases
+- File I/O
+- HTTP responses
+- Compression
+- Large data streaming
+
+## 8. Buffers & Binary
+- Buffer.from()
+- Buffer.alloc()
+- write(), toString()
+
+### Use Cases
+- TCP packets
+- File data
+- Stream chunks
+
+## 9. Child Processes
+### Methods
+- exec()
+- spawn()
+- fork()
+
+### Differences
+- exec for shell commands
+- spawn for streaming output
+- fork for Node-to-Node IPC
+
+## 10. Worker Threads
+### Use Cases
+- CPU-heavy tasks
+- Parallelism
+
+### Tools
+- new Worker()
+- parentPort
+
+## 11. Cluster Module
+### Use Cases
+- Multi-core CPU usage
+- Scaling Node instances
+
+### Tools
+- cluster.fork()
+- cluster.isMaster
+- cluster.worker
+
+## 12. Networking
+### HTTP
+- http.createServer
+
+### HTTPS
+- Certificate handling
+
+### TCP
+- net.createServer
+
+### UDP
+- dgram module
+
+## 13. File System (fs)
+### Methods
+- readFile/readFileSync
+- writeFile/writeFileSync
+- Promises API via fs.promises
+
+### Streams
+- createReadStream
+- createWriteStream
+
+## 14. Events (EventEmitter)
+- on()
+- emit()
+- removeListener()
+- once()
+
+### Use Cases
+- Streams
+- Custom pub/sub
+- Server events
+
+## 15. Error Handling
+### Types
+- Operational errors
+- Programmer errors
+- Uncaught rejections
+
+### Best Practices
+- Graceful shutdown
+- Centralized error handling
+
+## 16. Performance & Optimization
+### Tools
+- Node profiler
+- clinic.js
+- Flame graphs
+
+### Best Practices
+- Avoid sync calls
+- Use clustering
+- Stream large data
+- Worker threads for CPU-heavy tasks
+
+## 17. Security
+- Avoid eval
+- Input validation
+- Helmet for Express
+- Protect secrets
+- Guard against prototype pollution
+- Rate limiting
+
+## 18. Node Utilities
+### path
+- join
+- resolve
+
+### url
+- Parsing
+
+### os
+- CPU info
+- Memory info
+
+### crypto
+- Hashing
+- HMAC
+- Encryption
+- Random bytes
+
+## 19. Package Management
+- Semantic versioning
+- dependencies vs devDependencies
+- peerDependencies
+- package.json fields
+- Workspaces
+
+## 20. Testing
+- Jest
+- Mocha
+- Supertest
+- Sinon
+
+## 21. Frameworks
+### Express
+- Middleware
+- Routing
+- Error handling
+
+### NestJS
+- Dependency injection
+- Modules
+- Providers
+- Pipes, guards, interceptors
+

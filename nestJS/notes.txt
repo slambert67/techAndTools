@@ -170,7 +170,7 @@ controllers: 	controllers that handle incoming requests
 providers: 		what this module creates and manages: services, DAOs, repositories etc
 exports: 		providers that should be visible to importing modules i.e subset of providers
 				exceptions
-					re export of contents of impoprted module
+					re export of contents of imported module
 
 Singletons by default
 Every module is automatically a shared module

@@ -94,3 +94,159 @@ when to use nextTick
 	etc
 
 todo - play with nexttick
+
+
+
+
+
+streams
+=======
+app.module
+----------
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service_old';
+import { FileCopyDuplex } from './streams/fileCopy_old';
+import { StreamsModule } from './streams/streams.module';
+
+
+@Module({
+  imports: [StreamsModule],
+  controllers: [AppController],
+  providers: [
+    AppService, 
+    {
+      provide: FileCopyDuplex,
+      useFactory: () => {
+        const inputFile = 'duplexInput.txt';
+        const outputFile = 'duplexOutput.txt';
+        return new FileCopyDuplex(inputFile, outputFile);
+      }
+    }
+  ],
+})
+export class AppModule {}
+
+
+old service_old
+---------------
+import { Injectable } from '@nestjs/common';
+import { createReadStream, createWriteStream } from 'fs';
+// import { FileCopyDuplex } from './streams/fileCopy_old';
+
+@Injectable()
+export class AppService {
+
+  constructor() {
+  }
+
+  readStreamFlow(): string {
+
+    /*
+        You never load the entire file into memory. Only chunks (default 64 KB) are read.
+        Data is pushed automatically 
+        This is like a hose: water flows automatically. 
+
+        Use cases:
+          Piping to another stream, logs, sending, simple file reading
+    */
+
+    // Creates a Readable stream from a file.
+    const stream = createReadStream( 'example.txt', {encoding: 'utf8'} );
+
+    // Listening for data events. Emitted whenever a chunk of data is ready.
+    stream.on( 'data', chunk => {
+      console.log(`Received ${chunk}`);
+    });
+
+    // Emitted when the file has been fully read.
+    stream.on( 'end', () => {
+      console.log('Finished reading file');
+    });
+
+    // Emitted if something goes wrong (permissions issue, missing file, etc.).
+    stream.on( 'error', err => {
+      console.log('Error:', err);
+    });
+
+    return 'Reading from stream with flow';
+  }
+
+
+  readStreamPause(): string {
+
+    /*
+        No automatic 'data' events
+        must call .read() manually
+        pulling data, not receiving it automatically
+        This is like sipping water with a straw: you pull when you want.
+
+        Use cases:
+          Parsing, throttling, custom rate control, controlled processing
+    
+    */
+          
+    // Creates a Readable stream from a file.
+    const stream = createReadStream("example.txt", { encoding: "utf8" });
+
+    stream.on( 'readable', () => {
+        let chunk;
+        while ( (chunk = stream.read()) !== null ) {
+          console.log("Read chunk:", chunk);
+        }
+    });
+
+    stream.on( 'end', () => {
+      console.log('Finished reading file');
+    });
+
+    return 'Reading from stream with pause';
+  }
+
+
+  writeStream(): string {
+
+    // Opens a writable file stream. If the file doesn’t exist → Node creates it. If it exists → Node overwrites it.
+    const stream = createWriteStream('output.txt', {encoding: 'utf8'});
+
+    // Writes a chunk of data to the internal buffer. Does not guarantee writing to disk immediately — Node handles buffering
+    // Write is asynchronous and buffered.
+    stream.write("Hello, world!\n");
+    stream.write("This is written using a stream.\n");
+
+    // Signals that: No more data will be written. Node should flush remaining data and close the file. Can optionally pass a final chunk
+    stream.end("Final line.\n");
+
+    // Emitted when the file is fully written and closed.
+    stream.on("finish", () => {
+      console.log("Finished writing file.");
+    });
+
+    // Triggered for: permission errors, disk full, invalid path, stream failures
+    stream.on("error", err => {
+      console.error("Error:", err);
+    });
+
+    return 'Writing to stream';
+  }
+
+
+  duplexStream(): string {
+
+    // Consume readable side (data coming from input.txt)
+    this.duplex.on("data", (chunk) => {
+      console.log("Duplex readable output:", chunk);
+    });
+
+    // Write something to the duplex (goes to output.txt)
+    this.duplex.write("Appended via Duplex!\n");
+
+    // Finish the writable side
+    this.duplex.end();
+    
+    return 'Duplex stream';
+  }
+
+
+}
+

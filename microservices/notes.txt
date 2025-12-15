@@ -235,6 +235,12 @@ Need decoupled async communication or event sourcing? → Message Broker
 
 
 
+https://www.youtube.com/watch?v=aLQalvpQ8z0
+===========================================
+
+
+
+
 
 
 

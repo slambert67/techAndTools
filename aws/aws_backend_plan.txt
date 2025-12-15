@@ -1,0 +1,145 @@
+Great — I’ll give you a complete, realistic AWS plan designed
+specifically for senior backend JavaScript developers, not DevOps
+engineers.
+
+This will get you interview-ready and job-ready without learning
+unnecessary DevOps tech.
+
+------------------------------------------------------------------------
+
+⭐ PART 1 — What AWS knowledge your CV must show (backend-focused)
+
+If you want to pass screening for backend roles, these 7 items are
+enough:
+
+✔️ AWS Lambda
+✔️ API Gateway
+✔️ CloudWatch (logs + metrics)
+✔️ IAM basics
+✔️ DynamoDB OR RDS
+✔️ S3
+✔️ CI/CD using ONE tool (GitHub Actions OR Serverless Framework)
+
+------------------------------------------------------------------------
+
+⭐ PART 2 — 30-Day Practical Learning Plan (1 hour/day max)
+
+This plan avoids unnecessary DevOps complexity and focuses ONLY on the
+parts backend roles require.
+
+------------------------------------------------------------------------
+
+📅 Week 1 — Learn how your code runs in AWS (core backend services)
+
+Day 1–2: AWS Lambda (Node.js)
+
+-   Write and deploy a simple handler
+-   Understand memory, timeout, cold starts
+-   View logs in CloudWatch
+
+Day 3–4: API Gateway
+
+-   Create a REST API
+-   Connect to Lambda
+-   Test endpoints
+-   Learn CORS basics
+
+Day 5–7: IAM fundamentals
+
+-   What is a role
+-   Basic allow/deny
+-   Why “AccessDeniedException” happens
+-   How Lambda gets permissions
+
+------------------------------------------------------------------------
+
+📅 Week 2 — Backend data services
+
+Day 8–9: DynamoDB (recommended)
+
+-   Create a table
+-   Read/write items from Lambda
+-   Understand primary keys and indexes
+
+Day 10–11: S3 basics
+
+-   Upload/delete files
+-   Pre-signed URLs
+-   Common use cases
+
+Day 12–14: RDS intro (optional)
+
+-   Basic setup
+-   Connect Lambda → RDS
+-   Simple query
+
+------------------------------------------------------------------------
+
+📅 Week 3 — Deployment knowledge
+
+Day 15–17: Serverless Framework OR AWS SAM
+
+-   Deploy a Lambda + API Gateway stack
+-   Update configuration
+-   Delete a stack
+
+Day 18–21: CI/CD using GitHub Actions
+
+-   Create a workflow
+-   Deploy to AWS
+-   Understand secrets
+
+------------------------------------------------------------------------
+
+📅 Week 4 — Interview preparation
+
+Day 22–24: Logging and debugging
+
+-   CloudWatch Logs
+-   CloudWatch Metrics
+-   API Gateway integration logs
+
+Day 25–27: Architecture basics
+
+-   REST vs event-driven
+-   SNS → Lambda
+-   SQS → Lambda
+-   VPC basics
+-   Public vs private endpoints
+
+Day 28–30: Mock interview questions
+
+Examples: - How would you secure an API Gateway endpoint?
+- How do you debug a Lambda error?
+- Explain IAM roles
+- DynamoDB vs RDS
+- What causes cold starts?
+
+------------------------------------------------------------------------
+
+⭐ PART 3 — The AWS services you can safely ignore
+
+These are NOT required for backend roles:
+
+❌ VPC design / networking
+❌ CloudFormation (deep)
+❌ Kubernetes (EKS)
+❌ ECS cluster management
+❌ Route53 routing
+❌ Load balancers
+❌ Elastic Beanstalk
+❌ Redshift / Athena / Kinesis
+❌ Security Hub
+❌ Autoscaling config
+❌ NAT gateways
+❌ Subnet design
+
+------------------------------------------------------------------------
+
+⭐ PART 4 — Optional Next Steps
+
+1.  CV rewrite with AWS focus
+2.  A GitHub project that demonstrates AWS backend skills
+3.  Real AWS interview questions + answers
+4.  A detailed learning checklist
+5.  A schedule adjusted to your time availability

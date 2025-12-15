@@ -89,6 +89,7 @@ const api = ( () => {
 
 
         // some() - Returns true if at least one element matches.
+        // the callback can take 3 parameters (element, index, array)
         console.log(arr.some(x => x === 30));
 
 
@@ -165,6 +166,7 @@ const api = ( () => {
         //              In the examples below the 0 and '' are the initial value
 
             // e.g. sum all numbers
+            console.log('sum all nums using reduce')
             const sum = nums.reduce((total, n) => total + n, 0);
             console.log(sum);
 
@@ -398,10 +400,10 @@ const api = ( () => {
 //api.creating();
 //api.checking_searching();
 //api.accessing();
-//api.iteration();
+api.iteration();
 //api.add_remove_mutate();
 //api.add_remove_non_mutate();
 //api.sorting();
 //api.transform();
 //api.iterables();
-api.sparse_v_dense();
+//api.sparse_v_dense();

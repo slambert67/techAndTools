@@ -60,6 +60,13 @@ const api = (() => {
 
     }
 
+    function testSpread() {
+        // convert string to aray
+        let s = 'foo';
+        let a = [...s];
+        console.log(a);
+    }
+
     function iterateOverString(s) {
         for (const char of s) {             // for (const i in s)   iterates over indexes
             console.log(char);
@@ -70,6 +77,7 @@ const api = (() => {
             console.log(s[i]);
         }
     }
+
 
 
     // I18N
@@ -134,7 +142,7 @@ const api = (() => {
         console.log(result.join(' '));
     }
     
-    return { stringObject, stringLiteral, testEquality, testLocaleCompare, testModify, iterateOverString, testSplit, isPalindrome, isPalindrome2, countVowels, capitalize, i18n };
+    return { stringObject, stringLiteral, testEquality, testLocaleCompare, testModify, iterateOverString, testSplit, testSpread, isPalindrome, isPalindrome2, countVowels, capitalize, i18n };
 
 
 })();
@@ -145,9 +153,10 @@ const api = (() => {
 //api.testLocaleCompare();
 //api.testModify();
 //api.testSplit();
+api.testSpread();
 //api.iterateOverString('hello');
 //api.isPalindrome('hhh');
 //api.isPalindrome2('H H H');
 //api.countVowels('a e z');
 //api.capitalize('aaa bbb ccc');
-api.i18n();
+//api.i18n();
