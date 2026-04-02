@@ -1,0 +1,348 @@
+steps
+=====
+	1	create project structure
+			interfaces folder
+			services folder
+			components folder
+			
+	2	define interfaces
+		api interfaces
+		state interface
+	
+	3	define api service. 
+		ng generate service services/api-service
+		temporarily subscribe to test api
+	
+	4	define state service
+		subscribe to test api
+		
+	5	quick and dirty ui
+		<div *ngIf="state.portfolios$ | async as portfolios">
+		  {{ portfolios | json }}
+		</div>
+	
+Dev notes
+=========
+
+	app-root -> app.ts -> app.html
+	
+	ng generate service services/api 
+	
+	created CORS proxy.conf
+	
+ng add @angular/material
+	ng cache clean
+	ng serve --proxy-config proxy.conf.json
+	
+single element
+  <div *ngIf="userDetails$ | async as user">
+    {{ user.email }}
+    {{ user.words[0]}}
+  </div>
+  
+array
+    <div *ngFor="let user of userDetails$ | async">
+      {{ user.id }}
+    </div>
+	
+Design Notes
+============
+
+    Data Structures
+		interfaces - done
+
+
+    Data Retrieval
+        Validation
+
+		Paging
+		
+        Error Handling
+
+            Service Level - done
+
+                import { catchError } from 'rxjs/operators';
+                import { throwError } from 'rxjs';
+                import { HttpErrorResponse } from '@angular/common/http';
+
+                getUsers() {
+                return this.http.get<User[]>(`${this.baseUrl}/users`).pipe(
+                    catchError((error: HttpErrorResponse) => {
+                    let message = 'Unknown error';
+
+                    if (error.status === 0) {
+                        message = 'Server not reachable';
+                    } else if (error.status >= 500) {
+                        message = 'Server error';
+                    } else if (error.status === 404) {
+                        message = 'Resource not found';
+                    }
+
+                    console.error('API error:', error);
+
+                    return throwError(() => new Error(message));
+                    })
+                );
+                }
+
+            Component Level
+
+                this.api.getUsers().subscribe({
+                next: data => {
+                    this.users = data;
+                },
+                error: err => {
+                    this.errorMessage = err.message;
+                }
+                });
+
+                <div *ngIf="errorMessage" class="error">
+                {{ errorMessage }}
+                </div>
+
+            Cleaner
+
+                users$ = this.api.getUsers();
+                errorMessage = '';
+
+                <div *ngIf="errorMessage">{{ errorMessage }}</div>
+
+                <div *ngIf="users$ | async as users; else errorTpl">
+                <div *ngFor="let user of users">
+                    {{ user.name }}
+                </div>
+                </div>
+
+                <ng-template #errorTpl>
+                <div>Failed to load users</div>
+                </ng-template>
+
+
+        Retry Functionality
+
+            import { retry } from 'rxjs/operators';
+
+            getUsers() {
+            return this.http.get<User[]>(url).pipe(
+                retry(2), // retry twice before failing
+                catchError(...)
+            );
+            }
+			
+		I18N
+
+    State Management
+		ngrx/ngxs
+		
+		service based
+
+	Testing
+	
+	
+    UI
+        Container component
+
+        Loading
+
+            users$ = this.api.getUsers();
+            loading = true;
+
+            ngOnInit() {
+            this.users$.subscribe({
+                next: () => this.loading = false,
+                error: () => this.loading = false
+            });
+            }
+
+            <div *ngIf="loading">Loading...</div>
+
+            <div *ngIf="users$ | async as users">
+            <div *ngFor="let user of users">
+                {{ user.name }}
+            </div>
+            </div>
+
+		Sorting
+
+Module
+------
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    HttpClientModule   // 👈 REQUIRED
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+
+
+Service
+-------
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface User {
+  id: number;
+  name: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ApiService {
+  private baseUrl = 'https://api.example.com';
+
+  constructor(private http: HttpClient) {}
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.baseUrl}/users`);
+  }
+}
+
+
+Component1
+----------
+import { Component, OnInit } from '@angular/core';
+import { ApiService, User } from './api.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <div *ngFor="let user of users">
+      {{ user.name }}
+    </div>
+  `
+})
+export class AppComponent implements OnInit {
+  users: User[] = [];
+
+  constructor(private api: ApiService) {}
+
+  ngOnInit() {
+    this.api.getUsers().subscribe(data => {
+      this.users = data;
+    });
+  }
+}
+
+
+Component2 - better
+----------
+import { Component } from '@angular/core';
+import { ApiService, User } from './api.service';
+import { Observable } from 'rxjs';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <div *ngFor="let user of users$ | async">
+      {{ user.name }}
+    </div>
+  `
+})
+export class AppComponent {
+  users$: Observable<User[]>;
+
+  constructor(private api: ApiService) {
+    this.users$ = this.api.getUsers();
+  }
+}
+
+
+REST
+----
+createUser(user: User) {
+  return this.http.post<User>(`${this.baseUrl}/users`, user);
+}
+this.api.createUser({ id: 1, name: 'John' }).subscribe();
+
+
+
+
+Error Handling
+--------------
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
+getUsers() {
+  return this.http.get<User[]>(`${this.baseUrl}/users`).pipe(
+    catchError(err => {
+      console.error(err);
+      return throwError(() => err);
+    })
+  );
+}
+
+
+
+CORS
+----
+Create proxy.conf.json:
+
+{
+  "/api": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
+
+ng serve --proxy-config proxy.conf.json
+
+
+
+
+temp code
+=========
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs'
+import { User, UserDetails } from '../interfaces/interfaces';
+
+interface State {
+  users: User[];
+  loading: boolean;
+}
+
+
+@Injectable({
+  providedIn: 'root',
+})
+export class Api {
+  
+  private stateSubject = new BehaviorSubject<State>({
+    users: [],
+    loading: false
+  });
+
+  public state$: Observable<State>; // expose state as readonly outside this service
+
+
+  constructor(private _http: HttpClient) {
+    this.state$ = this.stateSubject.asObservable();
+
+    
+  }
+
+
+  getData(): Observable<UserDetails> {
+    /*return this._http.get<UserDetails>('/users/1').pipe(
+      catchError( (err:HttpErrorResponse) => {
+        console.log(err);
+        return throwError(() => new Error('squoink error'));
+      })
+    );*/
+
+
+  }
+}
+
+

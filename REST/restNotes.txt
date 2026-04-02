@@ -1,0 +1,342 @@
+CORS - see my my-rest-app
+CSRF - nestjs middleware
+throttling - nestjs middleware
+
+Path Parameters
+===============
+Purpose: Identify a specific resource or a hierarchical structure within your API.
+Used when: The value is essential to locate a resource.
+Structure: Part of the URL path, usually mandatory.
+
+Example:
+	/users/{userId} → Identifies a specific user.
+	/orders/{orderId}/items/{itemId} → Identifies a specific item within a specific order.
+
+Best practices:
+	Keep them required; the API cannot function without them.
+	Typically nouns, not verbs.
+	Reflect resource hierarchy.
+	
+	
+Query Parameters
+================
+Purpose: Filter, sort, or modify the behavior of a request without changing the resource being accessed.
+Used when: The value is optional or modifies the result of a request.
+Structure: Appended after ? in the URL, can have multiple key-value pairs separated by &.
+
+Example:
+	/users?role=admin&active=true → Get users with specific filters.
+	/orders?sort=date&limit=50&page=2 → Pagination and sorting.
+
+Best practices:
+	Avoid using query parameters to identify a resource (use path parameters instead).
+	Keep them optional when possible.
+	Use clear, descriptive names (e.g., ?status=completed, not ?s=1).
+
+Summary:
+	Path parameters = "Which resource?"
+	Query parameters = "How should I view this resource?"
+
+
+Pagination
+==========
+Summary:
+	Small datasets: Offset/Limit or Page Number is fine.
+	Large or dynamic datasets: Use Cursor or Keyset pagination.
+	Always include pagination metadata to guide clients.
+	
+Stick to Standard HTTP Methods
+==============================
+GET: Retrieve resources (should be safe and idempotent).
+POST: Create new resources.
+PUT: Update/replace resources entirely (idempotent).
+PATCH: Partially update resources.
+DELETE: Remove resources.
+
+
+https
+=====
+Secure version of http
+Data is encrypted using TLS (Transport Layer Security).
+The server presents a digital certificate issued by a trusted Certificate Authority (CA).
+TLS ensures data cannot be modified in transit without detection.
+
+How HTTPS Works (Simplified)
+	Client initiates a connection to https://example.com.
+	Server sends its TLS certificate.
+	Client verifies the certificate against trusted CAs.
+	Client and server perform a TLS handshake:
+	Agree on encryption algorithms.
+	Exchange keys securely.
+	All subsequent HTTP data is encrypted.
+	After this, HTTP requests and responses behave normally—but inside an encrypted tunnel.
+
+For APIs, HTTPS is non-negotiable:
+	Protects API keys, JWTs, and request payloads
+	Prevents request tampering
+	Required for CORS with credentials
+	Essential for compliance (PCI-DSS, HIPAA, GDPR)
+	
+In NestJS
+This approach terminates TLS inside the NestJS process.
+Step 1: Obtain a Certificate
+	For development: Use a self-signed certificate or a local CA tool like mkcert.
+	For production: Use a trusted CA (e.g., Let’s Encrypt).
+	You will have:
+		key.pem (private key)
+		cert.pem (certificate)
+		
+Step 2: Configure main.ts
+	const httpsOptions = {
+	key: fs.readFileSync('./certs/key.pem'),
+	cert: fs.readFileSync('./certs/cert.pem'),
+	};
+	
+
+Idempotence vs non-idempotence
+==============================
+Idempotence in API design refers to the property that making the same request multiple times produces the same result as making it once. This concept is critical for reliability, safety, and fault tolerance in distributed systems.
+
+Why Idempotence Matters
+	Network retries are common (timeouts, dropped connections).
+	Clients may resend requests automatically.
+	Prevents duplicate side effects (e.g., double-charging a customer).
+	Simplifies error handling and recovery logic.
+
+
+| HTTP Method | Idempotent?     | Explanation                    |
+| ----------- | --------------- | ------------------------------ |
+| GET         | Yes             | Read-only; no state change     |
+| HEAD        | Yes             | Metadata-only                  |
+| PUT         | Yes             | Replaces resource completely   |
+| DELETE      | Yes             | Deleting twice has same effect |
+| OPTIONS     | Yes             | No side effects                |
+| POST        | No (by default) | Creates new resources          |
+
+An idempotency key:
+	Is client-generated
+	Is opaque
+	Has no global meaning
+	Is scoped by the server
+	Idempotency keys are generated from a large keyspace (UUIDv4 ≈ 2¹²² possibilities). - minimal chance of collision
+	Servers never treat idempotency keys as globally unique. Effective uniqueness - (api_key, endpoint, idempotency_key)
+
+Correct client behavior:
+	Generate a new idempotency key per logical operation
+	Reuse the same key only when retrying the same request
+	
+e.g.
+client
+------
+const idempotencyKey = crypto.randomUUID();
+
+fetch('https://api.example.com/payments', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Idempotency-Key': idempotencyKey,
+  },
+  body: JSON.stringify({
+    amount: 1000,
+    currency: 'USD',
+  }),
+});
+
+server
+------
+Use a NestJS interceptor so idempotency is enforced consistently.
+
+
+why not just use DB primary key?
+Key distinction:
+	Idempotency is about request execution.
+	Primary keys are about data storage.
+	
+The Precise Mental Model
+	Composite primary keys prevent duplicate state.
+	Idempotency keys prevent duplicate execution.
+
+They solve adjacent but different layers of the system.
+
+Idempotency checks not necessary for simple CRUD systems
+
+
+Caching
+=======
+Client side caching
+-------------------
+Mechanisms
+	HTTP cache headers: Cache-Control, Expires
+	Browser cache or mobile SDK cache
+	Conditional requests: If-None-Match, If-Modified-Since
+	
+	No additional code needed for browsers
+	Javascript fetch() respects HTTP cache headers
+
+Advantages
+	Eliminates network round trips
+	Lowest latency
+	Zero server cost for cache hits
+
+Limitations
+	Limited control once data is cached
+	Risk of stale data
+	Not suitable for highly dynamic or sensitive data
+
+Typical Use Cases
+	Public, read-heavy endpoints
+	Static reference data (e.g., country lists, configuration metadata)
+	
+	
+Server-Side (Application-Level) Caching
+---------------------------------------
+Responses or computed data are cached within the application layer.
+
+Mechanisms
+	In-memory caches (Redis, Memcached)
+	Local in-process caches
+	Cache-aside (lazy loading) pattern
+
+Advantages
+	Full control over cache behavior
+	Can cache complex or aggregated data
+	Works for authenticated or personalized data
+
+Limitations
+	Additional infrastructure and operational overhead
+	Cache consistency and invalidation complexity
+
+Typical Use Cases
+	Database query results
+	Expensive computations
+	User-specific or role-based responses
+
+
+Database-Level Caching
+----------------------
+Mechanisms
+	Database query cache
+	Read replicas
+	Materialized views
+
+Advantages
+	Transparent to application code
+	Reduces database load
+	Improves read performance
+
+Limitations
+	Less flexible than application caches
+	Cache eviction policies may be opaque
+	Often database-vendor-specific
+
+Typical Use Cases
+	Read-heavy workloads
+	Analytical or reporting queries
+
+
+Practical Strategy by API Type
+------------------------------
+Public, read-only APIs	- CDN + HTTP headers
+Authenticated APIs		- Application-level cache
+High-compute endpoints	- Server-side cache with TTL
+
+
+
+Eager/Lazy Loading
+==================
+Eager loading
+	API returns a resource and all related data in one response
+
+Lazy loading - Preferred
+	API returns a base resource
+
+Related data is retrieved via subsequent requests
+
+Key Takeaway
+------------
+Lazy loading in REST APIs is about deferring cost until demand is explicit. 
+The most effective designs combine:
+	Small default payloads
+	Explicit sub-resources
+	Optional controlled expansions
+	Strong caching
+	
+
+Request and Response Logging
+============================
+| Layer          | What to Log                           |
+| -------------- | ------------------------------------- |
+| API Gateway    | Method, path, status, latency         |
+| Application    | Business context, validation failures |
+| Database       | Slow queries only                     |
+| External Calls | Target, latency, failure reason       |
+
+
+
+Statelessness
+=============
+Each request from client to server must contain all of the information necessary to understand the request, and cannot take advantage of any stored context on the server
+
+authentication
+	JWTs (JSON Web Tokens)
+	OAuth 2.0 Bearer tokens
+	API keys (with caution)
+	
+Benefits of Statelessness
+-------------------------
+Scalability
+	Requests can hit any node
+	Easy horizontal scaling
+
+Reliability
+	No session loss on node failure
+
+Cacheability
+	Responses depend only on request inputs
+	Enables HTTP caching
+
+Simplicity
+	Fewer hidden dependencies
+	Easier debugging
+
+
+Monitoring
+==========
+Minimal “Good” API Monitoring Stack
+
+Metrics					- Prometheus, Datadog, CloudWatch
+Logs					- ELK, Loki, Splunk
+Traces					- OpenTelemetry, Jaeger
+Synthetic checks		- Pingdom, Datadog Synthetics
+Dashboards & alerts		- Grafana, Datadog
+
+
+Authorization
+=============
+Can enforce RBAC policies in REST APIs via middleware
+Keycloak
+
+
+=====================================
+
+
+3. Authentication & Authorization
+
+Authentication strategies:
+	JWT tokens							done
+	OAuth2 / OpenID Connect
+	API keys
+	Session-based auth (cookies)
+
+Authorization:
+	Role-based access control (RBAC)
+	Attribute-based access control (ABAC)
+	Fine-grained permissions
+
+
+4. Security Considerations
+
+XSS, SQL injection prevention
+Storing secrets safely (env variables, vaults)
+
+

@@ -1,0 +1,21 @@
+Mental grouping (how pros think about them)
+Introspection
+    keyof
+    typeof
+    T[K]
+
+Transformation
+    in
+    as
+    readonly
+    ?
+
+Logic
+    extends
+    conditional types
+    infer
+    never
+
+Composition
+    |
+    &

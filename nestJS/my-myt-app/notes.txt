@@ -1,0 +1,30 @@
+A resilient NestJS server enforces three independent controls
+
+Throttling
+    Prevents abusive or bursty traffic
+    Throttling limits how fast requests arrive, but it does not limit how long they stay.
+    So throttling can happily continue to admit requests into an already congested system.
+
+    2 properties matter
+        rate                average requests per second
+        burst tolerance     how spiky traffic may be
+
+    Many algorithms - Token Bucket (Best General-Purpose Algorithm)
+
+    | Parameter           | Meaning                                                   |
+    | ------------------- | --------------------------------------------------------- |
+    | **Capacity (B)**    | Max tokens in bucket → determines **burst tolerance**     |
+    | **Refill rate (R)** | Tokens per second → determines **sustained request rate** |
+
+    capacity = burst_size_in_requests                       e.g. 30 requests
+    refillRate = safe_max_requests_per_second_per_client    e.g. 10 requests/second
+
+
+
+Concurrency Limits
+    Caps in-flight work to safe bounds
+    Concurrency means - How many requests are alive in the system at the same time (running, waiting, blocked, or suspended)
+
+
+Timeouts + Backpressure
+    Ensured stalled work is terminated

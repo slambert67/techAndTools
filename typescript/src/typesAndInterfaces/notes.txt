@@ -1,0 +1,8 @@
+| Aspect                 | `interface`                   | `type`                |
+| ---------------------- | ----------------------------- | --------------------- |
+| Primary intent         | Object shape / contracts      | Type composition      |
+| Declaration merging    | Yes                           | No                    |
+| Extends / intersection | `extends`                     | `&`                   |
+| Union types            | No                            | Yes                   |
+| Primitives / tuples    | No                            | Yes                   |
+| Recommended for        | Public APIs, object contracts | Complex types, unions |

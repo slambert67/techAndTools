@@ -1,0 +1,71 @@
+ES Modules (ESM)
+================
+ES Modules are the official, standardized module system for JavaScript, introduced in ES2015 (ES6).
+
+Environments
+	Modern browsers
+	Node.js (with "type": "module" or .mjs)
+	
+
+Code
+----
+// @filename: hello.ts
+export default function helloWorld() {									import helloWorld from "./hello.js";
+  console.log("Hello, world!");
+}
+
+
+
+// @filename: maths.ts													import { pi, phi, absolute } from "./maths.js";
+export var pi = 3.14;													import { pi as π } from "./maths.js";
+export let squareTwo = 1.41;											import * as math from "./maths.js"; console.log(math.pi);
+export const phi = 1.61;
+ 
+export class RandomNumberGenerator {}
+ 
+export function absolute(num: number) {
+  if (num < 0) return num * -1;
+  return num;
+}
+	
+	
+Typescript specific
+-------------------
+// @filename: animal.ts
+export type Cat = { breed: string; yearOfBirth: number };				import { Cat, Dog } from "./animal.js";
+ 
+export interface Dog {
+  breeds: string[];
+  yearOfBirth: number;
+}
+	
+
+	
+CommonJS (CJS)
+==============
+CommonJS is the traditional module system used by Node.js prior to ESM support.
+
+Environments
+	Node.js (default until Node 12+)
+	Older tooling and libraries
+	
+	
+	
+TypeScript-Specific Considerations
+	TypeScript does not introduce a new runtime module system. Instead, it:
+	Type-checks module syntax
+	Transpiles to a target module system
+
+
+Key Insight
+	TypeScript’s module system choice is about output compatibility, not authoring style. You typically write ESM and emit something else if needed.
+	
+	
+Code
+----
+module.exports = {													const maths = require("./maths");
+  pi: 3.14,															maths.pi;
+  squareTwo: 1.41,
+  phi: 1.61,
+  absolute,
+};

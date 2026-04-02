@@ -1,0 +1,6 @@
+why generics instead of unions
+
+
+Rule of Thumb (Memorize This)
+    If a function creates new data, don’t use generics
+    If a function returns existing data, generics are appropriate

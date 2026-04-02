@@ -1,0 +1,12 @@
+<p>users-details-container works!</p>
+
+<!--
+<div *ngIf="_state.appState$ | async as state">
+  {{ state.allUserDetails | json}}
+</div>
+-->
+
+
+<div *ngIf="_state.appState$ | async as state">
+    <app-users-details-dumbui [userDetails]="state.allUserDetails"></app-users-details-dumbui>
+</div>

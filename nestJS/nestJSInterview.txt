@@ -1,0 +1,653 @@
+Beginner
+========
+
+Below are **concise but solid model answers** suitable for **beginner NestJS interviews**. These answers are intentionally clear, interview-appropriate, and avoid unnecessary internal complexity.
+
+---
+
+## 1. NestJS Fundamentals
+
+**1. What is NestJS, and why would you use it?**
+NestJS is a Node.js framework for building scalable server-side applications. It is built on top of Express or Fastify and uses TypeScript by default. It provides a structured architecture, dependency injection, and built-in support for common backend concerns.
+
+**2. What architectural pattern does NestJS follow?**
+NestJS follows a modular architecture inspired by Angular and strongly encourages separation of concerns using the MVC pattern and dependency injection.
+
+**3. How is NestJS different from Express?**
+Express is minimal and unopinionated, while NestJS is opinionated and provides structure, decorators, dependency injection, and tooling out of the box.
+
+**4. What is the role of TypeScript in NestJS?**
+TypeScript provides static typing, decorators, and better tooling, which improves maintainability and reduces runtime errors.
+
+**5. What are the main building blocks of a NestJS application?**
+Modules, controllers, providers (services), middleware, guards, pipes, and interceptors.
+
+---
+
+## 2. Modules
+
+**6. What is a module in NestJS?**
+A module is a class annotated with `@Module()` that groups related controllers and providers.
+
+**7. What does the `@Module()` decorator do?**
+It defines metadata that tells NestJS how to organize the application structure.
+
+**8. What are `imports`, `providers`, `controllers`, and `exports`?**
+
+* `imports`: other modules this module depends on
+* `providers`: services available in the module
+* `controllers`: request handlers
+* `exports`: providers made available to other modules
+
+**9. Why are modules important?**
+They help organize code, improve maintainability, and enable encapsulation.
+
+**10. What is a global module?**
+A module marked with `@Global()` whose providers are available across the entire application.
+
+---
+
+## 3. Controllers
+
+**11. What is a controller?**
+A controller handles incoming HTTP requests and returns responses.
+
+**12. What does `@Controller()` do?**
+It defines a class as a controller and optionally sets a route prefix.
+
+**13. How do you define routes?**
+Using decorators such as `@Get()`, `@Post()`, `@Put()`, and `@Delete()`.
+
+**14. Difference between HTTP method decorators?**
+They map controller methods to HTTP verbs like GET, POST, PUT, and DELETE.
+
+**15. How do you access request data?**
+Using decorators such as `@Param()`, `@Query()`, and `@Body()`.
+
+---
+
+## 4. Providers and Services
+
+**16. What is a provider?**
+A provider is a class that can be injected into other classes using dependency injection.
+
+**17. What is a service?**
+A service is a provider that contains business logic.
+
+**18. How does dependency injection work?**
+NestJS automatically injects required providers into constructors based on type metadata.
+
+**19. What does `@Injectable()` do?**
+It marks a class as a provider that can be managed by NestJS’s DI container.
+
+**20. Why is dependency injection important?**
+It improves testability, modularity, and separation of concerns.
+
+---
+
+## 5. Dependency Injection Scope
+
+**21. What is the default provider scope?**
+Singleton.
+
+**22. Difference between scopes?**
+
+* Singleton: one instance for the entire app
+* Request: one instance per request
+* Transient: a new instance every injection
+
+**23. When use request scope?**
+When provider behavior depends on request-specific data, such as authentication context.
+
+---
+
+## 6. Middleware, Guards, Pipes, Interceptors
+
+**24. What is middleware?**
+Functions that run before route handlers, commonly used for logging or modifying requests.
+
+**25. Middleware vs guards?**
+Middleware runs before routing; guards decide whether a request is authorized to proceed.
+
+**26. What is a pipe?**
+A pipe transforms or validates incoming data.
+
+**27. Example of a built-in pipe?**
+`ValidationPipe`, `ParseIntPipe`.
+
+**28. What is an interceptor?**
+It intercepts requests or responses to add logic like logging or response transformation.
+
+---
+
+## 7. Exception Handling
+
+**29. How does NestJS handle errors by default?**
+It converts thrown exceptions into structured HTTP responses.
+
+**30. What is an exception filter?**
+A mechanism to customize error handling logic.
+
+**31. What is `HttpException`?**
+A base class for HTTP-related errors.
+
+**32. How do you return custom status codes?**
+By throwing `HttpException` or using `@HttpCode()`.
+
+---
+
+## 8. Data Validation and DTOs
+
+**33. What is a DTO?**
+A Data Transfer Object defines the shape of data being sent or received.
+
+**34. Why use DTOs?**
+They improve validation, type safety, and documentation.
+
+**35. How does `class-validator` work?**
+It uses decorators to validate DTO properties.
+
+**36. What is `ValidationPipe`?**
+A pipe that automatically validates request data against DTOs.
+
+---
+
+## 9. Configuration and Environment
+
+**37. How do you manage environment variables?**
+Using `.env` files and the `@nestjs/config` module.
+
+**38. What is `@nestjs/config`?**
+A module for loading and accessing environment variables.
+
+**39. How do you access env variables in a service?**
+By injecting `ConfigService`.
+
+---
+
+## 10. Application Lifecycle
+
+**40. What are lifecycle hooks?**
+Methods that run at specific stages of the app lifecycle.
+
+**41. What is `onModuleInit()`?**
+A hook called when a module has been initialized.
+
+**42. What happens when the app starts?**
+Modules are loaded, providers are instantiated, and the server begins listening.
+
+---
+
+## 11. Testing Basics
+
+**43. What testing framework is used?**
+Jest.
+
+**44. What is `@nestjs/testing`?**
+A package that provides utilities for testing NestJS applications.
+
+**45. Unit vs e2e tests?**
+Unit tests test individual components; e2e tests test the full application flow.
+
+---
+
+## 12. Miscellaneous / Practical
+
+**46. What is `main.ts`?**
+The application entry point.
+
+**47. How do you enable CORS?**
+By calling `app.enableCors()`.
+
+**48. What does `NestFactory.create()` do?**
+It creates an instance of the NestJS application.
+
+**49. How do you serve static files?**
+Using `ServeStaticModule`.
+
+**50. How do you connect to a database?**
+By using libraries like TypeORM, Prisma, or Mongoose with their respective NestJS modules.
+
+---
+
+Intermediate
+============
+Below is a **carefully selected set of intermediate NestJS interview questions with model answers**. These focus on **real-world usage, framework internals, and architectural decisions**, which are commonly expected at the intermediate level.
+
+---
+
+## 1. Architecture and Core Concepts
+
+### 1. How does NestJS implement inversion of control?
+
+NestJS uses an internal dependency injection container that resolves providers based on tokens and metadata generated by decorators. Dependencies are injected via constructors, enabling loose coupling and testability.
+
+### 2. What happens internally when NestJS boots up?
+
+NestJS scans modules, resolves dependencies, creates the dependency graph, instantiates providers according to their scope, applies middleware, and binds routes before starting the HTTP server.
+
+### 3. What is the difference between `useClass`, `useValue`, and `useFactory`?
+
+* `useClass`: maps a token to a class implementation
+* `useValue`: provides a static value or object
+* `useFactory`: dynamically creates a provider using a factory function
+
+---
+
+## 2. Modules and Dependency Management
+
+### 4. What is a dynamic module?
+
+A dynamic module is a module created at runtime that allows configuration via static methods like `forRoot()` or `forRootAsync()`.
+
+### 5. Difference between `forRoot()` and `forRootAsync()`?
+
+`forRoot()` uses synchronous configuration, while `forRootAsync()` allows async configuration and dependency injection.
+
+### 6. What problem do dynamic modules solve?
+
+They enable reusable and configurable modules such as database, cache, or authentication modules.
+
+### 7. What is module encapsulation?
+
+Providers are private to a module unless explicitly exported.
+
+---
+
+## 3. Providers and Dependency Injection
+
+### 8. What are custom provider tokens?
+
+Tokens used to identify providers, which can be strings, symbols, or classes.
+
+### 9. When would you use a custom provider token?
+
+When injecting interfaces or multiple implementations of the same abstraction.
+
+### 10. How do you inject a provider using a string or symbol token?
+
+Using the `@Inject()` decorator.
+
+---
+
+## 4. Middleware, Guards, Pipes, Interceptors (Deep Dive)
+
+### 11. Execution order of request lifecycle?
+
+Middleware → Guards → Interceptors (before) → Pipes → Controller → Interceptors (after) → Response.
+
+### 12. When would you use middleware vs interceptor?
+
+Middleware is framework-agnostic and runs before routing; interceptors are NestJS-specific and wrap method execution.
+
+### 13. Can middleware inject dependencies?
+
+Yes, if defined as a class and registered via a module.
+
+### 14. What is a custom pipe example?
+
+A pipe that validates or transforms route parameters, such as converting strings to numbers.
+
+---
+
+## 5. Exception Handling
+
+### 15. Difference between `throw` and `return` for errors?
+
+Errors must be thrown to be handled by NestJS’s exception layer.
+
+### 16. How do exception filters work?
+
+They catch thrown exceptions and map them to HTTP responses.
+
+### 17. Can exception filters be scoped?
+
+Yes—global, controller-level, or method-level.
+
+---
+
+## 6. Validation, Transformation, and Serialization
+
+### 18. What does `transform: true` do in `ValidationPipe`?
+
+It automatically transforms payloads into DTO instances.
+
+### 19. What is `whitelist: true`?
+
+It strips properties that are not defined in the DTO.
+
+### 20. What is class-transformer used for?
+
+To transform plain objects into class instances and control serialization.
+
+---
+
+## 7. Interceptors and Performance
+
+### 21. How do interceptors affect performance?
+
+They add overhead but enable cross-cutting concerns like logging, caching, and response mapping.
+
+### 22. What is a caching interceptor?
+
+An interceptor that caches responses to improve performance.
+
+### 23. How do you measure request execution time?
+
+By using an interceptor that measures start and end times.
+
+---
+
+## 8. Authentication and Authorization
+
+### 24. How does NestJS integrate with Passport?
+
+Through `@nestjs/passport`, which wraps Passport strategies into guards.
+
+### 25. Difference between authentication and authorization?
+
+Authentication verifies identity; authorization determines access rights.
+
+### 26. What is a custom guard example?
+
+A roles-based guard that checks user permissions.
+
+---
+
+## 9. Async and Background Processing
+
+### 27. How does NestJS handle async code?
+
+Using Promises and `async/await` with built-in support in controllers and providers.
+
+### 28. How would you handle background jobs?
+
+Using libraries like Bull or BullMQ integrated via NestJS modules.
+
+---
+
+## 10. Configuration and Environment
+
+### 29. How do you validate environment variables?
+
+By using validation schemas with `@nestjs/config`.
+
+### 30. Why avoid accessing `process.env` directly?
+
+To centralize configuration, enable validation, and improve testability.
+
+---
+
+## 11. Testing and Maintainability
+
+### 31. How do you mock providers in tests?
+
+By overriding providers in the testing module.
+
+### 32. How do you test guards or interceptors?
+
+By creating testing modules and mocking dependencies.
+
+---
+
+## 12. Advanced Practical Questions
+
+### 33. How do you share logic across multiple modules?
+
+By exporting providers or creating shared modules.
+
+### 34. How do you avoid circular dependencies?
+
+By refactoring modules or using `forwardRef()` when necessary.
+
+### 35. When should you use `forwardRef()`?
+
+Only when circular dependencies cannot be avoided.
+
+---
+
+## 13. Production Considerations
+
+### 36. How do you enable graceful shutdown?
+
+By enabling shutdown signals and implementing lifecycle hooks.
+
+### 37. How do you handle logging in production?
+
+Using a logging service or integrating tools like Winston or Pino.
+
+### 38. How do you version APIs in NestJS?
+
+Using URI, header, or media-type versioning.
+
+---
+
+## 14. Design and Best Practices
+
+### 39. How do you structure a large NestJS project?
+
+Using feature-based modules and shared libraries.
+
+### 40. Common mistakes beginners make in NestJS?
+
+Overusing request-scoped providers, poor module boundaries, and business logic in controllers.
+
+---
+
+If you want next steps, I can:
+
+* Convert these into **senior-level questions**
+* Add **code snippets for each concept**
+* Create a **mock technical interview**
+* Focus specifically on **auth, performance, or microservices**
+
+Just tell me how you want to proceed.
+
+
+Advanced
+========
+Below is a **set of advanced NestJS interview questions with model answers**. These are designed to assess **deep framework knowledge, architectural judgment, scalability, performance, and production readiness**, which are typical expectations for senior or lead-level roles.
+
+---
+
+## 1. Framework Internals and Architecture
+
+### 1. How does NestJS build and resolve the dependency graph?
+
+NestJS scans all modules and their metadata, creates provider tokens, and builds a dependency graph. The DI container resolves providers top-down based on module context, scope, and exports. Providers are instantiated lazily unless request-scoped or explicitly needed during bootstrap.
+
+### 2. How does NestJS handle circular dependencies internally?
+
+NestJS detects circular references during dependency resolution. When `forwardRef()` is used, it defers provider resolution until both sides of the dependency are available, allowing the container to resolve the cycle at runtime.
+
+### 3. What are injection tokens, and why are they critical in large systems?
+
+Injection tokens uniquely identify providers. In large systems, they enable abstraction boundaries, multiple implementations, and decoupling from concrete classes—especially when injecting interfaces or external services.
+
+### 4. What are the trade-offs of request-scoped providers?
+
+Request-scoped providers provide per-request isolation but significantly increase memory usage and reduce performance due to repeated instantiation. They should be reserved for cases requiring request context, such as multi-tenant applications.
+
+---
+
+## 2. Module System and Dynamic Composition
+
+### 5. How do dynamic modules work internally?
+
+Dynamic modules return module metadata at runtime. NestJS merges this metadata into the module graph during bootstrap, allowing configurable providers and imports to be registered dynamically.
+
+### 6. How would you design a reusable, configurable module?
+
+By exposing `forRoot()` and `forRootAsync()` methods, validating configuration input, encapsulating providers, and exporting only the required public API.
+
+### 7. How do you prevent configuration duplication across modules?
+
+By centralizing configuration in a shared module and injecting configuration through dynamic modules or `ConfigService`.
+
+---
+
+## 3. Request Lifecycle and Execution Context
+
+### 8. Explain the full request lifecycle in NestJS.
+
+Request → Middleware → Guards → Interceptors (before) → Pipes → Controller → Service → Interceptors (after) → Exception Filters → Response.
+
+### 9. What is `ExecutionContext`, and why is it important?
+
+`ExecutionContext` provides abstraction over different transport layers (HTTP, WebSockets, RPC). It allows guards, interceptors, and filters to operate consistently across protocols.
+
+### 10. How does NestJS support multiple transport layers?
+
+By abstracting request handling via adapters and execution contexts, allowing the same business logic to run over HTTP, WebSockets, gRPC, or message queues.
+
+---
+
+## 4. Interceptors, Pipes, and Cross-Cutting Concerns
+
+### 11. How do interceptors differ from middleware in terms of capability?
+
+Interceptors can access method execution, return values, and exceptions, enabling response mapping, caching, retries, and performance monitoring—capabilities middleware lacks.
+
+### 12. How would you implement distributed tracing?
+
+By using interceptors to propagate trace IDs through request context and integrate with tools like OpenTelemetry.
+
+### 13. What are the dangers of heavy logic in interceptors?
+
+They can increase latency and complicate debugging since they wrap business logic execution.
+
+---
+
+## 5. Exception Handling and Reliability
+
+### 14. How does NestJS handle async errors?
+
+Unhandled async errors are caught by the framework and passed to the exception layer, which converts them into structured responses.
+
+### 15. How would you design a global error handling strategy?
+
+Using global exception filters, standardized error responses, structured logging, and correlation IDs.
+
+### 16. How do you differentiate between operational and programmer errors?
+
+Operational errors are expected runtime failures (e.g., validation, DB errors); programmer errors indicate bugs and should crash or alert the system.
+
+---
+
+## 6. Performance and Scalability
+
+### 17. How does Fastify improve NestJS performance?
+
+Fastify offers faster request handling, lower overhead, and better schema-based validation compared to Express.
+
+### 18. How do you optimize NestJS for high throughput?
+
+Use Fastify, avoid request-scoped providers, enable caching, apply backpressure, and optimize database access.
+
+### 19. How do you handle memory leaks in NestJS?
+
+By avoiding unbounded in-memory data, cleaning up resources in lifecycle hooks, and monitoring heap usage.
+
+---
+
+## 7. Microservices and Messaging
+
+### 20. How does NestJS support microservices?
+
+Through built-in transport layers like TCP, Redis, NATS, Kafka, and gRPC.
+
+### 21. Difference between event-based and request-response messaging?
+
+Event-based is asynchronous and decoupled; request-response expects immediate replies and tighter coupling.
+
+### 22. How do you ensure message reliability?
+
+By using acknowledgements, retries, idempotency, and dead-letter queues.
+
+---
+
+## 8. Data Layer and Transactions
+
+### 23. How do you manage transactions in NestJS?
+
+Transactions are handled at the ORM or database layer, typically using request-bound transaction managers or unit-of-work patterns.
+
+### 24. How do you avoid leaking database connections?
+
+By using connection pooling and properly closing connections in lifecycle hooks.
+
+---
+
+## 9. Security
+
+### 25. How do you secure a NestJS application?
+
+Use HTTPS, authentication guards, rate limiting, input validation, and proper CORS configuration.
+
+### 26. How would you implement multi-tenant security?
+
+By scoping data access per tenant using request context and enforcing tenant isolation at the data layer.
+
+---
+
+## 10. Testing and Maintainability
+
+### 27. How do you test dynamic modules?
+
+By importing them into testing modules and mocking configuration inputs.
+
+### 28. How do you test microservices in NestJS?
+
+By using transport-specific testing utilities and integration tests.
+
+---
+
+## 11. Production Readiness
+
+### 29. How do you handle graceful shutdown in production?
+
+By listening to shutdown signals and cleaning up resources using lifecycle hooks.
+
+### 30. How do you monitor and observe a NestJS application?
+
+Through structured logging, metrics, health checks, and distributed tracing.
+
+---
+
+## 12. Architectural Decision-Making
+
+### 31. When would you avoid using NestJS?
+
+For very small scripts, simple APIs, or cases where framework overhead outweighs benefits.
+
+### 32. How do you enforce architectural boundaries in NestJS?
+
+By strict module boundaries, linting rules, and shared abstractions.
+
+### 33. How do you evolve a NestJS monolith into microservices?
+
+By extracting bounded contexts into independent services and introducing messaging gradually.
+
+---
+
+## 13. Common Senior-Level Pitfalls
+
+### 34. Why is overusing global providers dangerous?
+
+They increase coupling and make reasoning about dependencies harder.
+
+### 35. What signals poor NestJS design?
+
+Fat controllers, excessive request scope usage, circular dependencies, and weak module boundaries.
+
+---
+
+If you want, I can next:
+
+* Convert these into **senior-level take-home exercises**
+* Provide **whiteboard-style answers**
+* Add **code examples for key advanced topics**
+* Simulate a **principal engineer interview**
+
+Tell me how you would like to continue.
+

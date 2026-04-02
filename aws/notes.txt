@@ -75,6 +75,59 @@ aws configure sso
 	SSO Registration Scopes: sso:account:access <- default
 	
 
+Need a github actions dedicated role
+====================================
+Add GitHub as an OIDC Provider
+IAM → Identity providers → Add provider
+Open ID connect
+Provider url: https://token.actions.githubusercontent.com
+Audience: sts.amazonaws.com
+-> token.actions.githubusercontent.com
+
+Create the Role Using Web Identity
+Choose identity provider just created
+Audience: sts.amazonaws.com
+Github organization: slambert67
+Policies
+	ECR access: AmazonEC2ContainerRegistryPowerUser
+	ECS access: AmazonECS_FullAccess
+Role name: github-actions-ecs-deploy
+Click create role -> arn:aws:iam::869036203214:role/github-actions-ecs-deploy
+
+Add Inline Policy
+Go to IAM → Roles
+Click your new role: github-actions-ecs-deploy
+Go to the Permissions tab
+Click Add permissions → Create inline policy
+Choose JSON and paste:
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": [
+        "arn:aws:iam::869036203214:role/<ecsTaskExecutionRole>",
+        "arn:aws:iam::869036203214:role/<ecsTaskRole>"
+      ]
+    }
+  ]
+}
+
+Policy Name: AllowPassEcsRoles
+
+
+
+IMAGE_URI=869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-first-aws-app:${{ github.sha }}
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+
+
+
+
+
 Host on AWS
 ===========
 1. Ensure production build works locally
@@ -96,30 +149,95 @@ docker stop my-aws-app
 docker rm my-aws-app
 
 
+ECR repository: 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-aws-apps
+Authenticate Docker with AWS:
+aws ecr get-login-password --region eu-north-1 | docker login --username AWS --password-stdin 869036203214.dkr.ecr.eu-north-1.amazonaws.com - failing
 
-
-
-todo
-----
-Once configured, authenticate:
-
-aws sso login
-
-
-A browser opens, you sign in as the SSO user, and AWS issues temporary credentials to the CLI.
-
-From there you can:
-
-aws ecr get-login-password ...
-docker login ...
-docker push ...
-
-
-Everything uses temporary role credentials.
-
-
-
+aws configure list-profiles
+	default
+	AdministratorAccess-869036203214
 	
+aws configure list --profile AdministratorAccess-869036203214
+aws sso login --profile AdministratorAccess-869036203214 - success
+aws configure sso
+aws ecr get-login-password --region eu-north-1 --profile AdministratorAccess-869036203214 | docker login --username AWS --password-stdin 869036203214.dkr.ecr.eu-north-1.amazonaws.com - login succeeded
+docker tag my-first-aws-app:latest 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-aws-apps:latest - successful
+docker push 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-aws-apps:latest - successful
+
+
+Create ECS Cluster
+==================
+Go to ECS → Clusters → Create Cluster → Networking only (Fargate)
+Name it: my-aws-cluster
+Leave other settings default → Create
+Cloudwatch metrics only
+
+
+Create ECS Task Definition
+==========================
+Task definitions describe what containers to run.
+ECS → Task Definitions → Create new Task Definition
+Launch type: AWS Fargate
+vCPU: 0.5 (sufficient for small apps)
+Define essential container
+	Task execution role: role used to start my container. My application code does NOT use this role.
+		ecsTaskExecutionRole is default
+		ECS uses it to:
+			Pull your Docker image from ECR
+			Write logs to CloudWatch
+			Fetch secrets from Secrets Manager / SSM
+			Attach ENIs (networking)
+
+	Task role
+		Only needed if my application calls AWS
+		
+	Image: select image with latest tag
+			e.g. 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-aws-apps@sha256:808f5d30dcfb597f56dde7fb7df9221a18738395be9f2f247492ac12292e779c
+			
+	Port name: my-aws-port
+	
+	Container port: the port on which my app is listening. e.g. 3009
+	
+successfully created
+
+
+Create ECS Service
+==================
+Select Task Definition created above
+Capacity provider: Fargate
+Networking
+	VPC: accept defualt
+	Subnets: choose at least 2 public subnets
+	Security group: accept default but check inbound and outbound rules
+	
+
+6. Access your app
+==================
+Go to ECS → Cluster → Service → Tasks → Click task → Public IP
+http://13.61.184.51:3009
+
+works!
+
+edit service -> update task count to 0 to stop running
+	
+	
+7. Logging
+==========
+Normal console.log
+
+ECS Task Definition:
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/my-aws-task-definition",		<- search for this in CloudWatch
+          "awslogs-create-group": "true",
+          "awslogs-region": "eu-north-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+	
+View in task logs or CloudWatch	
+	  
 ################################################################################
 Summary
 =======
@@ -133,7 +251,7 @@ ECR - Elastic Container Registry
 		Leave other defaults → Create repository
 		Copy the repository URI, e.g.: 869036203214.dkr.ecr.eu-north-1.amazonaws.com/my-aws-apps
 		
-ECS
+ECS - Elastic Container Service
 	cloud container orchestrators
 	Runs the image
 	c.f. Docker Compose = local container orchestrator
@@ -223,7 +341,7 @@ Operations
 	Create ECS Cluster
 	Create ECS Task Definition
 	Create ECS Service
-	Create ECS Task
+		Service creates ECS Task
 	
 
 
@@ -253,3 +371,7 @@ It is used only for programmatic access:
 	Any system that needs to call AWS APIs
 	
 AWS scans github to detect if access keys have been exposed!
+
+
+
+

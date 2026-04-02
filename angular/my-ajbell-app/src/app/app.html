@@ -1,0 +1,18 @@
+<h1>hello world</h1>
+
+<div *ngIf="_state.state$ | async as state">
+  {{ state.loading }}
+
+  <div *ngFor="let user of state.users">
+    {{ user.id }}
+    {{ user.name }}
+  </div>
+</div>
+
+
+
+
+
+
+
+<app-user-container></app-user-container>

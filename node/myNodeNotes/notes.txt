@@ -1,0 +1,17 @@
+Node runtime
+============
+EventEmitter
+    A primary mechanism of Node's architecture
+    Defined in 'events' module
+    Not often used directly
+    this.emit
+    instance.on
+
+HTTPServer
+    Subclass of EventEmitter
+    Foundation of all node apps
+    Events
+        startup/shutdown of server object
+        HTTP request stages
+HTTPClient
+    Subclass of EventEmitter

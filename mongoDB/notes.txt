@@ -1,0 +1,46 @@
+Collections
+	Documents
+	
+	
+Commands
+	db - what database
+	show dbs - what databases
+	db.testCollection.insert( {"name": "bob"} )
+	db.dropDatabase
+	db.createCollection("testcollection");
+	show collections
+	db.testcollection.drop
+	
+	
+Aggregation pipeline
+	similar to a series of SQL operations (SELECT, JOIN, GROUP BY, HAVING, etc.).
+	Think of it like a factory assembly line: data enters the first stage, gets transformed, and passes to the next stage
+	Each stage outputs a set of documents, which the next stage processes.
+	
+	| SQL Concept      | Aggregation Pipeline Stage |
+	| ---------------- | -------------------------- |
+	| `WHERE`          | `$match`                   |
+	| `SELECT columns` | `$project`                 |
+	| `GROUP BY`       | `$group`                   |
+	| `ORDER BY`       | `$sort`                    |
+	| `LIMIT`          | `$limit`                   |
+	| `JOIN`           | `$lookup`                  |
+
+	db.orders.aggregate([
+	  { $match: { status: "shipped", year: 2025 } },
+	  { $group: { _id: "$customerId", totalAmount: { $sum: "$amount" } } },
+	  { $sort: { totalAmount: -1 } },
+	  { $limit: 10 }
+	])
+
+
+Embedding vs referencing
+	In MongoDB, data is stored as documents in collections. Relationships between data can be handled in two main ways:
+		Embedding – store related data inside a single document.																				denormalized
+		Referencing – store related data in separate documents/collections, and link them using an ID (similar to a foreign key in SQL)			normalized
+		
+
+Schema validation
+	schemaless by default
+	defined against a collection
+	think of as dynamic DDL statements

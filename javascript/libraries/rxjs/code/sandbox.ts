@@ -1,37 +1,69 @@
-import {Observable, Observer, Subscriber} from "rxjs";
+import {endWith, mergeMap, Observable, of, startWith, switchMap, tap} from "rxjs";
 
-// define Observable emissions
-let subscriber: Subscriber<number> = new Subscriber<number>;
-subscriber.next(1);
-subscriber.next(2);
-subscriber.next(3);
-subscriber.complete();
+// const projectIDs$: Observable<string> = of('proj1', 'proj2', 'proj3');
 
-// create the Observable
-/*let observablex: Observable<number> = new Observable<number>(
-    function(subscriber){
-        console.log('teardown logic');
-});*/
+const projectIDs$: Observable<string> = new Observable( (subscriber) => {
 
-let observable: Observable<number> = new Observable<number>(subscriber => {
-    // synchronous values
-    subscriber.next(1);
-    subscriber.next(2);
-    subscriber.next(3);
-    subscriber.complete();
+    setTimeout( () => {
+        subscriber.next('proj1');
+    },1000);
+
+    setTimeout( () => {
+        subscriber.next('proj2');
+    },2000);
+
+    setTimeout( () => {
+        subscriber.next('proj3');
+    },3000);
+
+    setTimeout( () => {
+        subscriber.complete();
+    },4000);
+
 });
 
-// create Observer. create is deprecated - do not create directly
-//let observer: Subscriber<number> = Subscriber.create()
+const projectData$: Observable<string> = new Observable( (subscriber) => {
 
-// create Subscription
-let subscription = observable.subscribe({
-    next(x) {console.log('got sub1 value ' + x);},
-    error(err) {console.error('something wrong occurred: ' + err)},
-    complete() {console.log('Observable sub1 has completed');}
+    setTimeout( () => {
+        subscriber.next('data1');
+    },3000);
+
+    setTimeout( () => {
+        subscriber.next('data2');
+    },4000);
+
+    setTimeout( () => {
+        subscriber.next('data3');
+    },5000);
+
+    setTimeout( () => {
+        subscriber.complete();
+    },6000);
+
 });
 
-// unsubscribe
-//subscription.unsubscribe();
+/*const state: Observable<string> = projectIDs$.pipe(                                     // stream1 - project IDs
+    tap( (projectID) => { console.log(`${projectID}`); } ),
 
+    switchMap( (outerProjectID) => { return of('data1', 'data2', 'data3').pipe(         // stream2 - project data
+        tap( (x) => { console.log(`in switchmap ${outerProjectID} - ${x}`); })
+    ); } )
+);*/
+
+
+const state: Observable<string> = projectIDs$.pipe(                                     // stream1 - project IDs
+
+    startWith('squoink'),
+    endWith('squoinkXXX'),
+
+    //tap( (projectID) => { console.log(`${projectID}`); } ),
+
+    switchMap( (outerProjectID) => { return projectData$.pipe(                          // stream2 - project data
+        tap( (x) => { console.log(`in ?map ${outerProjectID} - ${x}`); })
+    ); } )
+  
+);
+
+
+state.subscribe({});
 

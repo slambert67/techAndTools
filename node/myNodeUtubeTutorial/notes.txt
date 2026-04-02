@@ -1,0 +1,318 @@
+nodejs runtime
+	dependencies
+		v8
+		libuv
+			enables asynchronicity
+		zlib
+		crypto
+	C/C++ features
+		file system
+		networking
+	JS Library
+	
+	
+node -v -> version
+
+
+Executing javascript with node
+	REPL
+		node -> opens shell to process interactive expressions
+		^C -> exit
+	File
+		
+		
+modules - commonJS
+	no built in module system in Javascript when introduced
+	each file is a separate module
+	explicitly tell module system what is to be exported
+	uses require and module.exports
+	
+	types
+		local modules - modules that we create
+		built in modules - ships with node out of the box
+		3rd party modules - other authors
+
+	scope
+		IIFE pattern used so each module has it's own scope
+		Before a module is executed, Node will wrap it with a function wrapper that provides module scope
+		This IIFE contains 5 important parameters provided by node and specific to the module
+
+		( function( exports, require, module, __filename, __dirname) {
+			const superHero = 'Batman';
+			console.log(message, superHero);
+		});
+
+	caching
+		requiring a module ensures it is cached
+		a second require of the same module has no effect
+		the require function maintains the cache
+
+	exporting
+		module.exports	- preferred
+		exports			- Just a REFERENCE to module.exports
+
+modules - ES
+	Javascript now has a module system as part of the language itself - ES Modules or ESM
+	file extension is .mjs
+	uses import and export
+
+	export patterns
+		default exports
+			const add = (a,b) => {return a+b}
+			export default add;
+			import add from './math.js'
+
+			export default (a,b) => {return a+b}
+			import add from './math.js'
+
+			const add = (a,b) => {return a+b}
+			const sub = (a,b) => {return a-b}
+			export default {
+				add:add,
+				sub:sub
+			}
+			import both from './math.js'
+
+		named exports
+			import and export names must match
+				export const add = (a,b) => {return a+b}
+				export const sub = (a,b) => {return a-b}
+				import * as both from './math.js' or import {add, sub} from './math.js' - preferred
+
+Importing JSON
+		require parses JSON file which is then assigned to an object
+
+Watch mode
+	node --watch index.js
+
+Character sets
+	binary
+	character V? V -> number (86 - character code) -> binary representation
+	How is V mapped to 86 - character sets
+		Unicode
+		Ascii
+
+	convert 86 to binary? See encoding
+
+
+Encoding
+	dictates how to represent a number in a character set as binary data i.e. how many bits
+
+	UTF-8 - 8 bits or 1 byte
+		5 -> 100 -> 00000100
+		V -> 86  -> 01010110
+
+Streams
+	sequence of data
+	process in chunks instead of waiting for entire sequence. e.g. YouTube video
+	cannot control rate at which data arrives - so it is buffered for performance
+	intentionally small area node maintains at runtime to process stream of data
+
+	Buffer() class available without importing
+	buffer.toJSON()
+	buffer.toString()
+	buffer.write()
+	Don't usually work with buffers directly
+
+	Rarely use streams directly.
+
+	Backpressure in Node streams is the mechanism that prevents fast producers from overwhelming slow consumers. Backpressure is how Node says “slow down, I can’t keep up.”
+	Example:
+		File stream reads from disk (fast)
+		Network stream writes to client (slow)
+		Without backpressure:
+			Data piles up in memory
+			Memory usage grows unbounded
+		Backpressure is built into Node’s stream API. You rarely implement it manually — you cooperate with it.
+		.pipe():
+			wires up backpressure correctly
+			pauses and resumes the readable
+			prevents memory explosions
+			This is why you should almost always use pipe() instead of manual loops.
+
+Process can crash
+Built-in modules
+	aka core modules
+	still needs importing
+	path, events, fs, stream, http
+
+	path
+		utilities for working with file and directory paths
+		const path = require("node:path")	: node: is optional
+		path.basename		last section of path - file or directory
+		path.extname		file extension
+		path.parses			object with useful and relevant properties
+		path.isAbsolute		true if absolute
+		join				joins strings with platform specific delimiter
+							path.join('a', 'b', 'index.js') -> a/b/index.js
+							Normalizes path e.g. cancels ../
+		resolve		
+
+	events
+		const EventEmitter = require('events');
+		const emitter = new EventEmitter();	
+		emitter.on('eventName', (data1, data2) => {...} )
+		emitter.emit('eventName', "data1", "data2")	
+
+		Note that fs, stream, http extend EventEmitter!
+
+	fs
+		const fs = require('fs');
+		const fileContents = fs.readFileSync('./file.txt', 'utf-8');  // binary without utf-8
+
+		// error first callback pattern
+		fs.readFile('./file.txt', 'utf-8', (error, data) => { if (error){...} else {...}});		// asynchronous
+
+		fs.writeFileSync('./file.txt', 'hello world');
+
+		fs.writeFile('./file.txt', 'hello world', {flag:'a'}, (err) => { if(err) {error} else {success}})	// flag:a appends
+
+		More recent Promise based module - 
+		const fs = require('fs/promises');
+
+		fs.readFileSync('./file.txt', 'utf-8')
+		.then()
+		.catch()
+
+		or
+
+		async function readFile() { try{ const data = await fs.readFile(); console.log(...)} catch(err) {...}}
+		readFile();
+
+		fs has stream functionality
+
+		const readableStream = fs.createReadStream('./src.txt', {
+			encoding: 'utf-8',
+			highWaterMark: 2	// chunk size of 2 bytes
+		});
+
+		const writeableStream = fs.createWriteStream('./dest.txt', {
+			encoding: 'utf-8',
+		});
+
+		// define event handlers
+		readableStream.on('data', (chunk) => {writeableStream.write(chunk)});
+
+		4 types of streams
+			readableStream
+			writeableStream
+			Duplex for both read and write e.g. sockets
+			Transform streams. Modify data as it is read and written e,g, file compression
+
+pipes
+	read and write is a common pattern so replace with pipes
+	connects a readable stream to a writable stream
+	replace event handler above:
+		readableStream.pipe(writeableStream);
+	returns destination stream enabling chaining
+
+	chaining
+		const zlib = require('zlib');  // compression functionality. has a built-in tansform stream
+		const gzip = zlib.createCzip();	// transform stream
+		readableStream.pipe(gZIP).pipe( fs.writeableStream('file2.txt.gz'));
+
+http
+	allows creation of web servers
+	const http = require('http');
+	const server = http.createServer( (req, res) => {				// callback executed whenever a request reaches the server
+		res.writeHead(200, {"Content-Type": "text/plain"})			// success
+		res.end('hello world');
+	})		
+
+	// tell server to listen to incoming requests
+	server.listen(3000, () => { console.log('server running on port 3000')});
+
+	cannot pass javascript object to res.end. Must be sent as JSON/ JSON.stringify(object)	with Content-Type: application/json <- because the browser doesn't trust it's JSON
+
+	html
+		const html = fs.readFileSync('./index.html', 'utf-8')		// use stream if large file. fs.createReadStream('./index.html').pipe(res)
+		res.end(html)
+
+
+Routing
+	req.url gives request query string
+	conditionally route based on req.url.
+	Finalise with
+		res.writeHead(404);
+		res.end('page not found')
+
+	req.method -> GET, POST, PUT, DELETE
+
+
+libuv
+	enables asynchronicity
+	written in C
+	thread pool
+		node asks thread pool to execute some asynchronous code
+		thread pool has a pool of threads - 4 by default
+		process.env.UV_THREADPOOL_SIZE = 5
+		don't increase above number of CPU cores
+	event loop
+
+
+Network I/O
+	https request does not seem to use thread pool or number of CPU cores
+	htps.request is a network I/O operation and not a CPU bound operation
+	libuv delegates to OS kernel
+
+
+Event loop
+	C program part of libuv
+
+	Primary Queue - part of libub
+		timer Queue								Priority 3 - then Microtask Queue
+			setTimeout callbacks
+			setInterval callbacks
+		i/o Queue								Priority 4 - then Microtask Queue
+			i/o callbacks - fs, http
+		check Queue								Priority 5 - then Microtask Queue				
+			setImmediate callbacks
+		close queue								Priority 6 - then Microtask Queue
+			close callbacks - close event of an async task
+
+	Microtask Queue - not part of libuv
+		nextTick queue							Priority 1
+			process.nextTick callbacks
+		promise queue
+			promise callbacks					Priority 2
+		
+
+
+Cluster Module
+	enables creation of child processes (workers)
+	multiple instances of nodejs that can distribute workloads
+	used for scaling
+
+
+Worker Threads Module
+	multiple application threads in a single nodejs instance
+	cpu bound
+	
+	
+	
+Express
+=======
+const app = express()
+app.get( <route>, <request handler>);
+app.get( '/api/users/:id', (req,res) => {
+	console.log(request.params.id);
+	res.status(201).send('hello world')
+} );
+
+
+Middleware
+----------
+const loggingMiddleware = (req,res,next) => {
+	console.log();
+	next();
+
+app.use(loggingMiddleware);		// use globally
+
+pass to app.get					// use per route
+}
+
+
+Validation
+----------
+express-validator
+

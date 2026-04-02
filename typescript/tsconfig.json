@@ -1,10 +1,34 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "CommonJS",
-    "strict": true
+    // Environment Settings
+    "target": "esnext",                 // Defines which JavaScript features are emitted.
+    "module": "nodenext",               // Tells TypeScript to emit native ESM and to respect Node’s module rules.
+    "moduleResolution": "nodenext",     // Controls how imports are resolved on disk
+
+    // File Layout
+    "rootDir": "./src",                 // Defines the logical root of source files.
+    "outDir": "./dist",                 // Where compiled JavaScript is written.
+    
+    // Interop & Compatibility
+    "esModuleInterop": false,           // Native ESM already handles default imports correctly
+    "resolveJsonModule": true,          // Allows importing JSON files: import config from "./config.json";
+
+    // Developer experience
+    "sourceMap": true,                  // Generates .map files. Allows debugging TypeScript directly in Node
+    "skipLibCheck": true,               // Skips type checking .d.ts files. Massively improves performance with minimal downside.
+
+    // Recommended Options
+    "strict": true,                     // Enables all strictness flags. Compile time safety - except alwaysStrict - runtime strict
+                                        // shorthand that enables a set of individual strictness flags
+                                        // noImplicitAny                    Prevents variables, parameters, or return types from implicitly being any. Forces you to annotate or let inference handle it.
+                                        // strictNullChecks                 Treats null and undefined as separate types. Forces you to handle missing values explicitly.
+                                        // strictFunctionTypes              Enforces bivariant checking for function parameters, making function assignments safer.
+                                        // strictBindCallApply              Checks bind, call, and apply more rigorously for correct argument types
+                                        // strictPropertyInitialization     Ensures class properties are initialized in the constructor or declared with definite assignment (!).
+                                        // noImplicitThis                   Prevents this from defaulting to any. Ensures proper this context.
+                                        // alwaysStrict                     Emits "use strict" in every JavaScript output file. Enables strict mode at runtime.
+
   },
-  "ts-node": {
-    "transpileOnly": false
-  }
+
+  "include": ["src"],                 // Specifies which files are compiled. Prevents accidental compilation of config or build files.
 }

@@ -1,0 +1,11 @@
+<p>users-container works!</p>
+
+<!-- 
+<div *ngIf="_state.appState$ | async as state">
+  {{ state.users | json}}
+</div>
+-->
+
+<div *ngIf="_state.appState$ | async as state">
+    <app-users-dumbui [users]="state.users"></app-users-dumbui>
+</div>

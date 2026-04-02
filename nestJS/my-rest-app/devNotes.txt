@@ -1,0 +1,56 @@
+Cross Origin Resource Sharing - CORS
+====================================
+origin = Scheme(protocol) e.g. http v https + Host(domain) e.g. example.com + port e.g. 3000
+
+If any of these differ, the request is considered cross-origin.
+CORS exists to enforce the Same-Origin Policy, which protects users from malicious websites accessing sensitive data.
+
+CORS is enforced by web browsers, not servers.
+    A browser makes a cross-origin request.
+    The server responds with specific HTTP headers
+    The browser decides whether to allow or block access to the response
+
+Key CORS response headers
+    Access-Control-Allow-Origin - Specifies which origins are allowed to access the resource
+        Access-Control-Allow-Origin: https://example.com
+
+    Access-Control-Allow-Methods - Specifies which custom request headers are permitted.
+        Access-Control-Allow-Methods: GET, POST, PUT
+
+    Access-Control-Allow-Headers - Specifies which custom request headers are permitted.
+        Access-Control-Allow-Headers: Content-Type, Authorization
+
+    Access-Control-Allow-Credentials - Indicates whether cookies or authentication headers are allowed
+        Access-Control-Allow-Credentials: true
+
+Common misconceptions
+    CORS is a server-side error             - Incorrect. The server may work perfectly; the browser blocks access.
+    CORS protects the server                - Incorrect. CORS protects the user and their browser
+    Disabling CORS fixes security issues    - Incorrect and dangerous. It removes a critical client-side safeguard.
+
+example
+    The user navigates to https://frontend.com
+    The browser downloads HTML, CSS, and JavaScript from that origin
+    That JavaScript now runs with the security privileges of https://frontend.com
+    Any network requests initiated by that JavaScript are considered to originate from https://frontend.com, regardless of where the request is sent.
+    e.g.
+        button.addEventListener("click", () => {
+            fetch("https://api.backend.com/data");});
+
+        This request is going to a different origin
+        Therefore, this is a cross-origin request
+        The browser attaches this header automatically: - Origin: https://frontend.com
+        The server at api.backend.com must explicitly say: Access-Control-Allow-Origin: https://frontend.com
+
+Angular app created - runs on localhost:4200
+    ngOnInit
+        this.http.get<any[]>('http://localhost:3000')
+
+        // fails due to CORS
+
+Modify NestJS app - running on localhost:3000
+    main.ts
+        app.enableCors({
+            origin: 'http://localhost:4200',
+            credentials: true,
+        });
