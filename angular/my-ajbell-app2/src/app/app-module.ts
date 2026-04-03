@@ -10,6 +10,7 @@ import { UsersDumbui } from './components/users-dumbui/users-dumbui';
 import { Amui } from './components/amui/amui';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardContent, MatCardModule } from '@angular/material/card';
+import { MatList, MatListItem } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,9 @@ import { MatCardContent, MatCardModule } from '@angular/material/card';
     BrowserModule,
     AppRoutingModule,
     MatTableModule,
-    MatCardModule
+    MatCardModule,
+    MatList,
+    MatListItem
   ],
   providers: [
     provideBrowserGlobalErrorListeners()

@@ -10,4 +10,5 @@ import { StateService } from '../../services/state-service';
 export class UsersDetailsContainer {
 
   constructor(public _state: StateService) { }
+
 }

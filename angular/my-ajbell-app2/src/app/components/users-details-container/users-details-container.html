@@ -6,7 +6,12 @@
 </div>
 -->
 
-
+<!--
 <div *ngIf="_state.appState$ | async as state">
     <app-users-details-dumbui [userDetails]="state.allUserDetails"></app-users-details-dumbui>
+</div>
+-->
+
+<div *ngIf="_state.appState$ | async as state">
+    <app-users-details-dumbui [selectedUser]="state.selectedUser"></app-users-details-dumbui>
 </div>

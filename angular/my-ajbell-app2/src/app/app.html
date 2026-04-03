@@ -1,8 +1,27 @@
-<h1>hello world</h1>
+
+
 
 <!--
-<app-users-container></app-users-container>
-<app-users-details-container></app-users-details-container>
+<app-amui></app-amui>
 -->
 
-<app-amui></app-amui>
+<div class="mobile">
+  <h1>Mobile Layout</h1>
+  <p>Simple stacked content</p>
+</div>
+
+<div class="tablet">
+  <h1>Tablet Layout</h1>
+  <p>Two-column style</p>
+</div>
+
+<div class="desktop">
+  <h1>Desktop Layout</h1>
+  <p>Full complex layout</p>
+    <app-users-container></app-users-container>
+    <app-users-details-container></app-users-details-container>
+
+    <div *ngIf="_state.appState$ | async as state">
+        <h2>Loading: {{state.loading}}</h2>
+    </div>
+</div>

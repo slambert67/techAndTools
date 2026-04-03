@@ -45,6 +45,10 @@ array
       {{ user.id }}
     </div>
 	
+	
+defensive programming
+name: p.name ?? 'Unknown
+
 Design Notes
 ============
 
@@ -53,11 +57,124 @@ Design Notes
 
 
     Data Retrieval
+	
+		Data reduction
+		
+		
         Validation
+zod
+io-ts
 
+		Transformation
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+
+export interface Transaction {
+  transactionId: string;
+  description: string;
+  amount?: number;
+  type?: string;
+  meta?: any;
+}
+
+export interface Account {
+  accountId: string;
+  type: string;
+  balance?: number;
+  currency: string;
+  transactions?: Transaction[];
+  status: string;
+}
+
+export interface Alert {
+  id: string;
+  type?: string;
+  message?: string;
+  read: boolean;
+  createdAt?: string;
+}
+
+export interface User {
+  id: number;
+  name: { first: string; last: string };
+  email?: string;
+  phone?: string;
+  preferences?: { currency: string; notifications?: any; theme?: string };
+  accounts?: Account[];
+  portfolioSummary?: any;
+  alerts?: Alert[];
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class UserService {
+  constructor(private http: HttpClient) {}
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>('/api/users').pipe(
+      map(users =>
+        users.map(user => ({
+          ...user,
+          email: user.email || 'Not provided',
+          phone: user.phone || 'N/A',
+          preferences: {
+            currency: user.preferences?.currency || 'GBP',
+            notifications: {
+              email: user.preferences?.notifications?.email ?? false,
+              sms: user.preferences?.notifications?.sms ?? false,
+              push: user.preferences?.notifications?.push ?? false,
+            },
+            theme: user.preferences?.theme || 'light',
+          },
+          accounts: (user.accounts || []).map(account => ({
+            ...account,
+            balance: account.balance ?? 0,
+            transactions: (account.transactions || []).map(tx => ({
+              ...tx,
+              amount: tx.amount ?? 0,
+              type: tx.type || 'unknown',
+            })),
+          })),
+          alerts: (user.alerts || []).map(alert => ({
+            ...alert,
+            type: alert.type || 'info',
+            message: alert.message || '',
+            createdAt: alert.createdAt || new Date().toISOString(),
+          })),
+          portfolioSummary: user.portfolioSummary || {
+            totalBalance: 0,
+            assetAllocation: { equities: 0, bonds: 0, cash: 0 },
+            performance: { '1M': 0, '3M': 0, YTD: 0 },
+          },
+        }))
+      )
+    );
+  }
+}
+
+map(response => response.data.portfolios.map(p => ({
+  name: p.attributes.display_name,
+  value: p.attributes.metrics.current_value,
+  change: p.attributes.metrics.change_percent
+})))
+
+multiple apis use forkjoin
+forkJoin({
+  portfolios: this.http.get(...),
+  prices: this.http.get(...)
+})
+
+
+	
 		Paging
 		
         Error Handling
+		
+			interceptors
 
             Service Level - done
 
@@ -136,10 +253,61 @@ Design Notes
 		
 		service based
 
+
+Use operators to manage loading state:
+
+import { finalize } from 'rxjs/operators';
+
+loading = true;
+
+ngOnInit() {
+  this.api.getUsers()
+    .pipe(finalize(() => this.loading = false))
+    .subscribe({
+      next: data => this.users = data,
+      error: err => this.errorMessage = err.message
+    });
+}
+
+3) Async pipe pattern (no manual subscribe)
+users$ = this.api.getUsers();
+loading = true;
+
+ngOnInit() {
+  this.users$.subscribe({
+    next: () => this.loading = false,
+    error: () => this.loading = false
+  });
+}
+
+Template:
+
+<div *ngIf="loading">Loading...</div>
+
+<div *ngIf="users$ | async as users">
+  <div *ngFor="let user of users">
+    {{ user.name }}
+  </div>
+</div>
+
+
 	Testing
 	
 	
     UI
+	
+		responsive
+		
+			mobile: stack everything vertically
+			
+			tablet: grid list?
+			
+			desktop: grid
+			
+			
+			
+	{{ portfolio.value | currency:'GBP' }}
+	
         Container component
 
         Loading
@@ -300,49 +468,315 @@ ng serve --proxy-config proxy.conf.json
 
 
 
-temp code
-=========
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, throwError } from 'rxjs'
-import { User, UserDetails } from '../interfaces/interfaces';
+Complex payload
+===============
 
-interface State {
-  users: User[];
-  loading: boolean;
+optional chaining
+-----------------
+// In component.ts
+user = {
+  name: { first: 'Alice', last: 'Johnson' },
+  preferences: null
+};
+
+// In template
+<p>Theme: {{ user.preferences?.theme || 'default' }}</p>
+
+
+safe template navigation
+------------------------
+<h1>{{ user?.name?.first }} {{ user?.name?.last }}</h1>
+
+<!-- Display number of transactions safely -->
+<p>Transactions: {{ user?.accounts?.[0]?.transactions?.length || 0 }}</p>
+
+
+Use *ngIf to Guard Sections
+---------------------------
+<div *ngIf="user?.accounts?.length > 0; else noAccounts">
+  <ul>
+    <li *ngFor="let account of user.accounts">
+      {{ account.type }}: £{{ account.balance || 0 }}
+    </li>
+  </ul>
+</div>
+
+<ng-template #noAccounts>
+  <p>No accounts available.</p>
+</ng-template>
+
+
+Use Default Values in Component
+-------------------------------
+ngOnInit() {
+  this.users = this.users.map(user => ({
+    ...user,
+    email: user.email || 'Not provided',
+    phone: user.phone || 'N/A',
+    accounts: user.accounts || [],
+    alerts: user.alerts || []
+  }));
 }
 
+
+Use TypeScript Interfaces and Optional Properties
+-------------------------------------------------
+
+
+Pipes for Formatting with Nulls
+-------------------------------
+<p>Balance: {{ account?.balance | number:'1.2-2':'en-GB' }}</p>
+<p>Email: {{ user?.email || 'N/A' }}</p>
+
+
+
+Payload and transformation
+==========================
+top level interface only
+
+interface User {
+  id: number;
+  name: { first: string; last: string };
+  email?: string;
+  phone?: string;
+  accounts?: any[]; // shallow type for interview speed
+  alerts?: any[];
+  portfolioSummary?: any;
+}
+
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>('/api/users').pipe(
+      map(users =>
+        users.map(user => ({
+          ...user,
+          email: user.email || 'Not provided',
+          phone: user.phone || 'N/A',
+          preferences: {
+            currency: user.preferences?.currency || 'GBP',
+            notifications: {
+              email: user.preferences?.notifications?.email ?? false,
+              sms: user.preferences?.notifications?.sms ?? false,
+              push: user.preferences?.notifications?.push ?? false,
+            },
+            theme: user.preferences?.theme || 'light',
+          },
+          accounts: (user.accounts || []).map(account => ({
+            ...account,
+            balance: account.balance ?? 0,
+            transactions: (account.transactions || []).map(tx => ({
+              ...tx,
+              amount: tx.amount ?? 0,
+              type: tx.type || 'unknown',
+            })),
+          })),
+          alerts: (user.alerts || []).map(alert => ({
+            ...alert,
+            type: alert.type || 'info',
+            message: alert.message || '',
+            createdAt: alert.createdAt || new Date().toISOString(),
+          })),
+          portfolioSummary: user.portfolioSummary || {
+            totalBalance: 0,
+            assetAllocation: { equities: 0, bonds: 0, cash: 0 },
+            performance: { '1M': 0, '3M': 0, YTD: 0 },
+          },
+        }))
+      )
+    );
+  }
+}
+
+
+[
+  {
+    "user": {
+      "id": 987654,
+      "name": { "first": "Alice", "last": "Johnson" },
+      "email": null,
+      "phone": "+44 20 7946 0958",
+      "preferences": {
+        "currency": "GBP",
+        "notifications": { "email": true, "sms": null, "push": true },
+        "theme": "dark"
+      }
+    },
+    "accounts": [
+      {
+        "accountId": "ACC123456",
+        "type": "ISA",
+        "balance": 15234.56,
+        "currency": "GBP",
+        "transactions": [
+          { "transactionId": "TX1001", "date": "2026-03-28T14:32:00Z", "description": "Deposit", "amount": 5000.0, "type": "credit" },
+          { "transactionId": "TX1002", "date": "2026-03-29T10:15:00Z", "description": "Buy S&P 500 ETF", "amount": null, "type": "debit" }
+        ],
+        "status": "active"
+      }
+    ],
+    "portfolioSummary": { "totalBalance": 15234.56, "assetAllocation": { "equities": 40.0, "bonds": 50.0, "cash": 10.0 }, "performance": { "1M": 1.2, "3M": 3.8, "YTD": 5.6 } },
+    "alerts": [
+      { "id": "ALERT100", "type": "low_balance", "message": null, "read": false, "createdAt": "2026-03-30T08:45:00Z" }
+    ]
+  },
+  
+  
+  {
+    "user": {
+      "id": 987655,
+      "name": { "first": "Bob", "last": "Smith" },
+      "email": "bob.smith@example.com",
+      "phone": null,
+      "preferences": { "currency": "GBP", "notifications": { "email": false, "sms": true, "push": null }, "theme": "light" }
+    },
+    "accounts": [
+      {
+        "accountId": "ACC654321",
+        "type": "SIPP",
+        "balance": null,
+        "currency": "GBP",
+        "transactions": [
+          { "transactionId": "TX2001", "date": "2026-02-15T12:00:00Z", "description": "Monthly Contribution", "amount": 1000.0, "type": "credit" },
+          { "transactionId": "TX2002", "date": "2026-03-10T09:00:00Z", "description": "Buy UK Government Bonds", "amount": -5000.0 }
+        ],
+        "status": "inactive"
+      }
+    ],
+    "portfolioSummary": { "totalBalance": null, "assetAllocation": { "equities": 60.0, "bonds": 30.0, "cash": 10.0 }, "performance": { "1M": 0.5, "3M": 2.1, "YTD": 4.0 } },
+    "alerts": [
+      { "id": "ALERT101", "type": "dividend", "message": "You received a dividend payment of £120", "read": true }
+    ]
+  },
+  
+  
+  {
+    "user": {
+      "id": 987656,
+      "name": { "first": "Charlie", "last": "Evans" },
+      "email": "charlie.evans@example.com",
+      "phone": "+44 20 7946 0961",
+      "preferences": { "currency": "GBP", "notifications": { "email": null, "sms": true, "push": true }, "theme": null }
+    },
+    "accounts": [
+      {
+        "accountId": "ACC111222",
+        "type": "ISA",
+        "balance": 20000.0,
+        "currency": "GBP",
+        "transactions": [],
+        "status": "active"
+      }
+    ],
+    "portfolioSummary": { "totalBalance": 20000.0, "assetAllocation": { "equities": 50.0, "bonds": 40.0, "cash": 10.0 }, "performance": { "1M": 0.9, "3M": 2.5 } },
+    "alerts": []
+  },
+  
+  
+  {
+    "user": {
+      "id": 987657,
+      "name": { "first": "Diana", "last": "Lopez" },
+      "email": null,
+      "phone": "+44 20 7946 0962",
+      "preferences": { "currency": "GBP", "notifications": { "email": true, "sms": true, "push": true }, "theme": "light" }
+    },
+    "accounts": [
+      {
+        "accountId": "ACC333444",
+        "type": "SIPP",
+        "balance": 35000.0,
+        "currency": "GBP",
+        "transactions": [
+          { "transactionId": "TX4001", "date": "2026-01-10T09:00:00Z", "description": "Deposit", "amount": 15000.0, "type": "credit" },
+          { "transactionId": "TX4002", "date": "2026-02-12T09:00:00Z", "description": "Withdraw", "amount": -500.0, "type": "debit", "meta": null }
+        ],
+        "status": "active"
+      }
+    ],
+    "portfolioSummary": { "totalBalance": 35000.0, "assetAllocation": { "equities": 30.0, "bonds": 60.0, "cash": 10.0 }, "performance": { "1M": 1.5, "3M": 3.0, "YTD": 6.0 } },
+    "alerts": [
+      { "id": "ALERT102", "type": null, "message": "Your balance dropped below £20,000", "read": false, "createdAt": null }
+    ]
+  },
+  
+  
+  {
+    "user": {
+      "id": 987658,
+      "name": { "first": "Ethan", "last": "Brown" },
+      "email": "ethan.brown@example.com",
+      "phone": "+44 20 7946 0963",
+      "preferences": { "currency": "GBP", "notifications": { "email": true, "sms": false, "push": null }, "theme": "dark" }
+    },
+    "accounts": [
+      {
+        "accountId": "ACC555666",
+        "type": "ISA",
+        "balance": 5000.0,
+        "currency": "GBP",
+        "transactions": [
+          { "transactionId": "TX5001", "date": "2026-03-05T10:00:00Z", "description": "Deposit", "amount": null, "type": "credit" }
+        ],
+        "status": "active"
+      }
+    ],
+    "portfolioSummary": { "totalBalance": 5000.0, "assetAllocation": { "equities": 80.0, "bonds": 10.0, "cash": 10.0 }, "performance": { "1M": 0.2, "3M": 1.0, "YTD": 1.5 } },
+    "alerts": []
+  }
+]
+
+
+
+multiple apis and forkjoin
+==========================
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+export interface User {
+  id: number;
+  name: { first: string; last: string };
+  email?: string;
+  phone?: string;
+  accounts?: any[];
+  alerts?: any[];
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class Api {
-  
-  private stateSubject = new BehaviorSubject<State>({
-    users: [],
-    loading: false
-  });
+export class UserService {
+  constructor(private http: HttpClient) {}
 
-  public state$: Observable<State>; // expose state as readonly outside this service
-
-
-  constructor(private _http: HttpClient) {
-    this.state$ = this.stateSubject.asObservable();
-
-    
-  }
-
-
-  getData(): Observable<UserDetails> {
-    /*return this._http.get<UserDetails>('/users/1').pipe(
-      catchError( (err:HttpErrorResponse) => {
-        console.log(err);
-        return throwError(() => new Error('squoink error'));
-      })
-    );*/
-
-
+  getCombinedData(): Observable<User[]> {
+    return forkJoin({
+      users: this.http.get<User[]>('/api/users').pipe(catchError(() => of([]))),
+      accounts: this.http.get<any[]>('/api/accounts').pipe(catchError(() => of([]))),
+      alerts: this.http.get<any[]>('/api/alerts').pipe(catchError(() => of([]))),
+    }).pipe(
+      map(({ users, accounts, alerts }) =>
+        users.map(user => ({
+          ...user,
+          email: user.email || 'N/A',
+          phone: user.phone || 'N/A',
+          accounts: (accounts.filter(a => a.userId === user.id) || []).map(acc => ({
+            ...acc,
+            balance: acc.balance ?? 0,
+            transactions: (acc.transactions || []).map(tx => ({
+              ...tx,
+              amount: tx.amount ?? 0,
+              type: tx.type || 'unknown',
+            })),
+          })),
+          alerts: (alerts.filter(al => al.userId === user.id) || []).map(al => ({
+            ...al,
+            type: al.type || 'info',
+            message: al.message || '',
+            createdAt: al.createdAt || new Date().toISOString(),
+          })),
+        }))
+      )
+    );
   }
 }
-
-

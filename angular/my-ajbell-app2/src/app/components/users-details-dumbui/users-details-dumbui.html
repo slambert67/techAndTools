@@ -1,8 +1,25 @@
-<p>users-details-dumbui works!</p>
+<h1>users-details-dumbui works!</h1>
 
-
+<!--
 <div *ngFor="let userDetail of userDetails">
     {{ userDetail.email }}
 </div>
+-->
 
 
+{{selectedUser | json}}
+{{selectedUser?.name}}
+
+<mat-list>
+ <mat-list-item>{{selectedUser?.name}}</mat-list-item>
+ <mat-list-item>{{selectedUser?.email}}</mat-list-item>
+ <mat-list-item>{{selectedUser?.role}}</mat-list-item>
+</mat-list>
+
+
+<!--
+or use
+<div *ngIf="selectedUser$ | async as user">
+  {{ user.name }}
+</div>
+-->

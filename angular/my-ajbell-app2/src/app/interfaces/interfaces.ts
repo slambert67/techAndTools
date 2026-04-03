@@ -15,5 +15,7 @@ export interface UserDetails {
 
 export interface ApplicationState {
     users: User[],
-    allUserDetails: UserDetails[]
+    allUserDetails: UserDetails[],
+    selectedUser: UserDetails | undefined,
+    loading: boolean
 }

@@ -10,7 +10,7 @@ import { StateService } from './services/state-service';
 })
 export class App implements OnInit{
 
-  constructor(private _state:StateService) {
+  constructor(public _state:StateService) {
   }
 
   ngOnInit() {
@@ -19,7 +19,7 @@ export class App implements OnInit{
     
     this._state.appState$.subscribe({
       next: (state) => {
-        console.log('app state');
+        console.log('app state from app.ts');
         console.log(state);
       }
     });
