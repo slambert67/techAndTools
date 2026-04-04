@@ -1,11 +1,11 @@
-export interface PayloadRecord {
-    user: any,
-    accounts: any[],
-    portfolioSummary: any,
-    alerts: any[]
+export interface TransformedPayloadRecord {
+    name: string;
+    contact: string;
+    accounts: string[]
 }
 
+
 export interface ApplicationState {
-    payload: PayloadRecord[],
+    payload: TransformedPayloadRecord[],
     notification: string | undefined
 }

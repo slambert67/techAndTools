@@ -1,7 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
-import { PayloadRecord } from '../interfaces/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +10,7 @@ export class RestApi {
   constructor( private _http: HttpClient ) {}
 
   loadAllData() {
-    return this._http.get<PayloadRecord[]>('/refproj').pipe(
+    return this._http.get<any[]>('/refproj').pipe(
       catchError( (error: HttpErrorResponse) => {
         let message = 'Unknown error';
         if (error.status === 0) {

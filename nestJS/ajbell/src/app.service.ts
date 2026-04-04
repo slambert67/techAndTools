@@ -159,6 +159,16 @@ export class AppService {
           { "transactionId": "TX5001", "date": "2026-03-05T10:00:00Z", "description": "Deposit", "amount": null, "type": "credit" }
         ],
         "status": "active"
+      },
+      {
+        "accountId": "ACC555667",
+        "type": "ISA",
+        "balance": 5000.0,
+        "currency": "GBP",
+        "transactions": [
+          { "transactionId": "TX5001", "date": "2026-03-05T10:00:00Z", "description": "Deposit", "amount": null, "type": "credit" }
+        ],
+        "status": "active"
       }
     ],
     "portfolioSummary": { "totalBalance": 5000.0, "assetAllocation": { "equities": 80.0, "bonds": 10.0, "cash": 10.0 }, "performance": { "1M": 0.2, "3M": 1.0, "YTD": 1.5 } },

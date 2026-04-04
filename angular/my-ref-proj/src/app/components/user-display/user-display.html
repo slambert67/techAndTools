@@ -1,0 +1,28 @@
+<p>user-display works!</p>
+
+<mat-card>
+  <mat-card-title>People Table</mat-card-title>
+  <mat-card-content>
+    <table *ngIf="payload" mat-table [dataSource]="payload" class="mat-elevation-z1">
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let user">
+          {{ user.name }}
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="contact">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let user" >
+          {{ user.contact }}
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
