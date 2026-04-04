@@ -1,0 +1,15 @@
+/* Default: MOBILE */
+.mobile { display: block; }
+.tablet, .desktop { display: none; }
+
+/* TABLET (≥ 768px) */
+@media (min-width: 768px) {
+  .mobile { display: none; }
+  .tablet { display: block; }
+}
+
+/* DESKTOP (≥ 1024px) */
+@media (min-width: 1024px) {
+  .tablet { display: none; }
+  .desktop { display: block; }
+}

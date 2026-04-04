@@ -24,6 +24,8 @@ steps
 Dev notes
 =========
 
+	ng new my-ref-proj --no-standalone
+	
 	app-root -> app.ts -> app.html
 	
 	ng generate service services/api 

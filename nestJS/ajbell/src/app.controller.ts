@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param, ParseIntPipe } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -20,4 +20,11 @@ export class AppController {
   async getUser( @Param('id', ParseIntPipe) id: number ) {
     return await this.appService.getUser(id);
   }*/
+
+
+  @Get('/refproj')
+  async getData() {
+    return await this.appService.getData();
+    //throw new NotFoundException('Resource not found');
+  }
 }
