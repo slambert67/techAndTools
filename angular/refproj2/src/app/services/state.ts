@@ -15,7 +15,8 @@ export class State {
       accounts:[],
       portfolioSummary: {},
       alerts:[]
-    }]
+    }],
+    userSummary:[]
   });
 
   public appState$: Observable<ApplicationState>;
@@ -40,9 +41,32 @@ export class State {
           ...this.applicationState.value,
           transformedPayload: this.transformPayload(data)
         });
-      })
+      }),
+      tap( (data) => {
+        this.applicationState.next({
+          ...this.applicationState.value,
+          userSummary: this.summariseUsers(data)
+        });       
+      } )
     ).subscribe();
   }
+
+  private summariseUsers(data:any) {
+    let summarisedUsers: any[];
+
+    summarisedUsers = data.map( (entry:any) => {
+      //console.log(entry);
+      const transformedEntry = {
+        summariseduser: { id: entry.user.id, 
+                          fullName: `${entry.user.name.first} ${entry.user.name.last}`, 
+                          contact: `${entry.user.email} : ${entry.user.phone}`}
+      }
+      return transformedEntry;
+    });
+
+    return summarisedUsers;
+  }
+
 
   private transformPayload(data:any): Transformation[] {
 

@@ -11,5 +11,6 @@ export interface Transformation {
 
 export interface ApplicationState {
     untransformedPayload: any[],
+    userSummary: any[],
     transformedPayload: Transformation[]
 }
