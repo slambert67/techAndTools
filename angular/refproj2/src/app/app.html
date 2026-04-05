@@ -6,4 +6,5 @@
 
     <!--<app-desktop-main [payload]="state.transformedPayload"></app-desktop-main>-->
     <app-desktop-main [payload]="state.userSummary" (rowSelected)="handleRowSelected($event)"></app-desktop-main>
+    <app-desktop-detail [details]="state.selectedUser"></app-desktop-detail>
 </div>

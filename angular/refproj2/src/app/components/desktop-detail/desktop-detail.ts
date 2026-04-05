@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Transformation } from '../../interfaces/interface';
 
 @Component({
   selector: 'app-desktop-detail',
@@ -7,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './desktop-detail.css',
 })
 export class DesktopDetail {
+  @Input() details!: Transformation;
+
 
 }
