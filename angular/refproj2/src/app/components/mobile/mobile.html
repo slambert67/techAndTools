@@ -1,9 +1,8 @@
 <p>mobile works!</p>
 <!--{{details | json}}-->
 
-<div class="card" *ngFor="let item of details">
+<div class="card" *ngFor="let item of details.filter(i => i.user)">
   <strong>CARD TITLE</strong>
-    <!--{{item | json}} works -->
-    <div>{{item.user.id}}</div>
-    <div>{{item.user.name.first}}</div>
+    <p>ID: {{item.user.id}}</p>
+    <p>Name: {{item.user.name.first}} {{item.user.name.last}}</p>
 </div>
