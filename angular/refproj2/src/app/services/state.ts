@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RestApi } from './rest-api';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { ApplicationState, Transformation } from '../interfaces/interface';
 
 @Injectable({
@@ -31,6 +31,8 @@ export class State {
     //this._api.retrieveAllData().subscribe((data) => {console.log('data retrieved into state');console.log(data)});
 
     this._api.retrieveAllData().pipe(
+      map( (data) => data.slice(1,3)),
+
       // 1 tap for each transformation
       tap( (data) => {
                         this.applicationState.next({
