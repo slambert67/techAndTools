@@ -1,10 +1,33 @@
+<!--
 <div *ngIf="_state.appState$ | async as state">
-    <!--
-    {{state.transformedPayload | json}}
-    -->
+
     <h1>app.html</h1>
+
+
+    <app-desktop-main [payload]="state.userSummary" (rowSelected)="handleRowSelected($event)"></app-desktop-main>
+    <app-desktop-detail [details]="state.selectedUser"></app-desktop-detail>
+</div>
+-->
+
+
+<ng-container *ngIf="_state.appState$ | async as state">
+
+  <div class="desktop">
+    <h1>Desktop Display</h1>
 
     <!--<app-desktop-main [payload]="state.transformedPayload"></app-desktop-main>-->
     <app-desktop-main [payload]="state.userSummary" (rowSelected)="handleRowSelected($event)"></app-desktop-main>
     <app-desktop-detail [details]="state.selectedUser"></app-desktop-detail>
-</div>
+
+  </div>
+
+  <div class="tablet">
+    <h1>Tablet Display</h1>
+  </div>
+
+  <div class="mobile">
+    <h1>Mobile Display</h1>
+  </div>
+
+
+</ng-container>
