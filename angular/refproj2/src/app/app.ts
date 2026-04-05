@@ -21,5 +21,6 @@ export class App implements OnInit{
 
   ngOnInit() {
     this._state.retrieveAllData();
+    console.log()
   }
 }
