@@ -1,3 +1,8 @@
 <div *ngIf="_state.appState$ | async as state">
+    <!--
     {{state.transformedPayload | json}}
+    -->
+    
+
+    <app-desktop-main [payload]="state.transformedPayload"></app-desktop-main>
 </div>
