@@ -28,7 +28,9 @@
 
   <div class="mobile">
     <h1>Mobile Display</h1>
-    {{state.untransformedPayload | json}}
+    <!--{{state.untransformedPayload | json}}-->
+
+    <app-mobile [details]="state.untransformedPayload"></app-mobile>
   </div>
 
 

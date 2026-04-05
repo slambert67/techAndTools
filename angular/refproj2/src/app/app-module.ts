@@ -5,12 +5,14 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { DesktopMain } from './components/desktop-main/desktop-main';
 import { DesktopDetail } from './components/desktop-detail/desktop-detail';
+import { Mobile } from './components/mobile/mobile';
 
 @NgModule({
   declarations: [
     App,
     DesktopMain,
-    DesktopDetail
+    DesktopDetail,
+    Mobile
   ],
   imports: [
     BrowserModule,
