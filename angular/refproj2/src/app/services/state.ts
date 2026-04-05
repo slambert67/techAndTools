@@ -17,7 +17,8 @@ export class State {
       alerts:[]
     }],
     userSummary:[],
-    selectedUser:{}
+    selectedUser:{},
+    appState: 'Initialising ...'
   });
 
   public appState$: Observable<ApplicationState>;
@@ -51,7 +52,13 @@ export class State {
           ...this.applicationState.value,
           userSummary: this.summariseUsers(data)
         });       
-      } )
+      } ),
+      tap( () => {
+        this.applicationState.next({
+          ...this.applicationState.value,
+          appState: 'Data loaded successfully'
+        });          
+      }) 
     ).subscribe();
   }
 

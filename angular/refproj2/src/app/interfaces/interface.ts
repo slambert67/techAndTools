@@ -13,7 +13,8 @@ export interface ApplicationState {
     untransformedPayload: any[],
     userSummary: any[],                         // main grid - 1 transformation per component display?
     transformedPayload: Transformation[],
-    selectedUser: any
+    selectedUser: any,
+    appState: string
 }
 
 
