@@ -13,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of payload">
+      <tr *ngFor="let item of payload" (click)="selectRow(item)">
         <td>{{ item.user.id }}</td>
         <td>{{ item.user.fullName }}</td>
         <td>{{ item.user.contact }}</td>
@@ -22,11 +22,4 @@
   </table>
 </div>
 
-  <!-- Bottom row -->
-  <div class="bottom-grid">
-    <div class="grid-item">Box 1</div>
-    <div class="grid-item">Box 2</div>
-    <div class="grid-item">Box 3</div>
-    <div class="grid-item">Box 4</div>
-  </div>
-
+<app-desktop-detail></app-desktop-detail>

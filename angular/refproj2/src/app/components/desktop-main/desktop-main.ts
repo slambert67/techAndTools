@@ -9,4 +9,9 @@ import { Transformation } from '../../interfaces/interface';
 })
 export class DesktopMain {
   @Input() payload: Transformation[] = [];
+
+  selectRow(row:any) {
+    console.log('row selected');
+    console.log(row);
+  }
 }
