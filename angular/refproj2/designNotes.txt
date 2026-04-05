@@ -1,0 +1,57 @@
+Data Retrieval
+==============
+    CORS
+    ====
+
+
+    Reduction
+    ---------
+
+
+    Validation
+    ----------
+
+
+
+Error Handling
+==============
+    Interceptors - no
+    Retry
+
+
+
+Data Transformation
+===================
+
+
+
+
+
+Data Structures
+===============
+
+    Interfaces
+    ----------
+
+
+
+State Management
+================
+    ngrx/ngxs - no
+    state slicing
+
+UI
+==
+    Responsive
+
+
+
+Testing
+=======
+
+
+
+
+
+temp code
+=========

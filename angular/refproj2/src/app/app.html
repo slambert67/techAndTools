@@ -1,0 +1,3 @@
+<div *ngIf="_state.appState$ | async as state">
+    {{state.transformedPayload | json}}
+</div>
