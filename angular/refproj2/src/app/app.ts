@@ -11,6 +11,14 @@ export class App implements OnInit{
 
   constructor( public _state: State){};
 
+  handleRowSelected(item: any) {
+    console.log('row selection detected in app');
+    console.log(item);
+
+    // update state with selected row
+    this._state.updateSelectedUser(item);
+  }
+
   ngOnInit() {
     this._state.retrieveAllData();
   }

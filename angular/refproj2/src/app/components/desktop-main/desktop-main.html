@@ -12,7 +12,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of payload">
+      <tr *ngFor="let item of payload" (click)="selectRow(item)">
         <td>{{item.summariseduser.id}}</td>
         <td>{{item.summariseduser.fullName}}</td>
         <td>{{item.summariseduser.contact}}</td>

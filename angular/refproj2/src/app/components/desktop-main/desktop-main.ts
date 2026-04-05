@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Transformation } from '../../interfaces/interface';
 
 @Component({
@@ -7,16 +7,16 @@ import { Transformation } from '../../interfaces/interface';
   templateUrl: './desktop-main.html',
   styleUrl: './desktop-main.css',
 })
-export class DesktopMain implements OnChanges{
+export class DesktopMain {
   @Input() payload: any[] = [];
-
+  @Output() rowSelected = new EventEmitter<any>(); // Event to emit
   selectRow(row:any) {
-    console.log('row selected');
-    console.log(row);
+    //console.log('row selected');
+    //console.log(row);
+
+    // emit to app.ts
+    this.rowSelected.emit(row); // Emit to parent
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes');
-    console.log(changes);
-  }
+
 }

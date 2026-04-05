@@ -16,7 +16,8 @@ export class State {
       portfolioSummary: {},
       alerts:[]
     }],
-    userSummary:[]
+    userSummary:[],
+    selectedUser:{}
   });
 
   public appState$: Observable<ApplicationState>;
@@ -85,5 +86,21 @@ export class State {
     });
 
     return transformedPayload;
+  }
+
+  updateSelectedUser(row:any) {
+    const selecteduser = this.applicationState.value.untransformedPayload.find( (entry) => {
+      return entry.user.id === row.summariseduser.id;
+    });
+
+    this.applicationState.next({
+      ...this.applicationState.value,
+      selectedUser: selecteduser
+    });   
+
+    console.log(this.applicationState.value);
+    //console.log(row);
+   // console.log(this.applicationState.value.untransformedPayload);
+   //console.log(selecteduser);
   }
 }
