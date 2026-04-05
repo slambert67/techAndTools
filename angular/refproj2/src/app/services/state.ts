@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { RestApi } from './rest-api';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, map, Observable, tap } from 'rxjs';
 import { ApplicationState, Transformation } from '../interfaces/interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +59,14 @@ export class State {
           ...this.applicationState.value,
           appState: 'Data loaded successfully'
         });          
-      }) 
+      }) ,
+      catchError( (error: HttpErrorResponse) => {
+        this.applicationState.next({
+          ...this.applicationState.value,
+          appState: error.message
+        }); 
+        return EMPTY;
+      })
     ).subscribe();
   }
 
