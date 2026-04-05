@@ -11,7 +11,17 @@ export interface Transformation {
 
 export interface ApplicationState {
     untransformedPayload: any[],
-    userSummary: any[],
+    userSummary: any[],                         // main grid - 1 transformation per component display?
     transformedPayload: Transformation[],
     selectedUser: any
 }
+
+
+/*
+export interface ApplicationState {
+    untransformedPayload: any[],
+    desktopMainSummary: see above
+    desktopDetail: see above
+    mobile: see above
+}
+*/

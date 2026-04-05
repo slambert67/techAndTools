@@ -31,6 +31,7 @@ export class State {
     //this._api.retrieveAllData().subscribe((data) => {console.log('data retrieved into state');console.log(data)});
 
     this._api.retrieveAllData().pipe(
+      // 1 tap for each transformation
       tap( (data) => {
                         this.applicationState.next({
                           ...this.applicationState.value,
@@ -60,7 +61,7 @@ export class State {
       const transformedEntry = {
         summariseduser: { id: entry.user.id, 
                           fullName: `${entry.user.name.first} ${entry.user.name.last}`, 
-                          contact: `${entry.user.email} : ${entry.user.phone}`}
+                          contact: `${entry.user.email ?? 'unknown'} : ${entry.user.phone ?? 'unknown'}`}
       }
       return transformedEntry;
     });
@@ -77,7 +78,7 @@ export class State {
       const transformedEntry = {
         user: { id: entry.user.id, 
                 fullName: `${entry.user.name.first} ${entry.user.name.last}`, 
-                contact: `${entry.user.email} : ${entry.user.phone}`},
+                contact: `${entry.user.email ?? 'unknown'} : ${entry.user.phone}`},
         accounts: ['acc1', 'acc2'],
         portfolioSummary: 'portfolioSummary',
         alerts: ['foo', 'bar']
