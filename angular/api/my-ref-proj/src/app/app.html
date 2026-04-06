@@ -1,9 +1,11 @@
 <ng-container *ngIf="_state.appState$ | async as state">
 
+  {{state.selectedUser | json}}
+
   <div class="desktop">
     <h2>Desktop Display</h2>
-    {{state.transformedPayload | json}}
-    <app-desktop-main [payload]="state.transformedPayload"></app-desktop-main>
+    <app-desktop-main [payload]="state.transformedPayload" (rowSelected)="handleRowSelected($event)"></app-desktop-main>
+    <app-desktop-detail [details]="state.selectedUser"></app-desktop-detail>
   </div>
 
   <div class="tablet">
@@ -13,7 +15,7 @@
 
   <div class="mobile">
     <h2>Mobile Display</h2>
-    {{state | json}}
+    <app-mobile [payload]="state.transformedPayload"></app-mobile>
   </div>
 
   <div>

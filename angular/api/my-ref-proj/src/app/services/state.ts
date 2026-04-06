@@ -10,7 +10,8 @@ export class State {
   
   private applicationState = new BehaviorSubject<ApplicationState>({
     untransformedPayload: [],
-    transformedPayload:[]
+    transformedPayload:[],
+    selectedUser:{}
   });
   public appState$: Observable<any>;
 
@@ -85,9 +86,18 @@ export class State {
         alerts: alerts
       }
 
-  
-
     } );
   }
 
+
+  updateSelectedUser(row:any) {
+    const selecteduser = this.applicationState.value.transformedPayload.find( (entry) => {
+      return entry.user.id === row.user.id;
+    });
+    
+    this.applicationState.next({
+      ...this.applicationState.value,
+      selectedUser: selecteduser
+    });   
+  }
 }

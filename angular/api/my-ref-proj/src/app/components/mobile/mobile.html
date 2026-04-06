@@ -1,0 +1,10 @@
+<p>mobile works!</p>
+<!--{{details | json}}-->
+
+<div class="card" *ngFor="let item of payload">
+  <strong>CARD TITLE</strong>
+    <p>ID: {{item.user.id}}</p>
+    <p>Name: {{item.user.fullName}}</p>
+    <p>{{item.user.email}}</p>
+    <p>{{item.user.phone}}</p>
+</div>

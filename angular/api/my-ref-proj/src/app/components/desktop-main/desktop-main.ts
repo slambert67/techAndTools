@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-desktop-main',
@@ -8,4 +8,13 @@ import { Component, Input } from '@angular/core';
 })
 export class DesktopMain {
   @Input() payload: any[] = [];
+  @Output() rowSelected = new EventEmitter<any>(); // Event to emit
+  
+  selectRow(row:any) {
+    //console.log('row selected');
+    //console.log(row);
+
+    // emit to app.ts
+    this.rowSelected.emit(row); // Emit to parent
+  }
 }

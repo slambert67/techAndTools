@@ -1,5 +1,6 @@
 
 export interface ApplicationState {
     untransformedPayload: any[],
-    transformedPayload: any[]
+    transformedPayload: any[],
+    selectedUser:any
 }
