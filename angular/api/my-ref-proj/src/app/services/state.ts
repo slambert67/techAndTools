@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Api } from './api';
-import { BehaviorSubject, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, map, Observable, tap } from 'rxjs';
 import { ApplicationState } from '../interfaces/interfaces';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,8 @@ export class State {
   private applicationState = new BehaviorSubject<ApplicationState>({
     untransformedPayload: [],
     transformedPayload:[],
-    selectedUser:{}
+    selectedUser:{},
+    appStatus: 'Loading data...'
   });
   public appState$: Observable<any>;
 
@@ -44,6 +46,24 @@ export class State {
           transformedPayload: this.transformPayload(data)
         })
       }),
+
+      // app status
+      tap( (data: any[]) => {
+        this.applicationState.next({
+          ...this.applicationState.value,
+          appStatus: 'Data loaded successfully'
+        })
+      }),
+
+      // handle any errors
+      catchError( (error: HttpErrorResponse) => {
+        this.applicationState.next({
+          ...this.applicationState.value,
+          appStatus: error.message
+        }); 
+        return EMPTY;
+      })
+
     ).subscribe( (data) => console.log(data));    
   }
 
