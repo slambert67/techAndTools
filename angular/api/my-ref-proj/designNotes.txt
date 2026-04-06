@@ -1,0 +1,10 @@
+data retrieval
+cors
+error handling
+reduction
+validation
+transformation
+interfaces
+state management
+responsive ui
+testing

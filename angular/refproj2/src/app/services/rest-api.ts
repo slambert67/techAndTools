@@ -12,7 +12,7 @@ export class RestApi {
   retrieveAllData() : Observable<any[]>{
     console.log('getting data from api service');
 
-    return this._http.get<any[]>('/refproj').pipe(
+    return this._http.get<any[]>('/server/refproj').pipe(
       catchError( (error:HttpErrorResponse) => {
         let message = 'Unknown error';
         if (error.status === 0) {

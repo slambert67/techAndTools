@@ -1,0 +1,21 @@
+<ng-container *ngIf="_state.appState$ | async as state">
+
+  <div class="desktop">
+    <h2>Desktop Display</h2>
+    {{state | json}}
+  </div>
+
+  <div class="tablet">
+    <h2>Tablet Display</h2>
+    {{state | json}}
+  </div>
+
+  <div class="mobile">
+    <h2>Mobile Display</h2>
+    {{state | json}}
+  </div>
+
+  <div>
+    <h2>Notification centre</h2>
+  </div>
+</ng-container>
