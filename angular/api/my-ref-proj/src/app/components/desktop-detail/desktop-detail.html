@@ -6,9 +6,11 @@
     </div>
 
     <div class="grid-item">Box 2
+        {{details.portfolioSummary.totalBalance | currency:'GBP'}}
     </div>
 
     <div class="grid-item">Box 3
+        {{details.alerts[0].createdAt | date:'short'}}
     </div>
 
   </div>
