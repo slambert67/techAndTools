@@ -3,6 +3,7 @@
   <div class="desktop">
     <h2>Desktop Display</h2>
     {{state.transformedPayload | json}}
+    <app-desktop-main [payload]="state.transformedPayload"></app-desktop-main>
   </div>
 
   <div class="tablet">

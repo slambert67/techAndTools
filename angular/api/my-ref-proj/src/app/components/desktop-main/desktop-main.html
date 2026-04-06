@@ -1,0 +1,23 @@
+<p>desktop-main works!</p>
+
+  <!-- Full width top section -->
+<div class="top-container">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of payload">
+        <td>{{item.user.id}}</td>
+        <td>{{item.user.fullName}}</td>
+        <td>{{item.user.email}}</td>
+        <td>{{item.user.phone}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

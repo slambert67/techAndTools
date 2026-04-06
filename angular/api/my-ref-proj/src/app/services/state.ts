@@ -23,7 +23,10 @@ export class State {
   loadAllData() {
     this._api.loadAllData().pipe(
       // reduce payload size
-      map( (data: any[]) => data.slice(0,1)),
+      //map( (data: any[]) => data.slice(0,1)),
+
+      // filter payload
+      //map( (data: any[]) => data.filter( entry => entry.user.id !== 987654) ),
 
       // update application state with untransformed payload
       tap( (data: any[]) => {

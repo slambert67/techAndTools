@@ -1,0 +1,30 @@
+
+
+/* Full-width top */
+.top-container {
+  width: 100%;
+  padding: 1.5rem;
+  background: #e3f2fd;
+  border-radius: 8px;
+}
+
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* fixes column alignment */
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  overflow: hidden;       /* prevent cell overflow from breaking alignment */
+  text-overflow: ellipsis; 
+  white-space: nowrap;    /* optional: prevent wrapping if you want fixed alignment */
+}
+
+.data-table tr.selected {
+  background: #eef5ff;
+}
