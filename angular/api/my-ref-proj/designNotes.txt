@@ -8,3 +8,58 @@ interfaces
 state management
 responsive ui
 testing
+
+
+<p>tablet works!</p>
+
+<div class="tablet-container">
+  <div 
+    class="tablet-card" 
+    *ngFor="let item of payload" 
+    (click)="selectRow(item)"
+  >
+    
+    <div class="card-header">
+      <strong>{{ item.user.fullName }}</strong>
+      <span class="id">#{{ item.user.id }}</span>
+    </div>
+
+    <div class="card-body">
+      <div><strong>Email:</strong> {{ item.user.email }}</div>
+      <div><strong>Phone:</strong> {{ item.user.phone }}</div>
+    </div>
+
+  </div>
+</div>
+
+
+.tablet-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  padding: 16px;
+}
+
+.tablet-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+
+.tablet-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.card-body {
+  font-size: 14px;
+  line-height: 1.4;
+}
