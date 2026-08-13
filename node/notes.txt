@@ -1,5 +1,22 @@
 Install node
 ============
+
+C:\Program Files\nodejs\; 									-- node, npm, npx executables
+C:\Users\SteveLambert\AppData\Roaming\npm;  				-- globally installed npm packages. shown by npm config get prefix
+C:\Users\SteveLambert\AppData\Roaming\npm\node_modules
+C:\Users\SteveLambert\AppData\Local\npm-cache				-- stored hare and copied to node_modules for subsequent efficient downloads. npm cache clean --force
+
+PATH
+C:\Program Files\nodejs\;
+C:\Users\SteveLambert\AppData\Roaming\npm;
+
+where node
+where npm
+npm config list
+
+
+nvm
+===
 Use nvm
 https://github.com/coreybutler/nvm-windows
 
