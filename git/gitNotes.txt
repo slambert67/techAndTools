@@ -38,9 +38,23 @@ There are two common ways Git can authenticate to GitHub/gitlab etc
 
 Setup SSH
 =========
-Generate an SSH key (ed25519 is recommended):
-	ssh-keygen -t ed25519 -C "your_email@example.com"
+~ -> C:/Users/steve
 
+Generate an SSH key (ed25519 is recommended encryption algorithm):
+	ssh-keygen -t ed25519 -C "your@email.com"
+	ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_github_personal -C "steve.lambert67@gmail.com"
+
+Passphrase is not your GitHub password and it isn't sent to GitHub. It exists solely to protect your private key on your computer
+Usual prefix
+
+Your identification has been saved in /c/Users/SteveLambert/.ssh/id_ed25519_gitlab_personal			- private
+Your public key has been saved in /c/Users/SteveLambert/.ssh/id_ed25519_gitlab_personal.pub			- public
+
+If I use a custom file name then SSH needs to be told which key to use
+Use ssh config file
+1. in git bash create config file: touch ~/.ssh/config
+
+ssh-agent - used so git has access to decrypted private key on local machine
 Start the ssh-agent and add the key
 	eval "$(ssh-agent -s)"
 	ssh-add ~/.ssh/id_ed25519
@@ -48,13 +62,19 @@ Start the ssh-agent and add the key
 
 
 Copy the public key and add it to GitHub: Settings ? SSH and GPG keys ? New SSH key. You can copy with:
-	full file contens of C:\Users\steve\.ssh\id_ed25519.pub
+	full file contents of C:\Users\steve\.ssh\id_ed25519.pub
+Use Authentication Key from drop down
 	
 Change your repo remote to the SSH URL if needed:
 	git remote set-url origin git@github.com:your-username/your-repo.git
 
 
-
+Configure git
+=============
+My git identity for commits:
+git config --global user.name "Steve Lambert"
+git config --global user.email "Steven.Lambert@raytheon.co.uk"
+git config --global --list
 
 
 
