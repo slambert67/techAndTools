@@ -47,12 +47,28 @@ Generate an SSH key (ed25519 is recommended encryption algorithm):
 Passphrase is not your GitHub password and it isn't sent to GitHub. It exists solely to protect your private key on your computer
 Usual prefix
 
-Your identification has been saved in /c/Users/SteveLambert/.ssh/id_ed25519_gitlab_personal			- private
-Your public key has been saved in /c/Users/SteveLambert/.ssh/id_ed25519_gitlab_personal.pub			- public
+Your identification has been saved in /c/Users/SteveLambert/.ssh/id_ed25519_github_personal			- private
+Your public key has been saved in /c/Users/SteveLambert/.ssh/id_ed25519_github_personal.pub			- public
 
 If I use a custom file name then SSH needs to be told which key to use
 Use ssh config file
 1. in git bash create config file: touch ~/.ssh/config
+2. enter details similar to this:
+Host github-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_github_personal
+    IdentitiesOnly yes
+
+github-personal is an alias and so cloning is slightly different
+so instead of this:
+	git@github.com:organisation/repository.git
+use this
+	git@github-personal:organisation/repository.git
+
+First test with: ssh -T git@github-personal
+Answer yes to prompt. Confirms I trust github server
+Added to ~/.ssh/known_hosts
 
 ssh-agent - used so git has access to decrypted private key on local machine
 Start the ssh-agent and add the key
