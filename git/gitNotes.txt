@@ -1,6 +1,40 @@
 Distributed Version Control
 Fully mirror central repository locally
 
+What is OpenSSH?
+SSH (Secure Shell) is a protocol for establishing an encrypted connection between your computer and another computer.
+OpenSSH is the widely used open-source implementation of SSH. It provides programs such as:
+	ssh — connect to a remote computer
+	ssh-keygen — create SSH keys
+	ssh-agent — securely hold private keys in memory
+	ssh-add — add a key to the SSH agent
+	scp — securely copy files
+	sftp — securely transfer files
+For Git, the particularly important one is ssh
+
+There are two common ways Git can authenticate to GitHub/gitlab etc
+	https
+		Your PC
+		  |
+		  | HTTPS + credentials/token
+		  v
+		GitHub
+
+	ssh
+		Your PC
+		  |
+		  | SSH + cryptographic key
+		  v
+		GitHub
+		
+		
+|                               | SSH                 | HTTPS                                  |
+| ----------------------------- | ------------------- | -------------------------------------- |
+| Authentication                | SSH key pair        | Token/account authentication           |
+| Private key required          | Yes                 | No                                     |
+| Credential helper             | Usually `ssh-agent` | Git Credential Manager                 |
+| Enter credentials repeatedly? | Normally no         | Normally no, with a credential manager |
+| Transport                     | SSH                 | HTTPS                                  |
 
 Setup SSH
 =========
@@ -345,9 +379,9 @@ git sees this plugins subdirectory as a submodule amd doesn't track it's content
 when you're not in that directory
 Git records submodule as a particular commit from that repository
 When you make changes and commit in that subdirectory, the superproject notices that the HEAD 
-there has changed and records the exact commit you�re currently working off of; 
+there has changed and records the exact commit youre currently working off of; 
 that way, when others clone this project, they can re-create the environment exactly
-This is an important point with submodules: you record them as the exact commit they�re at
+This is an important point with submodules: you record them as the exact commit theyre at
 
 Cloning a project with submodules
 =================================
